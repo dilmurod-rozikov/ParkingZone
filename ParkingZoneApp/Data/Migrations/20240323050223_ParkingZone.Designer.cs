@@ -12,8 +12,13 @@ using ParkingZoneApp.Data;
 namespace ParkingZoneApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
+<<<<<<<< HEAD:ParkingZoneApp/Data/Migrations/20240323050223_ParkingZone.Designer.cs
     [Migration("20240323050223_ParkingZone")]
     partial class ParkingZone
+========
+    [Migration("20240321132604_Initial Schema")]
+    partial class ParkingZonesMigration
+>>>>>>>> 7dfdd51ee140b06b32b39d2a66f029f8e7be1503:ParkingZoneApp/Data/Migrations/20240321132604_Initial Schema.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -240,7 +245,15 @@ namespace ParkingZoneApp.Data.Migrations
                     b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
+<<<<<<<< HEAD:ParkingZoneApp/Data/Migrations/20240323050223_ParkingZone.Designer.cs
                     b.Property<string>("Name")
+========
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+>>>>>>>> 7dfdd51ee140b06b32b39d2a66f029f8e7be1503:ParkingZoneApp/Data/Migrations/20240321132604_Initial Schema.Designer.cs
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

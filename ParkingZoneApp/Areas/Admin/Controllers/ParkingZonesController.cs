@@ -82,7 +82,6 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Address,CreatedDate")] ParkingZone parkingZone)
         {
             if (id != parkingZone.Id)
                 return NotFound();
@@ -100,6 +99,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
                         return NotFound();
                     else
                         throw;
+                    
                 }
 
                 return RedirectToAction(nameof(Index));
