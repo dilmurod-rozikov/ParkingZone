@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Areas.Admin.Models;
+using ParkingZoneApp.Models;
 
 namespace ParkingZoneApp.Data
 {
