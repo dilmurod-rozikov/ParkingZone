@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Areas.Admin.Models;
 using ParkingZoneApp.Data;
+using ParkingZoneApp.Models;
 
 namespace ParkingZoneApp.Areas.Admin
 {
