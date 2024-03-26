@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Data;
+using ParkingZoneApp.IRepository;
 using ParkingZoneApp.Models;
 
 namespace ParkingZoneApp.Areas.Admin
@@ -10,27 +10,27 @@ namespace ParkingZoneApp.Areas.Admin
     [Authorize]
     public class ParkingZonesController : Controller
     {
-        private readonly ApplicationDbContext _context;
 
-        public ParkingZonesController(ApplicationDbContext context)
+        private readonly IRepository<ParkingZone> genericRepository;
+        public ParkingZonesController(IRepository<ParkingZone> parkingZoneRepository)
         {
-            _context = context;
+            genericRepository = parkingZoneRepository;
         }
 
         // GET: Admin/ParkingZones
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-            return View(await _context.ParkingZone.ToListAsync());
+            var entity = genericRepository.GetAll();
+            return View(entity);
         }
 
         // GET: Admin/ParkingZones/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public ActionResult Details(Guid? id)
         {
             if (id == null)
                 return NotFound();
 
-            var parkingZone = await _context.ParkingZone
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var parkingZone = genericRepository.GetByID(id);
 
             if (parkingZone == null)
                 return NotFound();
@@ -39,7 +39,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Create
-        public IActionResult Create()
+        public ActionResult Create()
         {
             return View();
         }
@@ -49,13 +49,12 @@ namespace ParkingZoneApp.Areas.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ParkingZone parkingZone)
+        public ActionResult Create(ParkingZone parkingZone)
         {
             if (ModelState.IsValid)
             {
                 parkingZone.Id = Guid.NewGuid();
-                _context.Add(parkingZone);
-                await _context.SaveChangesAsync();
+                genericRepository.Add(parkingZone);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -63,12 +62,12 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public ActionResult Edit(Guid? id)
         {
             if (id == null)
                 return NotFound();
 
-            var parkingZone = await _context.ParkingZone.FindAsync(id);
+            var parkingZone =genericRepository.GetByID(id);
 
             if (parkingZone == null)
                 return NotFound();
@@ -81,7 +80,7 @@ namespace ParkingZoneApp.Areas.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, ParkingZone parkingZone)
+        public ActionResult Edit(Guid id, ParkingZone parkingZone)
         {
             if (id != parkingZone.Id)
                 return NotFound();
@@ -90,8 +89,7 @@ namespace ParkingZoneApp.Areas.Admin
             {
                 try
                 {
-                    _context.Update(parkingZone);
-                    await _context.SaveChangesAsync();
+                    genericRepository.Update(parkingZone);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -108,13 +106,12 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public ActionResult Delete(Guid id)
         {
             if (id == null)
                 return NotFound();
 
-            var parkingZone = await _context.ParkingZone
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var parkingZone = genericRepository.Delete(id);
 
             if (parkingZone == null)
                 return NotFound();
@@ -125,19 +122,21 @@ namespace ParkingZoneApp.Areas.Admin
         // POST: Admin/ParkingZones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public ActionResult DeleteConfirmed(Guid id)
         {
-            var parkingZone = await _context.ParkingZone.FindAsync(id);
-            if (parkingZone != null)
-                _context.ParkingZone.Remove(parkingZone);
+            var parkingZone = genericRepository.GetByID(id);
 
-            await _context.SaveChangesAsync();
+            if (parkingZone != null)
+            {
+                genericRepository.Delete(id);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool ParkingZoneExists(Guid id)
         {
-            return _context.ParkingZone.Any(e => e.Id == id);
+            return genericRepository.GetByID(id) != null;
         }
     }
 }
