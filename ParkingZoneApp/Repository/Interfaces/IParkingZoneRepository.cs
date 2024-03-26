@@ -1,6 +1,6 @@
 ﻿using ParkingZoneApp.Models;
 
-namespace ParkingZoneApp.IRepository
+namespace ParkingZoneApp.Repository.Interfaces
 {
     public interface IParkingZoneRepository : IRepository<ParkingZone>
     {

@@ -1,6 +1,6 @@
 ﻿using ParkingZoneApp.Data;
-using ParkingZoneApp.IRepository;
 using ParkingZoneApp.Models;
+using ParkingZoneApp.Repository.Interfaces;
 
 namespace ParkingZoneApp.Repository
 {

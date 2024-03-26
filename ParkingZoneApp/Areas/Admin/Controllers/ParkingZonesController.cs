@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.IRepository;
 using ParkingZoneApp.Models;
+using ParkingZoneApp.Repository.Interfaces;
 
 namespace ParkingZoneApp.Areas.Admin
 {
@@ -108,13 +108,12 @@ namespace ParkingZoneApp.Areas.Admin
         // GET: Admin/ParkingZones/Delete/5
         public ActionResult Delete(Guid id)
         {
-            if (id == null)
-                return NotFound();
-
-            var parkingZone = genericRepository.Delete(id);
+            var parkingZone = genericRepository.GetByID(id);
 
             if (parkingZone == null)
                 return NotFound();
+            else
+                genericRepository.Delete(id);
 
             return View(parkingZone);
         }

@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Data;
-using ParkingZoneApp.IRepository;
+using ParkingZoneApp.Repository.Interfaces;
 
 namespace ParkingZoneApp.Repository
 {

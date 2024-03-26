@@ -1,4 +1,4 @@
-﻿namespace ParkingZoneApp.IRepository
+﻿namespace ParkingZoneApp.Repository.Interfaces
 {
     public interface IRepository<T>
     {
