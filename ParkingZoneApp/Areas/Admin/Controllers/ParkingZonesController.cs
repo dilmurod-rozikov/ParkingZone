@@ -70,6 +70,7 @@ namespace ParkingZoneApp.Areas.Admin
 
             if (parkingZone == null)
                 return NotFound();
+
             _parkingZoneRepository.Update(parkingZone);
 
             return View(parkingZone);

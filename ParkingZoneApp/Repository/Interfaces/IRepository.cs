@@ -6,6 +6,6 @@
         T? GetByID(Guid? id);
         void Add(T value);
         void Update(T value);
-        void Delete(Guid id);
+        void Delete(T value);
     }
 }
