@@ -7,15 +7,8 @@ namespace ParkingZoneApp.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context = null;
-
-        private readonly DbSet<T> _dbSet = null;
-
-        public Repository()
-        {
-            this._context = new ApplicationDbContext();
-            _dbSet = _context.Set<T>();
-        }
+        private readonly ApplicationDbContext _context;
+        private readonly DbSet<T> _dbSet;
 
         public Repository(ApplicationDbContext context)
         {
@@ -23,25 +16,29 @@ namespace ParkingZoneApp.Repository
             _dbSet = _context.Set<T>();
         }
 
+        public IEnumerable<T> GetAll() => _dbSet.ToList();
+
         public void Add(T value)
         {
             _dbSet.Add(value);
             _context.SaveChanges();
         }
 
-        public T Delete(Guid id)
+        public void Delete(Guid id)
         {
             var entity = _dbSet.Find(id);
-            _dbSet.Remove(entity);
+
+            if (entity != null) 
+                _dbSet.Remove(entity);
+                
             _context.SaveChanges();
-            return entity;
         }
 
-        public List<T> GetAll() => _dbSet.ToList();
-        
-         public T GetByID(Guid? id)
-             => _dbSet.Find(id);
-        
+        public T? GetByID(Guid? id)
+        {
+            var entity = _dbSet.Find(id);
+            return entity;
+        }
 
         public void Update(T value)
         {

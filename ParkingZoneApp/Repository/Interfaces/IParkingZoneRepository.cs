@@ -2,7 +2,7 @@
 
 namespace ParkingZoneApp.Repository.Interfaces
 {
-    public interface IParkingZoneRepository : IRepository<ParkingZone>
+    public interface IParkingZoneRepository<T> : IRepository<ParkingZone>
     {
     }
 }

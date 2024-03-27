@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Repository.Interfaces;
-
 namespace ParkingZoneApp.Areas.Admin
 {
     [Area("Admin")]
@@ -11,16 +10,16 @@ namespace ParkingZoneApp.Areas.Admin
     public class ParkingZonesController : Controller
     {
 
-        private readonly IRepository<ParkingZone> genericRepository;
-        public ParkingZonesController(IRepository<ParkingZone> parkingZoneRepository)
+        private readonly IParkingZoneRepository<ParkingZone> _parkingZoneRepository;
+        public ParkingZonesController(IParkingZoneRepository<ParkingZone> parkingZoneRepository)
         {
-            genericRepository = parkingZoneRepository;
+            _parkingZoneRepository = parkingZoneRepository;
         }
 
         // GET: Admin/ParkingZones
         public ActionResult Index()
         {
-            var entity = genericRepository.GetAll();
+            var entity = _parkingZoneRepository.GetAll();
             return View(entity);
         }
 
@@ -30,7 +29,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (id == null)
                 return NotFound();
 
-            var parkingZone = genericRepository.GetByID(id);
+            var parkingZone = _parkingZoneRepository.GetByID(id);
 
             if (parkingZone == null)
                 return NotFound();
@@ -54,7 +53,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (ModelState.IsValid)
             {
                 parkingZone.Id = Guid.NewGuid();
-                genericRepository.Add(parkingZone);
+                _parkingZoneRepository.Add(parkingZone);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -67,10 +66,11 @@ namespace ParkingZoneApp.Areas.Admin
             if (id == null)
                 return NotFound();
 
-            var parkingZone =genericRepository.GetByID(id);
+            var parkingZone = _parkingZoneRepository.GetByID(id);
 
             if (parkingZone == null)
                 return NotFound();
+            _parkingZoneRepository.Update(parkingZone);
 
             return View(parkingZone);
         }
@@ -89,7 +89,7 @@ namespace ParkingZoneApp.Areas.Admin
             {
                 try
                 {
-                    genericRepository.Update(parkingZone);
+                    _parkingZoneRepository.Update(parkingZone);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -108,12 +108,12 @@ namespace ParkingZoneApp.Areas.Admin
         // GET: Admin/ParkingZones/Delete/5
         public ActionResult Delete(Guid id)
         {
-            var parkingZone = genericRepository.GetByID(id);
+            var parkingZone = _parkingZoneRepository.GetByID(id);
 
             if (parkingZone == null)
                 return NotFound();
             else
-                genericRepository.Delete(id);
+                _parkingZoneRepository.Delete(id);
 
             return View(parkingZone);
         }
@@ -123,11 +123,11 @@ namespace ParkingZoneApp.Areas.Admin
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var parkingZone = genericRepository.GetByID(id);
+            var parkingZone = _parkingZoneRepository.GetByID(id);
 
             if (parkingZone != null)
             {
-                genericRepository.Delete(id);
+                _parkingZoneRepository.Delete(id);
             }
 
             return RedirectToAction(nameof(Index));
@@ -135,7 +135,7 @@ namespace ParkingZoneApp.Areas.Admin
 
         private bool ParkingZoneExists(Guid id)
         {
-            return genericRepository.GetByID(id) != null;
+            return _parkingZoneRepository.GetByID(id) != null;
         }
     }
 }

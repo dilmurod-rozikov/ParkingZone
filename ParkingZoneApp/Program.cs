@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Data;
-using ParkingZoneApp.IRepository;
+using ParkingZoneApp.Models;
 using ParkingZoneApp.Repository;
+using ParkingZoneApp.Repository.Interfaces;
 
 namespace ParkingZoneApp
 {
@@ -20,9 +21,8 @@ namespace ParkingZoneApp
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
+            builder.Services.AddScoped<IParkingZoneRepository<ParkingZone>, ParkingZoneRepository>();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
 
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

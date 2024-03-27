@@ -4,7 +4,7 @@ using ParkingZoneApp.Repository.Interfaces;
 
 namespace ParkingZoneApp.Repository
 {
-    public class ParkingZoneRepository : Repository<ParkingZone>, IParkingZoneRepository
+    public class ParkingZoneRepository : Repository<ParkingZone>, IParkingZoneRepository<ParkingZone>
     {
         public ParkingZoneRepository(ApplicationDbContext context) : base(context)
         { }
