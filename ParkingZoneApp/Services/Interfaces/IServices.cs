@@ -6,7 +6,7 @@
 
         void Update(T value);
 
-        void Remove(Guid value);
+        void Remove(T value);
 
         IEnumerable<T> RetrieveAll();
 

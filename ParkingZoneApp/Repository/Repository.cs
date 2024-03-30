@@ -12,7 +12,7 @@ namespace ParkingZoneApp.Repository
 
         public Repository(ApplicationDbContext context)
         {
-            this._context = context;
+            _context = context;
             _dbSet = _context.Set<T>();
         }
 
@@ -24,20 +24,15 @@ namespace ParkingZoneApp.Repository
             _context.SaveChanges();
         }
 
-        public void Delete(Guid id)
+        public void Delete(T value)
         {
-            var entity = _dbSet.Find(id);
-
-            if (entity != null) 
-                _dbSet.Remove(entity);
-                
+            _dbSet.Remove(value);
             _context.SaveChanges();
         }
 
         public T? GetByID(Guid? id)
         {
-            var entity = _dbSet.Find(id);
-            return entity;
+            return _dbSet.Find(id);
         }
 
         public void Update(T value)

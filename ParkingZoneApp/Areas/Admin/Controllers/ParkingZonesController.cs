@@ -9,6 +9,7 @@ namespace ParkingZoneApp.Areas.Admin
     [Authorize]
     public class ParkingZonesController : Controller
     {
+
         private readonly IParkingZoneServices _parkingZoneService;
         public ParkingZonesController(IParkingZoneServices parkingZoneService)
         {
@@ -106,11 +107,10 @@ namespace ParkingZoneApp.Areas.Admin
         public ActionResult Delete(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
-
             if (parkingZone == null)
                 return NotFound();
             else
-                _parkingZoneService.Remove(id);
+                _parkingZoneService.Remove(parkingZone);
 
             return View(parkingZone);
         }
@@ -121,10 +121,9 @@ namespace ParkingZoneApp.Areas.Admin
         public ActionResult DeleteConfirmed(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
-
             if (parkingZone != null)
             {
-                _parkingZoneService.Remove(id);
+                _parkingZoneService.Remove(parkingZone);
             }
 
             return RedirectToAction(nameof(Index));

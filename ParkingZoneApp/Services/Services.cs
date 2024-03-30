@@ -22,7 +22,7 @@ namespace ParkingZoneApp.Services
             repository.Update(value);
         }
 
-        public void Remove(Guid value)
+        public void Remove(T value)
         {
             repository.Delete(value);
         }
