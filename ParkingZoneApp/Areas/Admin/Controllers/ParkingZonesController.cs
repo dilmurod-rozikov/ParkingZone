@@ -9,8 +9,9 @@ namespace ParkingZoneApp.Areas.Admin
     [Authorize]
     public class ParkingZonesController : Controller
     {
-        private readonly IParkingZoneServices _parkingZoneService;
-        public ParkingZonesController(IParkingZoneServices parkingZoneService)
+
+        private readonly IParkingZoneRepository<ParkingZone> _parkingZoneRepository;
+        public ParkingZonesController(IParkingZoneRepository<ParkingZone> parkingZoneRepository)
         {
             _parkingZoneService = parkingZoneService;
         }
@@ -67,6 +68,7 @@ namespace ParkingZoneApp.Areas.Admin
 
             if (parkingZone == null)
                 return NotFound();
+            _parkingZoneRepository.Update(parkingZone);
 
             _parkingZoneService.Update(parkingZone);
             return View(parkingZone);
