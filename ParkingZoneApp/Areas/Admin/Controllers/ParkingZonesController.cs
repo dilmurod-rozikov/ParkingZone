@@ -68,6 +68,11 @@ namespace ParkingZoneApp.Areas.Admin
 
             if (parkingZone == null)
                 return NotFound();
+<<<<<<<<< Temporary merge branch 1
+
+            _parkingZoneRepository.Update(parkingZone);
+=========
+>>>>>>>>> Temporary merge branch 2
 
             _parkingZoneService.Update(parkingZone);
             return View(parkingZone);
