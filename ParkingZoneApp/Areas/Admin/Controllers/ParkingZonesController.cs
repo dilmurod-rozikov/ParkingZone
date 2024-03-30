@@ -2,24 +2,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Models;
-using ParkingZoneApp.Repository.Interfaces;
+using ParkingZoneApp.Services.Interfaces;
 namespace ParkingZoneApp.Areas.Admin
 {
     [Area("Admin")]
     [Authorize]
     public class ParkingZonesController : Controller
     {
-
-        private readonly IParkingZoneRepository<ParkingZone> _parkingZoneRepository;
-        public ParkingZonesController(IParkingZoneRepository<ParkingZone> parkingZoneRepository)
+        private readonly IParkingZoneServices _parkingZoneService;
+        public ParkingZonesController(IParkingZoneServices parkingZoneService)
         {
-            _parkingZoneRepository = parkingZoneRepository;
+            _parkingZoneService = parkingZoneService;
         }
 
         // GET: Admin/ParkingZones
         public ActionResult Index()
         {
-            var entity = _parkingZoneRepository.GetAll();
+            var entity = _parkingZoneService.RetrieveAll();
             return View(entity);
         }
 
@@ -29,7 +28,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (id == null)
                 return NotFound();
 
-            var parkingZone = _parkingZoneRepository.GetByID(id);
+            var parkingZone = _parkingZoneService.GetById(id);
 
             if (parkingZone == null)
                 return NotFound();
@@ -44,8 +43,6 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // POST: Admin/ParkingZones/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(ParkingZone parkingZone)
@@ -53,7 +50,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (ModelState.IsValid)
             {
                 parkingZone.Id = Guid.NewGuid();
-                _parkingZoneRepository.Add(parkingZone);
+                _parkingZoneService.Insert(parkingZone);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -66,12 +63,12 @@ namespace ParkingZoneApp.Areas.Admin
             if (id == null)
                 return NotFound();
 
-            var parkingZone = _parkingZoneRepository.GetByID(id);
+            var parkingZone = _parkingZoneService.GetById(id);
 
             if (parkingZone == null)
                 return NotFound();
-            _parkingZoneRepository.Update(parkingZone);
 
+            _parkingZoneService.Update(parkingZone);
             return View(parkingZone);
         }
 
@@ -89,7 +86,7 @@ namespace ParkingZoneApp.Areas.Admin
             {
                 try
                 {
-                    _parkingZoneRepository.Update(parkingZone);
+                    _parkingZoneService.Update(parkingZone);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -108,12 +105,12 @@ namespace ParkingZoneApp.Areas.Admin
         // GET: Admin/ParkingZones/Delete/5
         public ActionResult Delete(Guid id)
         {
-            var parkingZone = _parkingZoneRepository.GetByID(id);
+            var parkingZone = _parkingZoneService.GetById(id);
 
             if (parkingZone == null)
                 return NotFound();
             else
-                _parkingZoneRepository.Delete(id);
+                _parkingZoneService.Remove(id);
 
             return View(parkingZone);
         }
@@ -123,11 +120,11 @@ namespace ParkingZoneApp.Areas.Admin
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            var parkingZone = _parkingZoneRepository.GetByID(id);
+            var parkingZone = _parkingZoneService.GetById(id);
 
             if (parkingZone != null)
             {
-                _parkingZoneRepository.Delete(id);
+                _parkingZoneService.Remove(id);
             }
 
             return RedirectToAction(nameof(Index));
@@ -135,7 +132,7 @@ namespace ParkingZoneApp.Areas.Admin
 
         private bool ParkingZoneExists(Guid id)
         {
-            return _parkingZoneRepository.GetByID(id) != null;
+            return _parkingZoneService.GetById(id) != null;
         }
     }
 }

@@ -4,6 +4,9 @@ using ParkingZoneApp.Data;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Repository;
 using ParkingZoneApp.Repository.Interfaces;
+using ParkingZoneApp.Services.Interfaces;
+using ParkingZoneApp.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ParkingZoneApp
 {
@@ -20,25 +23,23 @@ namespace ParkingZoneApp
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped<IParkingZoneRepository<ParkingZone>, ParkingZoneRepository>();
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));//not working without this line why?
+            builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
+            builder.Services.AddScoped<IParkingZoneServices, ParkingZoneServices>();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddControllersWithViews();
 
+            builder.Services.AddControllersWithViews();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
-            {
                 app.UseMigrationsEndPoint();
-            }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
