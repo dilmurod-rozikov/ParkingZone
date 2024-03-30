@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ParkingZoneApp.Areas.Admin.ViewModels;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
 namespace ParkingZoneApp.Areas.Admin
@@ -24,7 +25,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Details/5
-        public ActionResult Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
                 return NotFound();
@@ -34,7 +35,12 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone == null)
                 return NotFound();
 
-            return View(parkingZone);
+            var parkingZoneViewModel = new ParkingZoneDetailsViewModel
+            {
+                parkingZone = parkingZone
+            };
+
+            return View(parkingZoneViewModel);
         }
 
         // GET: Admin/ParkingZones/Create
@@ -55,7 +61,12 @@ namespace ParkingZoneApp.Areas.Admin
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(parkingZone);
+            var parkingZoneViewModel = new ParkingZoneCreateViewModel
+            {
+                parkingZone = parkingZone
+            };
+
+            return View(parkingZoneViewModel);
         }
 
         // GET: Admin/ParkingZones/Edit/5
@@ -71,8 +82,12 @@ namespace ParkingZoneApp.Areas.Admin
 
             _parkingZoneService.Update(parkingZone);
 
-            _parkingZoneService.Update(parkingZone);
-            return View(parkingZone);
+            var parkingZoneViewModel = new ParkingZoneEditViewModel
+            {
+                parkingZone = parkingZone
+            };
+
+            return View(parkingZoneViewModel);
         }
 
         // POST: Admin/ParkingZones/Edit/5
@@ -112,8 +127,11 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone == null)
                 return NotFound();
 
-            //_parkingZoneService.Remove(parkingZone);
-            return View(parkingZone);
+            var parkingZoneViewModel = new ParkingZoneDeleteViewModel
+            {
+                parkingZone = parkingZone
+            };
+            return View(parkingZoneViewModel);
         }
 
         // POST: Admin/ParkingZones/Delete/5
