@@ -111,9 +111,8 @@ namespace ParkingZoneApp.Areas.Admin
             var parkingZone = _parkingZoneService.GetById(id);
             if (parkingZone == null)
                 return NotFound();
-            else
-                _parkingZoneService.Remove(parkingZone);
 
+            //_parkingZoneService.Remove(parkingZone);
             return View(parkingZone);
         }
 
