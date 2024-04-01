@@ -4,9 +4,9 @@ using ParkingZoneApp.Services.Interfaces;
 
 namespace ParkingZoneApp.Services
 {
-    public class ParkingZoneServices : Services<ParkingZone>, IParkingZoneServices
+    public class ParkingZoneService : Services<ParkingZone>, IParkingZoneService
     {
-        public ParkingZoneServices(IParkingZoneRepository repository) : base(repository)
+        public ParkingZoneService(IParkingZoneRepository repository) : base(repository)
         {
         }
 

@@ -10,8 +10,8 @@ namespace ParkingZoneApp.Areas.Admin
     public class ParkingZonesController : Controller
     {
 
-        private readonly IParkingZoneServices _parkingZoneService;
-        public ParkingZonesController(IParkingZoneServices parkingZoneService)
+        private readonly IParkingZoneService _parkingZoneService;
+        public ParkingZonesController(IParkingZoneService parkingZoneService)
         {
             _parkingZoneService = parkingZoneService;
         }
