@@ -9,5 +9,11 @@ namespace ParkingZoneApp.Services
         public ParkingZoneServices(IParkingZoneRepository repository) : base(repository)
         {
         }
+
+        public override void Insert(ParkingZone parkingZone)
+        {
+            parkingZone.Id = Guid.NewGuid();
+            base.Insert(parkingZone);
+        }
     }
 }

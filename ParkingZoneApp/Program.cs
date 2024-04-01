@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Data;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Repository;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ParkingZoneApp
 {
@@ -19,18 +17,17 @@ namespace ParkingZoneApp
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
             builder.Services.AddScoped<IParkingZoneServices, ParkingZoneServices>();
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
             builder.Services.AddControllersWithViews();
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
