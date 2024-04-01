@@ -23,7 +23,6 @@ namespace ParkingZoneApp
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));//not working without this line why?
             builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
             builder.Services.AddScoped<IParkingZoneServices, ParkingZoneServices>();
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();

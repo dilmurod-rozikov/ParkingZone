@@ -8,7 +8,7 @@
 
         void Remove(T value);
 
-        IEnumerable<T> RetrieveAll();
+        IEnumerable<T> GetAll();
 
         T? GetById(Guid? value);
 

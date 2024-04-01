@@ -19,7 +19,7 @@ namespace ParkingZoneApp.Areas.Admin
         // GET: Admin/ParkingZones
         public ActionResult Index()
         {
-            var entity = _parkingZoneService.RetrieveAll();
+            var entity = _parkingZoneService.GetAll();
             return View(entity);
         }
 

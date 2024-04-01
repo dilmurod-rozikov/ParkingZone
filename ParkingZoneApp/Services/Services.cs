@@ -27,7 +27,7 @@ namespace ParkingZoneApp.Services
             repository.Delete(value);
         }
 
-        public IEnumerable<T> RetrieveAll()
+        public IEnumerable<T> GetAll()
         {
             return repository.GetAll();
         }
