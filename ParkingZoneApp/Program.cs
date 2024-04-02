@@ -21,7 +21,7 @@ namespace ParkingZoneApp
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
-            builder.Services.AddScoped<IParkingZoneServices, ParkingZoneServices>();
+            builder.Services.AddScoped<IParkingZoneService, ParkingZoneService>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<IdentityUser>()
