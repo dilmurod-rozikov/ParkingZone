@@ -1,6 +1,5 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<ParkingZoneApp.Models.ParkingZone>
-
+@model ParkingZoneApp.ViewModels.ParkingZones.IndexVM
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -14,19 +13,20 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Address)
+                Address
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                Created Date
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model.ParkingZones)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
