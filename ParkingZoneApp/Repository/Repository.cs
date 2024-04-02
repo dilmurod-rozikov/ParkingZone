@@ -16,7 +16,7 @@ namespace ParkingZoneApp.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public IEnumerable<T> GetAll() => _dbSet.ToList();
+        public IEnumerable<T> GetAll() => _dbSet;
 
         public void Add(T value)
         {
