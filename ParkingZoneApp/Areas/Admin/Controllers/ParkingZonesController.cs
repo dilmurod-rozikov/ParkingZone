@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZones;
 namespace ParkingZoneApp.Areas.Admin
@@ -20,8 +19,15 @@ namespace ParkingZoneApp.Areas.Admin
         public IActionResult Index()
         {
             var parkingZones = _parkingZoneService.GetAll();
-            var listItemVM = new ListItemVM().MapToModel(parkingZones);
-            return View(listItemVM);
+            var listItemVMs = parkingZones.Select(parkingZone => new ListItemVM
+            {
+                Id = parkingZone.Id,
+                Name = parkingZone.Name,
+                Address = parkingZone.Address,
+                CreatedDate = parkingZone.CreatedDate
+            });
+
+            return View(listItemVMs);
         }
 
         // GET: Admin/ParkingZones/Details/5
@@ -32,7 +38,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            var detailsVM = new DetailsVM().MapToModel(parkingZone);
+            var detailsVM = new DetailsVM().MapToVM(parkingZone);
             return View(detailsVM);
         }
 
@@ -66,9 +72,15 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            _parkingZoneService.Update(parkingZone);
-            var editVM = new EditVM().MapToModel(parkingZone);
-            return View(editVM);
+            var parkingZoneVM = new EditVM()
+            {
+                Id = parkingZone.Id,
+                Name = parkingZone.Name,
+                Address = parkingZone.Address,
+                CreatedDate = parkingZone.CreatedDate,
+            };
+
+            return View(parkingZoneVM);
         }
 
         // POST: Admin/ParkingZones/Edit/5
@@ -76,8 +88,10 @@ namespace ParkingZoneApp.Areas.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, ParkingZone parkingZone)
+        public IActionResult Edit(Guid id, EditVM parkingZoneEditVM)
         {
+            var parkingZone = new EditVM().MapToModel(parkingZoneEditVM);
+
             if (id != parkingZone.Id)
                 return NotFound();
 
@@ -97,8 +111,7 @@ namespace ParkingZoneApp.Areas.Admin
                 return RedirectToAction(nameof(Index));
             }
 
-            var editVM = new EditVM().MapToModel(parkingZone);
-            return View(editVM);
+            return View(parkingZone);
         }
 
         // GET: Admin/ParkingZones/Delete/5

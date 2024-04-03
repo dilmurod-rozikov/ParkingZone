@@ -9,14 +9,14 @@ namespace ParkingZoneApp.ViewModels.ParkingZones
         public string Address { get; set; }
         public DateOnly CreatedDate { get; set; }
 
-        public EditVM MapToModel(ParkingZone parkingZone)
+        public ParkingZone MapToModel(EditVM parkingZoneEditVM)
         {
-            return new EditVM
+            return new ParkingZone
             {
-                Id = parkingZone.Id,
-                Name = parkingZone.Name,
-                Address = parkingZone.Address,
-                CreatedDate = parkingZone.CreatedDate,
+                Id = parkingZoneEditVM.Id,
+                Name = parkingZoneEditVM.Name,
+                Address = parkingZoneEditVM.Address,
+                CreatedDate = parkingZoneEditVM.CreatedDate,
             };
         }
     }
