@@ -1,12 +1,25 @@
-﻿namespace ParkingZoneApp.ViewModels.ParkingZones
+﻿using ParkingZoneApp.Models;
+
+namespace ParkingZoneApp.ViewModels.ParkingZones
 {
     public class ListItemVM
     {
+        public ListItemVM(ParkingZone parkingZone)
+        {
+            Id = parkingZone.Id;
+            Name = parkingZone.Name;
+            Address = parkingZone.Address;
+            CreatedDate = parkingZone.CreatedDate;
+        }
+
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public DateOnly CreatedDate { get; init; }
 
-       
+        public static IEnumerable<ListItemVM> MapToVM(IEnumerable<ParkingZone> parkingZones)
+        {
+            return parkingZones.Select(parkingZone => new ListItemVM(parkingZone));
+        }
     }
 }

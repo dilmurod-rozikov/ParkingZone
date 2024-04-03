@@ -8,15 +8,13 @@ namespace ParkingZoneApp.ViewModels.ParkingZones
         public string Name { get; set; }
         public string Address { get; set; }
         public DateOnly CreatedDate { get; init; }
-        public DetailsVM MapToVM(ParkingZone parkingZone)
+
+        public DetailsVM(ParkingZone parkingZone)
         {
-            return new DetailsVM()
-            {
-                Id = parkingZone.Id,
-                Name = parkingZone.Name,
-                Address = parkingZone.Address,
-                CreatedDate = parkingZone.CreatedDate,
-            };
+            Id = parkingZone.Id;
+            Name = parkingZone.Name;
+            Address = parkingZone.Address;
+            CreatedDate = parkingZone.CreatedDate;
         }
     }
 }

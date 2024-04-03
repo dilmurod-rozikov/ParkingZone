@@ -19,14 +19,7 @@ namespace ParkingZoneApp.Areas.Admin
         public IActionResult Index()
         {
             var parkingZones = _parkingZoneService.GetAll();
-            var listItemVMs = parkingZones.Select(parkingZone => new ListItemVM
-            {
-                Id = parkingZone.Id,
-                Name = parkingZone.Name,
-                Address = parkingZone.Address,
-                CreatedDate = parkingZone.CreatedDate
-            });
-
+            var listItemVMs = ListItemVM.MapToVM(parkingZones);
             return View(listItemVMs);
         }
 
@@ -38,7 +31,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            var detailsVM = new DetailsVM().MapToVM(parkingZone);
+            var detailsVM = new DetailsVM(parkingZone);
             return View(detailsVM);
         }
 
@@ -72,14 +65,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            var parkingZoneVM = new EditVM()
-            {
-                Id = parkingZone.Id,
-                Name = parkingZone.Name,
-                Address = parkingZone.Address,
-                CreatedDate = parkingZone.CreatedDate,
-            };
-
+            var parkingZoneVM = new EditVM(parkingZone);
             return View(parkingZoneVM);
         }
 
