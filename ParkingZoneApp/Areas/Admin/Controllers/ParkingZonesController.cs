@@ -55,7 +55,7 @@ namespace ParkingZoneApp.Areas.Admin
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new CreateVM().MapToModel(parkingZoneCreateVM));
+            return View(parkingZone);
         }
 
         // GET: Admin/ParkingZones/Edit/5
