@@ -20,7 +20,7 @@ namespace ParkingZoneApp.Areas.Admin
         public IActionResult Index()
         {
             var parkingZones = _parkingZoneService.GetAll();  
-            return View(new IndexVM().MapToModel(parkingZones));
+            return View(new ListItemVM().MapToModel(parkingZones));
         }
 
         // GET: Admin/ParkingZones/Details/5
@@ -43,15 +43,15 @@ namespace ParkingZoneApp.Areas.Admin
         // POST: Admin/ParkingZones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ParkingZone parkingZone)
+        public IActionResult Create(CreateVM parkingZoneCreateVM)
         {
             if (ModelState.IsValid)
             {
-                _parkingZoneService.Insert(parkingZone);
+                _parkingZoneService.Insert(new CreateVM().MapToModel(parkingZoneCreateVM));
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new CreateVM().MapToModel(parkingZone));
+            return View(new CreateVM().MapToModel(parkingZoneCreateVM));
         }
 
         // GET: Admin/ParkingZones/Edit/5
@@ -104,7 +104,7 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone == null)
                 return NotFound();
 
-            return View(new DeleteVM().MapToModel(parkingZone));
+            return View(parkingZone);
         }
 
         // POST: Admin/ParkingZones/Delete/5
