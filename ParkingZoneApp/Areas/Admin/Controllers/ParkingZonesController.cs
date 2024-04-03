@@ -19,8 +19,9 @@ namespace ParkingZoneApp.Areas.Admin
         // GET: Admin/ParkingZones
         public IActionResult Index()
         {
-            var parkingZones = _parkingZoneService.GetAll();  
-            return View(new ListItemVM().MapToModel(parkingZones));
+            var parkingZones = _parkingZoneService.GetAll();
+            var listItemVM = new ListItemVM().MapToModel(parkingZones);
+            return View(listItemVM);
         }
 
         // GET: Admin/ParkingZones/Details/5
@@ -31,7 +32,8 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            return View(new DetailsVM().MapToModel(parkingZone));
+            var detailsVM = new DetailsVM().MapToModel(parkingZone);
+            return View(detailsVM);
         }
 
         // GET: Admin/ParkingZones/Create
@@ -51,7 +53,8 @@ namespace ParkingZoneApp.Areas.Admin
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new CreateVM().MapToModel(parkingZoneCreateVM));
+            var parkingZone = new CreateVM().MapToModel(parkingZoneCreateVM);
+            return View(parkingZone);
         }
 
         // GET: Admin/ParkingZones/Edit/5
@@ -63,7 +66,8 @@ namespace ParkingZoneApp.Areas.Admin
                 return NotFound();
 
             _parkingZoneService.Update(parkingZone);
-            return View(new EditVM().MapToModel(parkingZone));
+            var editVM = new EditVM().MapToModel(parkingZone);
+            return View(editVM);
         }
 
         // POST: Admin/ParkingZones/Edit/5
@@ -89,11 +93,11 @@ namespace ParkingZoneApp.Areas.Admin
                     else
                         throw;
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-        
-            return View(new EditVM().MapToModel(parkingZone));
+
+            var editVM = new EditVM().MapToModel(parkingZone);
+            return View(editVM);
         }
 
         // GET: Admin/ParkingZones/Delete/5
@@ -117,7 +121,6 @@ namespace ParkingZoneApp.Areas.Admin
                 return NotFound();
 
             _parkingZoneService.Remove(existingParkingZone);
-
             return RedirectToAction(nameof(Index));
         }
 
