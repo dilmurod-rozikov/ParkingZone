@@ -23,7 +23,6 @@ namespace ParkingZoneApp.ViewModels.ParkingZones
             parkingZone.Id = Id;
             parkingZone.Name = Name;
             parkingZone.Address = Address;
-            //parkingZone.CreatedDate = CreatedDate;
             return parkingZone;
         }
     }
