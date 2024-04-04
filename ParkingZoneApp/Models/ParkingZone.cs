@@ -1,5 +1,4 @@
-﻿using ParkingZoneApp.Repository.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ParkingZoneApp.Models
