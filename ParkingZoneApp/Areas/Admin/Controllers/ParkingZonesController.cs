@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZones;
 namespace ParkingZoneApp.Areas.Admin
@@ -46,7 +47,7 @@ namespace ParkingZoneApp.Areas.Admin
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateVM parkingZoneCreateVM)
         {
-            var parkingZone = new CreateVM().MapToModel(parkingZoneCreateVM);
+            var parkingZone = parkingZoneCreateVM.MapToModel();
 
             if (ModelState.IsValid)
             {
@@ -74,12 +75,14 @@ namespace ParkingZoneApp.Areas.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, EditVM parkingZoneEditVM)
+        public IActionResult Edit(Guid? id, EditVM parkingZoneEditVM)
         {
-            var parkingZone = new EditVM().MapToModel(parkingZoneEditVM);
+            var parkingZone = _parkingZoneService.GetById(id);
 
-            if (id != parkingZone.Id)
+            if (parkingZone is null)
                 return NotFound();
+
+            parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
 
             if (ModelState.IsValid)
             {
@@ -97,7 +100,7 @@ namespace ParkingZoneApp.Areas.Admin
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(parkingZone);
+            return View(parkingZoneEditVM);
         }
 
         // GET: Admin/ParkingZones/Delete/5
