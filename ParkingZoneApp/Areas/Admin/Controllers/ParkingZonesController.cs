@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZones;
 namespace ParkingZoneApp.Areas.Admin
@@ -55,7 +54,7 @@ namespace ParkingZoneApp.Areas.Admin
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(parkingZone);
+            return View(parkingZoneCreateVM);
         }
 
         // GET: Admin/ParkingZones/Edit/5
@@ -66,8 +65,8 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            var parkingZoneVM = new EditVM(parkingZone);
-            return View(parkingZoneVM);
+            var parkingZoneEditVM = new EditVM(parkingZone);
+            return View(parkingZoneEditVM);
         }
 
         // POST: Admin/ParkingZones/Edit/5
