@@ -1,7 +1,6 @@
 ﻿namespace ParkingZoneApp.Tests
 {
-    internal class ParkingZoneServiceUnitTests
+    public class ParkingZoneServiceUnitTests
     {
-        
     }
 }
