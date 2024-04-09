@@ -3,6 +3,7 @@ using ParkingZoneApp.Models;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;
+using System.Text.Json;
 
 namespace ParkingZoneApp.Tests
 {
@@ -36,6 +37,7 @@ namespace ParkingZoneApp.Tests
 
             //Assert
             _parkingZoneRepositoryMock.Verify(x => x.Add(parkingZone), Times.Once);
+            _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
 
@@ -51,6 +53,7 @@ namespace ParkingZoneApp.Tests
 
             //Assert
             _parkingZoneRepositoryMock.Verify(x => x.Update(parkingZone), Times.Once);
+            _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
 
@@ -66,6 +69,7 @@ namespace ParkingZoneApp.Tests
 
             //Assert
             _parkingZoneRepositoryMock.Verify(x => x.Delete(parkingZone), Times.Once);
+            _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
 
@@ -74,13 +78,19 @@ namespace ParkingZoneApp.Tests
         public void GivenParkingZoneModel_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
-            _parkingZoneRepositoryMock.Setup(x => x.GetAll());
+            IEnumerable<ParkingZone> expected = new List<ParkingZone>()
+            { 
+                parkingZone 
+            };
+            _parkingZoneRepositoryMock.Setup(x => x.GetAll()).Returns(expected);
 
             //Act
-            _parkingZoneServiceMock.GetAll();
+            var actual = _parkingZoneServiceMock.GetAll();
 
             //Assert
+            Assert.Equal(JsonSerializer.Serialize(expected), JsonSerializer.Serialize(actual));
             _parkingZoneRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+            _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
 
@@ -89,13 +99,17 @@ namespace ParkingZoneApp.Tests
         public void GivenGuid_WhenGetByIdIsCalled_ThenReturnModel()
         {
             //Arrange
-            _parkingZoneRepositoryMock.Setup(x => x.GetByID(parkingZone.Id));
+            _parkingZoneRepositoryMock.Setup(x => x.GetByID(parkingZone.Id)).Returns(parkingZone);
 
             //Act
-            _parkingZoneServiceMock.GetById(parkingZone.Id);
+            var actual = _parkingZoneServiceMock.GetById(parkingZone.Id);
 
             //Assert
+            Assert.NotNull(actual);
+            Assert.IsType<ParkingZone>(actual);
+            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(actual));
             _parkingZoneRepositoryMock.Verify(x => x.GetByID(parkingZone.Id), Times.Once);
+            _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
 

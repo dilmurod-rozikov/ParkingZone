@@ -43,6 +43,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.NotNull(result);
             Assert.Equal(JsonSerializer.Serialize(expectedListOfItems), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetAll(), Times.Once);
+            _parkingZoneServiceMock.VerifyNoOtherCalls();
         }
         #endregion
 
