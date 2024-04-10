@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using Nest;
 using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
@@ -33,14 +32,15 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenNothing_WhenIndexIsCalled_ThenReturnsViewResult()
         {
             //Arrange
-            var expectedListOfItems = new List<ParkingZone>()
+            var expectedListOfItems = new List<ListItemVM>()
             {
-                parkingZone
+                new ListItemVM(parkingZone)
             };
 
             _parkingZoneServiceMock
                     .Setup(service => service.GetAll())
-                    .Returns(expectedListOfItems);
+                    .Returns(expectedListOfItems.Select(x => parkingZone)
+                    .ToList());
 
             //Act
             var result = _controller.Index();
@@ -77,7 +77,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenInvalidId_WhenGetDetailsIsCalled_ThenReturnNotFound()
         {
             //Arrange
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZone.Id));
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetById(parkingZone.Id));
 
             //Act
             var result = _controller.Details(parkingZone.Id);
@@ -102,7 +103,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                 CreatedDate = new DateOnly(2024, 7, 7)
             };
 
-            _parkingZoneServiceMock.Setup(x => x.Insert(parkingZone));
+            _parkingZoneServiceMock 
+                    .Setup(x => x.Insert(parkingZone));
 
             //Act
             var result = _controller.Create(createVM);
@@ -141,7 +143,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidCreateVM_WhenGetCreateIsCalled_ReturnsViewResult()
+        public void GivenNothing_WhenGetCreateIsCalled_ReturnsViewResult()
         {
             //Arrange
             _parkingZoneServiceMock
@@ -166,7 +168,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             {
                 Id = parkingZone.Id,
                 Name = parkingZone.Name,
-                Address = parkingZone.Address,
+                Address = "New Address",
                 CreatedDate = parkingZone.CreatedDate,
             };
 
@@ -229,7 +231,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenInvalidId_WhenEditIsCalled_ThenReturnsNotFound()
         {
             //Arrange
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZone.Id));
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetById(parkingZone.Id));
 
             //Act
             var result = _controller.Edit(parkingZone.Id);
@@ -263,7 +266,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenInvalidId_WhenGetDeleteIsCalled_ThenReturnsNotFound()
         {
             //Arrange
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZone.Id));
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetById(parkingZone.Id));
 
             //Act
             var result = _controller.Delete(parkingZone.Id);
@@ -299,7 +303,9 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenId_WhenParkingZoneExistsIsCalled_ThenReturnBoolean(bool parkingZoneExists, bool expectedResult)
         {
             //Arrange
-            _parkingZoneServiceMock.Setup(x => x.GetById(parkingZone.Id)).Returns(parkingZoneExists ? parkingZone : null);
+            _parkingZoneServiceMock
+                    .Setup(x => x.GetById(parkingZone.Id))
+                    .Returns(parkingZoneExists ? parkingZone : null);
 
             //Act
             var result = _controller.ParkingZoneExists(parkingZone.Id);
