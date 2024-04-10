@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Nest;
 using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
@@ -13,7 +14,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     {
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly ParkingZonesController _controller;
-        private readonly ParkingZone? parkingZoneNull = null;
+        private readonly ParkingZone parkingZone = new ParkingZone()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Test Name",
+            Address = "Test Address",
+            CreatedDate = new DateOnly(2024, 1, 1),
+        };
+
         public ParkingZoneControllerUnitTests()
         {
             _parkingZoneServiceMock = new Mock<IParkingZoneService>();
@@ -27,19 +35,18 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             //Arrange
             var expectedListOfItems = new List<ParkingZone>()
             {
-                new ParkingZone { Id = Guid.NewGuid(), Name = "Parking zone 1"},
-                new ParkingZone { Id = Guid.NewGuid(), Name = "Parking zone 2"}
+                parkingZone
             };
 
-            _parkingZoneServiceMock.Setup(service => service.GetAll()).Returns(expectedListOfItems);
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetAll())
+                    .Returns(expectedListOfItems);
 
             //Act
             var result = _controller.Index();
 
             //Assert
-            var model = Assert.IsType<ViewResult>(result).Model;  
-            Assert.IsType<ViewResult>(result);
-            Assert.NotEmpty(expectedListOfItems);
+            var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
             Assert.Equal(JsonSerializer.Serialize(expectedListOfItems), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetAll(), Times.Once);
@@ -49,196 +56,256 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Details
         [Fact]
-        public void GivenValidId_WhenDetailsIsCalled_ThenReturnViewResult()
+        public void GivenValidId_WhenGetDetailsIsCalled_ThenReturnViewResult()
         {
-            //Arrrange 
-            var parkingZoneID = Guid.NewGuid();
-            var parkingZone = new ParkingZone()
-            {
-                Id = parkingZoneID,
-                Name = "Test Name",
-                Address = "Test Address",
-                CreatedDate = new DateOnly(2024, 1, 1),
-            };
-
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZoneID)).Returns(parkingZone);
+            //Arrange 
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
 
             //Act
-            var result = _controller.Details(parkingZoneID) as ViewResult;
+            var result = _controller.Details(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
-            Assert.IsType<DetailsVM>(result.Model);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(result.Model));
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(((ViewResult)result).Model));
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
         [Fact]
-        public void GivenInvalidId_WhenDetailsIsCalled_ThenReturnNotFound()
+        public void GivenInvalidId_WhenGetDetailsIsCalled_ThenReturnNotFound()
         {
             //Arrange
-            var parkingZoneID = Guid.NewGuid();
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZoneID)).Returns(parkingZoneNull);
+            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZone.Id));
 
             //Act
-            var result = _controller.Details(parkingZoneID);
+            var result = _controller.Details(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<NotFoundResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
         #endregion
 
         #region Create
         [Fact]
-        public void GivenValidCreateVM_WhenCreateIsCalled_ThenReturnsRedirectToIndex()
+        public void GivenValidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsTrueAndReturnsRedirectToIndex()
         {
             //Arrange
-            var createVM = new CreateVM();
+            var createVM = new CreateVM()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Name",
+                Address = "Test Address",
+                CreatedDate = new DateOnly(2024, 7, 7)
+            };
 
-            //Act
-            var result = _controller.Create(createVM) as RedirectToActionResult;
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
-        }
-
-        [Fact]
-        public void GivenInvalidCreateVM_WhenCreateIsCalled_ReturnsViewResult()
-        {
-            //Arrange
-            var createVM = new CreateVM();
+            _parkingZoneServiceMock.Setup(x => x.Insert(parkingZone));
 
             //Act
             var result = _controller.Create(createVM);
 
             //Assert
             Assert.NotNull(result);
+            Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
+            Assert.True(_controller.ModelState.IsValid);
             _parkingZoneServiceMock.Verify(service => service.Insert(It.IsAny<ParkingZone>()), Times.Once);
+        }
+
+        [Theory]
+        [InlineData("Name", "Required")]
+        [InlineData("Address", "Required")]
+        public void GivenCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult(string key, string errorMessage)
+        {
+            //Arrange
+            CreateVM createVM = new CreateVM()
+            {
+                Id = parkingZone.Id,
+                Name = parkingZone.Name,
+                Address = parkingZone.Address,
+                CreatedDate = parkingZone.CreatedDate
+            };
+
+            _controller.ModelState.AddModelError(key, errorMessage);
+    
+            //Act
+            var result = _controller.Create(createVM);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.IsAssignableFrom<CreateVM>(model);
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Equal(JsonSerializer.Serialize(createVM), JsonSerializer.Serialize(model));
+        }
+
+        [Fact]
+        public void GivenValidCreateVM_WhenGetCreateIsCalled_ReturnsViewResult()
+        {
+            //Arrange
+            _parkingZoneServiceMock
+                    .Setup(x => x.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
+
+            //Act
+            var result = _controller.Create();
+
+            //Assert
+            Assert.IsAssignableFrom<ViewResult>(result);
+            Assert.IsType<ViewResult>(result);
         }
         #endregion
 
         #region Edit
         [Fact]
-        public void GivenValidIDAndEditVM_WhenEditIsCalled_ThenReturnsRedirectToIndex()
+        public void GivenValidIDAndEditVM_WhenPostEditIsCalled_ThenModelStateIsTrueReturnsRedirectToIndex()
         {
             //Arrange
-            var id = Guid.NewGuid();
-            var editVM = new EditVM();
-            var parkingZone = new ParkingZone();
-            parkingZone.Id = id;
-            _parkingZoneServiceMock.Setup(x => x.GetById(id)).Returns(parkingZone);
+            EditVM editVM = new EditVM()
+            {
+                Id = parkingZone.Id,
+                Name = parkingZone.Name,
+                Address = parkingZone.Address,
+                CreatedDate = parkingZone.CreatedDate,
+            };
+
+            _parkingZoneServiceMock
+                    .Setup(x => x.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
 
             //Act
-            var result = _controller.Edit(id, editVM) as RedirectToActionResult;
+            var result = _controller.Edit(parkingZone.Id, editVM);
 
             //Assert
-            _parkingZoneServiceMock.Verify(service => service.Update(parkingZone), Times.Once);
             Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
+            Assert.IsType<RedirectToActionResult>(result);
+            Assert.True(_controller.ModelState.IsValid);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
+            _parkingZoneServiceMock.Verify(x => x.Update(parkingZone), Times.Once);
         }
 
         [Fact]
-        public void GivenValidId_WhenEditIsCalled_ThenReturnsViewResult()
+        public void GivenValidId_WhenPostEditIsCalled_ThenModelStateIsTrueReturnDbUpdateConcurrencyException()
         {
             //Arrange
-            var parkingZoneID = Guid.NewGuid();
-            var parkingZone = new ParkingZone()
-            {
-                Id = parkingZoneID,
-                Name = "Test Name",
-                Address = "Test Address",
-                CreatedDate = new DateOnly(),
-            };
-            _parkingZoneServiceMock.Setup(service => service.Update(parkingZone)).Throws(new DbUpdateConcurrencyException());
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZoneID)).Returns(parkingZone);
+            _parkingZoneServiceMock
+                    .Setup(x => x.Update(parkingZone))
+                    .Throws<DbUpdateConcurrencyException>();
 
             //Act
-            var result = _controller.Edit(parkingZoneID) as ViewResult;
+            var result = _controller.Edit(parkingZone.Id, new EditVM());
 
             //Assert
             Assert.NotNull(result);
-            Assert.IsType<EditVM>(result.Model);
+            Assert.IsType<NotFoundResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
+            _parkingZoneServiceMock.Verify(x => x.Update(parkingZone), Times.Never);
+        }
+
+        [Theory]
+        [InlineData("Name", "Required")]
+        [InlineData("Address", "Required")]
+        public void GivenValidId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult(string field, string errorMessage)
+        {
+            //Arrange
+            _controller.ModelState.AddModelError(field, errorMessage);
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
+
+            //Act
+            var result = _controller.Edit(parkingZone.Id);
+
+            //Assert
+            Assert.NotNull(result);
             Assert.IsType<ViewResult>(result);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(result.Model));
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(((ViewResult)result).Model));
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
         [Fact]
         public void GivenInvalidId_WhenEditIsCalled_ThenReturnsNotFound()
         {
-            //given
-            var parkingZoneId = Guid.NewGuid();
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZoneId)).Returns(parkingZoneNull);
+            //Arrange
+            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZone.Id));
 
-            //When
-            var result = _controller.Edit(parkingZoneId);
+            //Act
+            var result = _controller.Edit(parkingZone.Id);
 
-            //Then
+            //Assert
             Assert.NotNull(result);
             Assert.IsType<NotFoundResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
-
         #endregion
 
         #region Delete
         [Fact]
-        public void GivenValidId_WhenDeleteIsCalled_ThenReturnsViewResult()
+        public void GivenValidId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
         {
-            //Arrange
-            var parkingZoneID = Guid.NewGuid();
-            var parkingZone = new ParkingZone()
-            {
-                Id = parkingZoneID,
-                Name = "Test Name",
-                Address = "Test Address",
-                CreatedDate = new DateOnly(2024, 1, 1),
-            };
-
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZoneID)).Returns(parkingZone);
+            //Arrange           
+            _parkingZoneServiceMock
+                    .Setup(service => service.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
 
             //Act
-            var result = _controller.Delete(parkingZoneID) as ViewResult;
+            var result = _controller.Delete(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
-            Assert.IsType<ParkingZone>(result.Model);
-            Assert.Equal(parkingZone.Id, ((ParkingZone)result.Model).Id);
-            Assert.Equal(parkingZone.Name, ((ParkingZone)result.Model).Name);
-            Assert.Equal(parkingZone.Address, ((ParkingZone)result.Model).Address);
-            Assert.Equal(parkingZone.CreatedDate, ((ParkingZone)result.Model).CreatedDate);
+            Assert.IsType<ViewResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
         [Fact]
-        public void GivenInvalidId_WhenDeleteIsCalled_ThenReturnsNotFound()
+        public void GivenInvalidId_WhenGetDeleteIsCalled_ThenReturnsNotFound()
         {
             //Arrange
-            var parkingZoneID = Guid.NewGuid();
-            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZoneID)).Returns(parkingZoneNull);
+            _parkingZoneServiceMock.Setup(service => service.GetById(parkingZone.Id));
 
             //Act
-            var result = _controller.Delete(parkingZoneID);
+            var result = _controller.Delete(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<NotFoundResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
         [Fact]
-        public void GivenValidInputs_WhenDeleteConfirmedIsCalled_ThenReturnsRedirectToIndex()
+        public void GivenValidId_WhenPostDeleteConfirmedIsCalled_ThenReturnsRedirectToIndex()
         {
             //Arrange
-            var id = Guid.NewGuid();
-            var parkingZone = new ParkingZone();
-            parkingZone.Id = id;
-            _parkingZoneServiceMock.Setup(x => x.GetById(id)).Returns(parkingZone);
+            _parkingZoneServiceMock
+                    .Setup(x => x.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
 
             //Act
-            var result = _controller.DeleteConfirmed(id) as RedirectToActionResult;
+            var result = _controller.DeleteConfirmed(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
-            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
+            _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once());
+            _parkingZoneServiceMock.Verify(x => x.Remove(parkingZone), Times.Once());
         }
         #endregion
+
+        [Theory]
+        [InlineData(false, false)]
+        [InlineData(true, true)]
+        public void GivenId_WhenParkingZoneExistsIsCalled_ThenReturnBoolean(bool parkingZoneExists, bool expectedResult)
+        {
+            //Arrange
+            _parkingZoneServiceMock.Setup(x => x.GetById(parkingZone.Id)).Returns(parkingZoneExists ? parkingZone : null);
+
+            //Act
+            var result = _controller.ParkingZoneExists(parkingZone.Id);
+
+            //Assert
+            Assert.Equal(expectedResult, result);
+        }
     }
 }

@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace ParkingZoneApp.Tests
 {
-    public class ParkingZoneServiceUnitTests
+    public class ParkingZoneServiceTests
     {
         private readonly Mock<IParkingZoneRepository> _parkingZoneRepositoryMock;
         private readonly IParkingZoneService _parkingZoneServiceMock;
@@ -19,7 +19,7 @@ namespace ParkingZoneApp.Tests
             CreatedDate = new DateOnly(2024, 7, 7)
         };
 
-        public ParkingZoneServiceUnitTests()
+        public ParkingZoneServiceTests()
         {
             _parkingZoneRepositoryMock = new Mock<IParkingZoneRepository>();
             _parkingZoneServiceMock = new ParkingZoneService(_parkingZoneRepositoryMock.Object);
@@ -75,20 +75,21 @@ namespace ParkingZoneApp.Tests
 
         #region GetAll
         [Fact]
-        public void GivenParkingZoneModel_WhenGetAllIsCalled_ThenReturnAllModels()
+        public void GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
-            IEnumerable<ParkingZone> expected = new List<ParkingZone>()
+            IEnumerable<ParkingZone> expectedZones = new List<ParkingZone>()
             { 
                 parkingZone 
             };
-            _parkingZoneRepositoryMock.Setup(x => x.GetAll()).Returns(expected);
-
+            _parkingZoneRepositoryMock
+                    .Setup(x => x.GetAll())
+                    .Returns(expectedZones);
             //Act
-            var actual = _parkingZoneServiceMock.GetAll();
+            var result = _parkingZoneServiceMock.GetAll();
 
             //Assert
-            Assert.Equal(JsonSerializer.Serialize(expected), JsonSerializer.Serialize(actual));
+            Assert.Equal(JsonSerializer.Serialize(expectedZones), JsonSerializer.Serialize(result));
             _parkingZoneRepositoryMock.Verify(x => x.GetAll(), Times.Once);
             _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
@@ -99,19 +100,20 @@ namespace ParkingZoneApp.Tests
         public void GivenGuid_WhenGetByIdIsCalled_ThenReturnModel()
         {
             //Arrange
-            _parkingZoneRepositoryMock.Setup(x => x.GetByID(parkingZone.Id)).Returns(parkingZone);
+            _parkingZoneRepositoryMock
+                    .Setup(x => x.GetByID(parkingZone.Id))
+                    .Returns(parkingZone);
 
             //Act
-            var actual = _parkingZoneServiceMock.GetById(parkingZone.Id);
+            var result = _parkingZoneServiceMock.GetById(parkingZone.Id);
 
             //Assert
-            Assert.NotNull(actual);
-            Assert.IsType<ParkingZone>(actual);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(actual));
+            Assert.NotNull(result);
+            Assert.IsType<ParkingZone>(result);
+            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(result));
             _parkingZoneRepositoryMock.Verify(x => x.GetByID(parkingZone.Id), Times.Once);
             _parkingZoneRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
-
     }
 }

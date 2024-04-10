@@ -46,10 +46,9 @@ namespace ParkingZoneApp.Areas.Admin
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateVM parkingZoneCreateVM)
         {
-            var parkingZone = parkingZoneCreateVM.MapToModel();
-
             if (ModelState.IsValid)
             {
+                var parkingZone = parkingZoneCreateVM.MapToModel();
                 _parkingZoneService.Insert(parkingZone);
                 return RedirectToAction(nameof(Index));
             }
@@ -81,12 +80,11 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
                     _parkingZoneService.Update(parkingZone);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -126,7 +124,7 @@ namespace ParkingZoneApp.Areas.Admin
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ParkingZoneExists(Guid id)
+        public bool ParkingZoneExists(Guid id)
         {
             return _parkingZoneService.GetById(id) != null;
         }
