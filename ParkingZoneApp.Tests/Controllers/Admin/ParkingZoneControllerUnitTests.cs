@@ -32,15 +32,24 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenNothing_WhenIndexIsCalled_ThenReturnsViewResult()
         {
             //Arrange
+            var testZones = new List<ParkingZone>()
+            {
+                parkingZone
+            };
             var expectedListOfItems = new List<ListItemVM>()
             {
-                new ListItemVM(parkingZone)
+                new ListItemVM()
+                {
+                    Id = parkingZone.Id,
+                    Name = parkingZone.Name,
+                    Address = parkingZone.Address,
+                    CreatedDate = parkingZone.CreatedDate,
+                }
             };
 
             _parkingZoneServiceMock
                     .Setup(service => service.GetAll())
-                    .Returns(expectedListOfItems.Select(x => parkingZone)
-                    .ToList());
+                    .Returns(testZones);
 
             //Act
             var result = _controller.Index();
@@ -146,16 +155,13 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenNothing_WhenGetCreateIsCalled_ReturnsViewResult()
         {
             //Arrange
-            _parkingZoneServiceMock
-                    .Setup(x => x.GetById(parkingZone.Id))
-                    .Returns(parkingZone);
-
+      
             //Act
             var result = _controller.Create();
 
             //Assert
-            Assert.IsAssignableFrom<ViewResult>(result);
-            Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<ViewResult>(result);
+            Assert.Null(model.ViewName);
         }
         #endregion
 
@@ -285,6 +291,9 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             _parkingZoneServiceMock
                     .Setup(x => x.GetById(parkingZone.Id))
                     .Returns(parkingZone);
+
+            _parkingZoneServiceMock
+                    .Setup(x => x.Remove(parkingZone));
 
             //Act
             var result = _controller.DeleteConfirmed(parkingZone.Id);
