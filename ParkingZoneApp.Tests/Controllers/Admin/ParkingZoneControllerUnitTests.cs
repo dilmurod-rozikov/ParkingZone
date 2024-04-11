@@ -76,9 +76,9 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             var result = _controller.Details(parkingZone.Id);
 
             //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
-            Assert.IsType<ViewResult>(result);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(((ViewResult)result).Model));
+            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
@@ -226,10 +226,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             var result = _controller.Edit(parkingZone.Id);
 
             //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
-            Assert.IsType<ViewResult>(result);
             Assert.False(_controller.ModelState.IsValid);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(((ViewResult)result).Model));
+            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
