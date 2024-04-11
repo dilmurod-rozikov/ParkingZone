@@ -289,7 +289,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         {
             //Arrange
             _parkingZoneServiceMock
-                    .Setup(x => x.Remove(parkingZone));
+                    .Setup(x => x.GetById(parkingZone.Id)).Returns(parkingZone);
 
             _parkingZoneServiceMock
                     .Setup(x => x.Remove(parkingZone));
