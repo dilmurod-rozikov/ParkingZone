@@ -182,6 +182,9 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                     .Setup(x => x.GetById(parkingZone.Id))
                     .Returns(parkingZone);
 
+            _parkingZoneServiceMock
+                    .Setup(x => x.Update(parkingZone));
+
             //Act
             var result = _controller.Edit(parkingZone.Id, editVM);
 
@@ -289,7 +292,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         {
             //Arrange
             _parkingZoneServiceMock
-                    .Setup(x => x.GetById(parkingZone.Id)).Returns(parkingZone);
+                    .Setup(x => x.GetById(parkingZone.Id))
+                    .Returns(parkingZone);
 
             _parkingZoneServiceMock
                     .Setup(x => x.Remove(parkingZone));
