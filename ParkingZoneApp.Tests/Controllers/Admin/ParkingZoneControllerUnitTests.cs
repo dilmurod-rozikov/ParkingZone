@@ -128,7 +128,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         [Theory]
         [InlineData("Name", "Required")]
         [InlineData("Address", "Required")]
-        public void GivenCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult(string key, string errorMessage)
+        public void GivenInvalidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult(string key, string errorMessage)
         {
             //Arrange
             CreateVM createVM = new CreateVM()
@@ -308,22 +308,5 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             _parkingZoneServiceMock.Verify(x => x.Remove(parkingZone), Times.Once());
         }
         #endregion
-
-        [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, true)]
-        public void GivenId_WhenParkingZoneExistsIsCalled_ThenReturnBoolean(bool parkingZoneExists, bool expectedResult)
-        {
-            //Arrange
-            _parkingZoneServiceMock
-                    .Setup(x => x.GetById(parkingZone.Id))
-                    .Returns(parkingZoneExists ? parkingZone : null);
-
-            //Act
-            var result = _controller.ParkingZoneExists(parkingZone.Id);
-
-            //Assert
-            Assert.Equal(expectedResult, result);
-        }
     }
 }

@@ -75,15 +75,16 @@ namespace ParkingZoneApp.Areas.Admin
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid? id, EditVM parkingZoneEditVM)
         {
+            var parkingZone = _parkingZoneService.GetById(id);
+
+            if (parkingZone is null)
+                return NotFound();
+
             if (ModelState.IsValid)
             {
-                var parkingZone = _parkingZoneService.GetById(id);
-                   
-                if (parkingZone is null)
-                    return NotFound();
-
                 try
                 {
+
                     parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
                     _parkingZoneService.Update(parkingZone);
                 }
@@ -124,7 +125,7 @@ namespace ParkingZoneApp.Areas.Admin
             return RedirectToAction(nameof(Index));
         }
 
-        public bool ParkingZoneExists(Guid id)
+        private bool ParkingZoneExists(Guid id)
         {
             return _parkingZoneService.GetById(id) != null;
         }
