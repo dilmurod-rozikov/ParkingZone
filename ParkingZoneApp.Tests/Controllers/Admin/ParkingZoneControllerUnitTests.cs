@@ -125,21 +125,13 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             _parkingZoneServiceMock.Verify(service => service.Insert(It.IsAny<ParkingZone>()), Times.Once);
         }
 
-        [Theory]
-        [InlineData("Name", "Required")]
-        [InlineData("Address", "Required")]
-        public void GivenInvalidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult(string key, string errorMessage)
+        [Fact]
+        public void GivenInvalidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult()
         {
             //Arrange
-            CreateVM createVM = new CreateVM()
-            {
-                Id = parkingZone.Id,
-                Name = parkingZone.Name,
-                Address = parkingZone.Address,
-                CreatedDate = parkingZone.CreatedDate
-            };
+            CreateVM createVM = new CreateVM();
 
-            _controller.ModelState.AddModelError(key, errorMessage);
+            _controller.ModelState.AddModelError("id", "id is required");
     
             //Act
             var result = _controller.Create(createVM);
@@ -170,13 +162,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidIDAndEditVM_WhenPostEditIsCalled_ThenModelStateIsTrueReturnsRedirectToIndex()
         {
             //Arrange
-            EditVM editVM = new EditVM()
-            {
-                Id = parkingZone.Id,
-                Name = parkingZone.Name,
-                Address = "New Address",
-                CreatedDate = parkingZone.CreatedDate,
-            };
+            EditVM editVM = new EditVM(parkingZone);
+            editVM.Address = null;
 
             _parkingZoneServiceMock
                     .Setup(x => x.GetById(parkingZone.Id))
@@ -200,12 +187,13 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidId_WhenPostEditIsCalled_ThenModelStateIsTrueReturnDbUpdateConcurrencyException()
         {
             //Arrange
+            EditVM editVM = new EditVM(parkingZone);
             _parkingZoneServiceMock
                     .Setup(x => x.Update(parkingZone))
                     .Throws<DbUpdateConcurrencyException>();
 
             //Act
-            var result = _controller.Edit(parkingZone.Id, new EditVM());
+            var result = _controller.Edit(parkingZone.Id, editVM);
 
             //Assert
             Assert.NotNull(result);
@@ -214,13 +202,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             _parkingZoneServiceMock.Verify(x => x.Update(parkingZone), Times.Never);
         }
 
-        [Theory]
-        [InlineData("Name", "Required")]
-        [InlineData("Address", "Required")]
-        public void GivenValidId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult(string field, string errorMessage)
+        [Fact]
+        public void GivenValidId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
         {
             //Arrange
-            _controller.ModelState.AddModelError(field, errorMessage);
+            _controller.ModelState.AddModelError("field", "property is invalid");
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
                     .Returns(parkingZone);

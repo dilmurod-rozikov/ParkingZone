@@ -102,7 +102,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Delete/5
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(Guid? id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 
@@ -115,7 +115,7 @@ namespace ParkingZoneApp.Areas.Admin
         // POST: Admin/ParkingZones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid? id)
         {
             var existingParkingZone = _parkingZoneService.GetById(id);
             if (existingParkingZone is null)
@@ -125,7 +125,7 @@ namespace ParkingZoneApp.Areas.Admin
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ParkingZoneExists(Guid id)
+        private bool ParkingZoneExists(Guid? id)
         {
             return _parkingZoneService.GetById(id) != null;
         }

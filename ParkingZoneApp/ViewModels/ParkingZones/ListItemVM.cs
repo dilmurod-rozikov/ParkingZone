@@ -1,14 +1,18 @@
 ﻿using ParkingZoneApp.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.ViewModels.ParkingZones
 {
     public class ListItemVM
     {
-
-        public Guid Id { get; set; }
+        [Required]
+        public Guid? Id { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Address { get; set; }
-        public DateOnly CreatedDate { get; init; }
+        [Required]
+        public DateOnly? CreatedDate { get; init; }
 
         public ListItemVM()
         {

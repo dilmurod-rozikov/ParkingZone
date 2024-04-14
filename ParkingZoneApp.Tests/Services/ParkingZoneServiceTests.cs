@@ -5,7 +5,7 @@ using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;
 using System.Text.Json;
 
-namespace ParkingZoneApp.Tests
+namespace ParkingZoneApp.Tests.Services
 {
     public class ParkingZoneServiceTests
     {
@@ -79,8 +79,8 @@ namespace ParkingZoneApp.Tests
         {
             //Arrange
             IEnumerable<ParkingZone> expectedZones = new List<ParkingZone>()
-            { 
-                parkingZone 
+            {
+                parkingZone
             };
             _parkingZoneRepositoryMock
                     .Setup(x => x.GetAll())
