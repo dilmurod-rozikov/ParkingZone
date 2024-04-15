@@ -16,7 +16,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
 
         [Theory]
         [MemberData(nameof(testListItemVMData))]
-        public void ListItemVM_WithValidData_ShouldPassValidation(Guid? id, string name, string address, DateOnly? createdDate)
+        public void GivenValidData_WhenCreatingListItemVM_ThenShouldPassValidation(Guid? id, string name, string address, DateOnly? createdDate)
         {   
             //Arrange
             var listItemVM = new ListItemVM()

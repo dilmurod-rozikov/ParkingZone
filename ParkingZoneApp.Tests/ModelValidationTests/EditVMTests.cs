@@ -1,11 +1,6 @@
 ﻿using ParkingZoneApp.Models;
 using ParkingZoneApp.ViewModels.ParkingZones;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ParkingZoneApp.Tests.ModelValidationTests
 {
@@ -22,7 +17,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
 
         [Theory]
         [MemberData(nameof(testEditVMData))]
-        public void CreateVM_WithValidData_ShouldPassValidation(Guid? id, string name, string address, DateOnly? createdDate)
+        public void GivenValidData_WhenCreatingEditVM_ThenValidationShouldFail(Guid? id, string name, string address, DateOnly? createdDate)
         {
             //Arrange
             ParkingZone parkingZone = new ParkingZone()

@@ -16,7 +16,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
 
         [Theory]
         [MemberData(nameof(testCreateVMData))]
-        public void CreateVM_WithValidData_ShouldPassValidation(Guid? id, string name, string address, DateOnly? createdDate)
+        public void GivenValidData_WhenCreatingCreateVM_ThenValidationShouldFail(Guid? id, string name, string address, DateOnly? createdDate)
         {
             //Arrange
             CreateVM createVM = new CreateVM()
