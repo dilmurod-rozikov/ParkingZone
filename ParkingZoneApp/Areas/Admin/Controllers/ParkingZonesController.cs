@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZones;
 namespace ParkingZoneApp.Areas.Admin
@@ -47,15 +46,14 @@ namespace ParkingZoneApp.Areas.Admin
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateVM parkingZoneCreateVM)
         {
-            var parkingZone = parkingZoneCreateVM.MapToModel();
-
             if (ModelState.IsValid)
             {
+                var parkingZone = parkingZoneCreateVM.MapToModel();
                 _parkingZoneService.Insert(parkingZone);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(parkingZone);
+            return View(parkingZoneCreateVM);
         }
 
         // GET: Admin/ParkingZones/Edit/5
@@ -66,8 +64,8 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            var parkingZoneVM = new EditVM(parkingZone);
-            return View(parkingZoneVM);
+            var parkingZoneEditVM = new EditVM(parkingZone);
+            return View(parkingZoneEditVM);
         }
 
         // POST: Admin/ParkingZones/Edit/5
@@ -82,12 +80,12 @@ namespace ParkingZoneApp.Areas.Admin
             if (parkingZone is null)
                 return NotFound();
 
-            parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
-
             if (ModelState.IsValid)
             {
                 try
                 {
+
+                    parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
                     _parkingZoneService.Update(parkingZone);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -104,7 +102,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Delete/5
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(Guid? id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 
@@ -117,7 +115,7 @@ namespace ParkingZoneApp.Areas.Admin
         // POST: Admin/ParkingZones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid? id)
         {
             var existingParkingZone = _parkingZoneService.GetById(id);
             if (existingParkingZone is null)
@@ -127,7 +125,7 @@ namespace ParkingZoneApp.Areas.Admin
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ParkingZoneExists(Guid id)
+        private bool ParkingZoneExists(Guid? id)
         {
             return _parkingZoneService.GetById(id) != null;
         }
