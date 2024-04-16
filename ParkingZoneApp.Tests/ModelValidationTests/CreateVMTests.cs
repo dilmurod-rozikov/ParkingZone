@@ -5,7 +5,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
 {
     public class CreateVMTests
     {
-        public static IEnumerable<object[]> testCreateVMData =>
+        public static IEnumerable<object[]> TestCreateVMData =>
             new List<object[]>
             {
                 new object[] { Guid.NewGuid(), null, "Chilonzor", new DateOnly(2024, 4, 12) },
@@ -15,7 +15,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             };
 
         [Theory]
-        [MemberData(nameof(testCreateVMData))]
+        [MemberData(nameof(TestCreateVMData))]
         public void GivenValidData_WhenCreatingCreateVM_ThenValidationShouldFail(Guid? id, string name, string address, DateOnly? createdDate)
         {
             //Arrange

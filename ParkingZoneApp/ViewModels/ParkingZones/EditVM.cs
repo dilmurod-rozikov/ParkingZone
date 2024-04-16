@@ -14,6 +14,8 @@ namespace ParkingZoneApp.ViewModels.ParkingZones
         [Required]
         public DateOnly? CreatedDate { get; init; }
 
+        public EditVM() { }
+
         public EditVM(ParkingZone parkingZone)
         {
             Id = parkingZone.Id;
