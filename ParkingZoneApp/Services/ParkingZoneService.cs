@@ -13,6 +13,7 @@ namespace ParkingZoneApp.Services
         public override void Insert(ParkingZone parkingZone)
         {
             parkingZone.Id = Guid.NewGuid();
+            parkingZone.CreatedDate = DateOnly.FromDateTime(DateTime.Today);
             base.Insert(parkingZone);
         }
     }

@@ -9,9 +9,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             new List<object[]>
             {
                 new object[] { Guid.NewGuid(), null, "Chilonzor", new DateOnly(2024, 4, 12) },
-                new object[] { null, "7Parking", "Qoraqamish", new DateOnly(2024, 4, 12) },
                 new object[] { Guid.NewGuid(), "Sharafshon", null, new DateOnly(2024, 4, 12) },
-                new object[] { Guid.NewGuid(), "Sharafshon", "Andijon", null }
             };
 
         [Theory]
@@ -21,10 +19,8 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             //Arrange
             CreateVM createVM = new CreateVM()
             {
-                Id = id, 
                 Name = name, 
                 Address = address, 
-                CreatedDate = createdDate
             };
 
             var validationContext = new ValidationContext(createVM, null, null);

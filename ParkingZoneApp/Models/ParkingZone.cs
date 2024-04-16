@@ -17,6 +17,6 @@ namespace ParkingZoneApp.Models
         public string Address { get; set; }
 
         [Required]
-        public DateOnly? CreatedDate { get; init; } = new DateOnly();
+        public DateOnly? CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
     }
 }

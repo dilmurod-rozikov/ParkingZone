@@ -106,10 +106,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             //Arrange
             var createVM = new CreateVM()
             {
-                Id = Guid.NewGuid(),
                 Name = "Test Name",
                 Address = "Test Address",
-                CreatedDate = new DateOnly(2024, 7, 7)
             };
 
             _parkingZoneServiceMock 

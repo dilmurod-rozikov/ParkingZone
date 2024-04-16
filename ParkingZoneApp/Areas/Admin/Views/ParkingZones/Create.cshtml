@@ -22,11 +22,7 @@
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedDate" class="control-label">Creation date</label>
-                <input asp-for="CreatedDate" type="date" class="form-control" />
-                <span asp-validation-for="CreatedDate" class="text-danger"></span> <br />
-            </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" /> | 
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>
