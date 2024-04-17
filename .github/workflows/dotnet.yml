@@ -29,13 +29,13 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install dependencies
-        working-directory: ./scr
+        working-directory: ./ParkingZoneApp
         run: dotnet restore
 
       - name: Build
-        working-directory: ./scr
+        working-directory: ./ParkingZoneApp
         run: dotnet build --configuration Release --no-restore
     
       - name: Test
-        working-directory: ./scr
+        working-directory: ./ParkingZoneApp
         run: dotnet test --no-restore --verbosity normal
