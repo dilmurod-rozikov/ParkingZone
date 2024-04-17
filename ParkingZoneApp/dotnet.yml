@@ -9,10 +9,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  shell: /usr/bin/bash -e {0}
-  DOTNET_ROOT: ./ParkingZoneApp
-
 jobs:
   build:
 
