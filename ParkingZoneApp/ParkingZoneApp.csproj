@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-ParkingZoneApp-9aea6eb7-2c60-4de0-a7b0-3b89fe4834f3</UserSecretsId>
   </PropertyGroup>
