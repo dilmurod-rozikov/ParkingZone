@@ -10,13 +10,13 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             {             
                 new object[] { null, "test 1", false },
                 new object[] { "test 2", null, false },
-                new object[] { "test 2", "test 2", true },
+                new object[] { "test 3", "test 3", true },
             };
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingCreateVM_ThenValidationIsPerformed
-            (string name, string address, bool expectedValidationResult) 
+            (string name, string address, bool expectedValidation)
         {
             //Arrange
             CreateVM createVM = new CreateVM()
@@ -32,7 +32,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             var result = Validator.TryValidateObject(createVM, validationContext, validationResult);
 
             //Assert
-            Assert.Equal(expectedValidationResult, result);
+            Assert.Equal(expectedValidation, result);
         }
     }
 }

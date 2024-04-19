@@ -8,15 +8,17 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
         public static IEnumerable<object[]> TestData =>
            new List<object[]>
            {
-                new object[] { Guid.NewGuid(), null, "Chilonzor", new DateOnly(2024, 4, 12) },
-                new object[] { null, "7Parking", "Qoraqamish", new DateOnly(2024, 4, 12) },
-                new object[] { Guid.NewGuid(), "Sharafshon", null, new DateOnly(2024, 4, 12) },
-                new object[] { Guid.NewGuid(), "Sharafshon", "Andijon", null }
+                new object[] { Guid.NewGuid(), null, "Test1", new DateOnly(2024, 4, 12), false },
+                new object[] { null, "Test2", "Test2", new DateOnly(2024, 4, 12), false },
+                new object[] { Guid.NewGuid(), "Test3", null, new DateOnly(2024, 4, 12), false },
+                new object[] { Guid.NewGuid(), "Test4", "Test4", null, false },
+                new object[] { Guid.NewGuid(), "Test5", "Test5", new DateOnly(2024, 4, 12), true }
            };
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void GivenValidData_WhenCreatingDetailsVM_ThenValidationShouldFail(Guid? id, string name, string address, DateOnly? createdDate)
+        public void GivenItemToBeValidated_WhenCreatingDetailsVM_ThenValidationIsPerformed
+            (Guid? id, string name, string address, DateOnly? createdDate, bool expectedValidation)
         {
             //Arrange
             DetailsVM detailsVM = new DetailsVM()
@@ -34,8 +36,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             var isValidResult = Validator.TryValidateObject(detailsVM, validationContext, validationResult);
 
             //Assert
-            Assert.NotEmpty(validationResult);
-            Assert.False(isValidResult);
+            Assert.Equal(expectedValidation, isValidResult);
         }
     }
 }

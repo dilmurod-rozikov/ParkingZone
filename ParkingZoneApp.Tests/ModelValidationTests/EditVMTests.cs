@@ -8,7 +8,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
         public static IEnumerable<object[]> TestData =>
            new List<object[]>
            {
-                 new object[] { Guid.NewGuid(), null, "Test1", new DateOnly(2024, 4, 12), false },
+                new object[] { Guid.NewGuid(), null, "Test1", new DateOnly(2024, 4, 12), false },
                 new object[] { null, "Test2", "Test2", new DateOnly(2024, 4, 12), false },
                 new object[] { Guid.NewGuid(), "Test3", null, new DateOnly(2024, 4, 12), false },
                 new object[] { Guid.NewGuid(), "Test4", "Test4", null, false },
