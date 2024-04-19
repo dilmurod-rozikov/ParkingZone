@@ -1,12 +1,11 @@
-﻿using ParkingZoneApp.Models;
-using ParkingZoneApp.ViewModels.ParkingZones;
+﻿using ParkingZoneApp.ViewModels.ParkingZones;
 using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.Tests.ModelValidationTests
 {
     public class DetailVMTests
     {
-        public static IEnumerable<object[]> TestDetailsVMData =>
+        public static IEnumerable<object[]> TestData =>
            new List<object[]>
            {
                 new object[] { Guid.NewGuid(), null, "Chilonzor", new DateOnly(2024, 4, 12) },
@@ -16,7 +15,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
            };
 
         [Theory]
-        [MemberData(nameof(TestDetailsVMData))]
+        [MemberData(nameof(TestData))]
         public void GivenValidData_WhenCreatingDetailsVM_ThenValidationShouldFail(Guid? id, string name, string address, DateOnly? createdDate)
         {
             //Arrange

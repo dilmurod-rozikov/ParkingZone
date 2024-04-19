@@ -5,16 +5,18 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
 {
     public class CreateVMTests
     {
-        public static IEnumerable<object[]> TestCreateVMData =>
+        public static IEnumerable<object[]> TestData =>
             new List<object[]>
-            {
-                new object[] { Guid.NewGuid(), null, "Chilonzor", new DateOnly(2024, 4, 12) },
-                new object[] { Guid.NewGuid(), "Sharafshon", null, new DateOnly(2024, 4, 12) },
+            {             
+                new object[] { null, "test 1", false },
+                new object[] { "test 2", null, false },
+                new object[] { "test 2", "test 2", true },
             };
 
         [Theory]
-        [MemberData(nameof(TestCreateVMData))]
-        public void GivenValidData_WhenCreatingCreateVM_ThenValidationShouldFail(Guid? id, string name, string address, DateOnly? createdDate)
+        [MemberData(nameof(TestData))]
+        public void GivenItemToBeValidated_WhenCreatingCreateVM_ThenValidationIsPerformed
+            (string name, string address, bool expectedValidationResult) 
         {
             //Arrange
             CreateVM createVM = new CreateVM()
@@ -27,11 +29,10 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             var validationResult = new List<ValidationResult>();
 
             //Act
-            var isValidResult = Validator.TryValidateObject(createVM, validationContext, validationResult);
+            var result = Validator.TryValidateObject(createVM, validationContext, validationResult);
 
             //Assert
-            Assert.NotEmpty(validationResult);
-            Assert.False(isValidResult);
+            Assert.Equal(expectedValidationResult, result);
         }
     }
 }
