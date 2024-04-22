@@ -49,6 +49,10 @@ namespace ParkingZoneApp
 
             app.MapControllerRoute(
                 name: "Admin",
+                pattern: "{area:exists}/{controller=ParkingSlots}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "Admin",
                 pattern: "{area:exists}/{controller=ParkingZone}/{action=Index}/{id?}");
 
             app.MapControllerRoute(

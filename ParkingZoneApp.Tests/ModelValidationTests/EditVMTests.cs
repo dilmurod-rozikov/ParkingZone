@@ -8,17 +8,16 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
         public static IEnumerable<object[]> TestData =>
            new List<object[]>
            {
-                new object[] { Guid.NewGuid(), null, "Test1", new DateOnly(2024, 4, 12), false },
-                new object[] { null, "Test2", "Test2", new DateOnly(2024, 4, 12), false },
-                new object[] { Guid.NewGuid(), "Test3", null, new DateOnly(2024, 4, 12), false },
-                new object[] { Guid.NewGuid(), "Test4", "Test4", null, false },
-                new object[] { Guid.NewGuid(), "Test5", "Test5", new DateOnly(2024, 4, 12), true }
+                new object[] { Guid.NewGuid(), null, "Test1", false },
+                new object[] { null, "Test2", "Test2", false },
+                new object[] { Guid.NewGuid(), "Test3", null, false },
+                new object[] { Guid.NewGuid(), "Test5", "Test5", true }
            };
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingEditVM_ThenValidationIsPerformed
-            (Guid? id, string name, string address, DateOnly? createdDate, bool expectedValidation)
+            (Guid? id, string name, string address, bool expectedValidation)
         {
             //Arrange
             EditVM editVM = new EditVM()
@@ -26,7 +25,6 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
                 Id = id,
                 Name = name,
                 Address = address,
-                CreatedDate = createdDate
             };
 
             var validationContext = new ValidationContext(editVM, null, null);

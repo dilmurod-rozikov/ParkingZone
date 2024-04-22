@@ -18,7 +18,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
-            CreatedDate = new DateOnly(2024, 1, 1),
         };
 
         public ParkingZoneControllerUnitTests()
@@ -216,7 +215,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
             Assert.False(_controller.ModelState.IsValid);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 

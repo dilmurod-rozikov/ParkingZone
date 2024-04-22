@@ -12,7 +12,7 @@ namespace ParkingZoneApp.Models.Entities
         public int Id { get; set; }
 
         [Required]
-        public Category CategoryType { get; set; }
+        public Category CategoryType { get; set; } = Category.Standard;
 
         [Required]
         public bool IsAvailable { get; set; } = true;
