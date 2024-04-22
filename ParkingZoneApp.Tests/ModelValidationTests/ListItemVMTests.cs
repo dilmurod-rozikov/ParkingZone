@@ -5,18 +5,20 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
 {
     public class ListItemVMTests
     {
-        public static IEnumerable<object[]> TestListItemVMData =>
+        public static IEnumerable<object[]> TestData =>
             new List<object[]>
             {
-                new object[] { Guid.NewGuid(), null, "Chilonzor", new DateOnly(2024, 4, 12) },
-                new object[] { null, "7Parking", "Qoraqamish", new DateOnly(2024, 4, 12) },
-                new object[] { Guid.NewGuid(), "Sharafshon", null, new DateOnly(2024, 4, 12) },
-                new object[] { Guid.NewGuid(), "Sharafshon", "Andijon", null }
+                new object[] { Guid.NewGuid(), null, "Test1", new DateOnly(2024, 4, 12), false },
+                new object[] { null, "Test2", "Test2", new DateOnly(2024, 4, 12), false },
+                new object[] { Guid.NewGuid(), "Test3", null, new DateOnly(2024, 4, 12), false },
+                new object[] { Guid.NewGuid(), "Test4", "Test4", null, false },
+                new object[] { Guid.NewGuid(), "Test5", "Test5", new DateOnly(2024, 4, 12), true }
             };
 
         [Theory]
-        [MemberData(nameof(TestListItemVMData))]
-        public void GivenValidData_WhenCreatingListItemVM_ThenShouldPassValidation(Guid? id, string name, string address, DateOnly? createdDate)
+        [MemberData(nameof(TestData))]
+        public void GivenItemToBeValidated_WhenCreatingListItemVM_ThenValidationIsPerformed
+            (Guid? id, string name, string address, DateOnly? createdDate, bool expectedValidation)
         {   
             //Arrange
             var listItemVM = new ListItemVM()
@@ -31,11 +33,10 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             var validationResults = new List<ValidationResult>();
 
             //Act
-            bool isValidResult = Validator.TryValidateObject(listItemVM, validationContext, validationResults, true);
+            bool result = Validator.TryValidateObject(listItemVM, validationContext, validationResults);
 
             //Assert
-            Assert.False(isValidResult);
-            Assert.NotEmpty(validationResults);
+            Assert.Equal(expectedValidation, result);
         }
 
     }
