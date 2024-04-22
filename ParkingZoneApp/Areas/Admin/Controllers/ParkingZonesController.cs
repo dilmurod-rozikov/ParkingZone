@@ -24,7 +24,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Details/5
-        public IActionResult Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 

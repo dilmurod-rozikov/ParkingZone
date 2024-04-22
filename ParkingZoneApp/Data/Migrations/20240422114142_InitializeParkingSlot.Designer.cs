@@ -12,15 +12,15 @@ using ParkingZoneApp.Data;
 namespace ParkingZoneApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240419053524_AddParkingSlotModel")]
-    partial class AddParkingSlotModel
+    [Migration("20240422114142_InitializeParkingSlot")]
+    partial class InitializeParkingSlot
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -229,17 +229,18 @@ namespace ParkingZoneApp.Data.Migrations
 
             modelBuilder.Entity("ParkingZoneApp.Models.Entities.ParkingSlot", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CategoryType")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ParkingZoneId")
                         .HasColumnType("uniqueidentifier");
@@ -251,9 +252,9 @@ namespace ParkingZoneApp.Data.Migrations
                     b.ToTable("ParkingSlot");
                 });
 
-            modelBuilder.Entity("ParkingZoneApp.Models.Entities.ParkingZone", b =>
+            modelBuilder.Entity("ParkingZoneApp.Models.ParkingZone", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -261,8 +262,7 @@ namespace ParkingZoneApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("CreatedDate")
-                        .IsRequired()
+                    b.Property<DateOnly>("CreatedDate")
                         .HasColumnType("date");
 
                     b.Property<string>("Name")
@@ -327,14 +327,16 @@ namespace ParkingZoneApp.Data.Migrations
 
             modelBuilder.Entity("ParkingZoneApp.Models.Entities.ParkingSlot", b =>
                 {
-                    b.HasOne("ParkingZoneApp.Models.Entities.ParkingZone", null)
+                    b.HasOne("ParkingZoneApp.Models.ParkingZone", "ParkingZone")
                         .WithMany("ParkingSlots")
                         .HasForeignKey("ParkingZoneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ParkingZone");
                 });
 
-            modelBuilder.Entity("ParkingZoneApp.Models.Entities.ParkingZone", b =>
+            modelBuilder.Entity("ParkingZoneApp.Models.ParkingZone", b =>
                 {
                     b.Navigation("ParkingSlots");
                 });

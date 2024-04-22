@@ -1,7 +1,7 @@
-﻿@model IEnumerable<ParkingZoneApp.Models.Entities.ParkingSlot>
-
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<ParkingZoneApp.Models.Entities.ParkingSlot>
 @{
-    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Index</h1>
@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CategoryType)
+                ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsAvailable)
+                Tariff
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Available for booking
             </th>
             <th></th>
         </tr>

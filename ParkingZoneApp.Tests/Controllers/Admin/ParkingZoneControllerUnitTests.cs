@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Models;
+using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZones;
 using System.Text.Json;
@@ -18,6 +19,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
+            ParkingSlots = new List<ParkingSlot>()
+            {
+                new()
+            }
         };
 
         public ParkingZoneControllerUnitTests()
@@ -67,6 +72,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidId_WhenGetDetailsIsCalled_ThenReturnViewResult()
         {
             //Arrange 
+            DetailsVM detailsVM = new DetailsVM()
+            { 
+                Id = parkingZone.Id,
+                Name = parkingZone.Name,
+                Address = parkingZone.Address,
+                CreatedDate = parkingZone.CreatedDate
+            };
+
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
                     .Returns(parkingZone);
@@ -77,7 +90,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
-            Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(model));
+            Assert.Equal(JsonSerializer.Serialize(detailsVM), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 

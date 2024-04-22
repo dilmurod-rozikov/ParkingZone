@@ -9,15 +9,21 @@ namespace ParkingZoneApp.Models.Entities
     {
         [Key]
         [Required]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+
+        [Required]
+        public int Number { get; set; }
 
         [Required]
         public Category CategoryType { get; set; } = Category.Standard;
 
         [Required]
-        public bool IsAvailable { get; set; } = true;
+        public bool IsAvailable { get; set; }
 
         [Required]
         public Guid ParkingZoneId { get; set; }
+
+        [Required]
+        public ParkingZone ParkingZone { get; set; }
     }
 }

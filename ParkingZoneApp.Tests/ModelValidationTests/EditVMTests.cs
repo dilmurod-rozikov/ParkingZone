@@ -9,7 +9,6 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
            new List<object[]>
            {
                 new object[] { Guid.NewGuid(), null, "Test1", false },
-                new object[] { null, "Test2", "Test2", false },
                 new object[] { Guid.NewGuid(), "Test3", null, false },
                 new object[] { Guid.NewGuid(), "Test5", "Test5", true }
            };
@@ -17,7 +16,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
         [Theory]
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingEditVM_ThenValidationIsPerformed
-            (Guid? id, string name, string address, bool expectedValidation)
+            (Guid id, string name, string address, bool expectedValidation)
         {
             //Arrange
             EditVM editVM = new EditVM()

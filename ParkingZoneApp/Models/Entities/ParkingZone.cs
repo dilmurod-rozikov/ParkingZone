@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ParkingZoneApp.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ParkingZoneApp.Models
@@ -8,7 +9,7 @@ namespace ParkingZoneApp.Models
     {
         [Key]
         [Required]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -17,6 +18,9 @@ namespace ParkingZoneApp.Models
         public string Address { get; set; }
 
         [Required]
-        public DateOnly? CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+
+        [Required]
+        public ICollection<ParkingSlot> ParkingSlots { get; set; }
     }
 }
