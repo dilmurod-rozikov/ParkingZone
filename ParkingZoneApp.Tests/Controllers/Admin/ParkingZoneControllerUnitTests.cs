@@ -216,6 +216,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
         {
             //Arrange
+            EditVM editVM = new EditVM(parkingZone);
             _controller.ModelState.AddModelError("field", "property is invalid");
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
@@ -228,6 +229,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
             Assert.False(_controller.ModelState.IsValid);
+            Assert.Equal(JsonSerializer.Serialize(editVM), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
