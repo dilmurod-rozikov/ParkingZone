@@ -84,7 +84,6 @@ namespace ParkingZoneApp.Areas.Admin
             {
                 try
                 {
-
                     parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
                     _parkingZoneService.Update(parkingZone);
                 }

@@ -1,5 +1,6 @@
 ﻿using Moq;
 using ParkingZoneApp.Models;
+using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;

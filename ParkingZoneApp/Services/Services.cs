@@ -32,7 +32,7 @@ namespace ParkingZoneApp.Services
             return _repository.GetAll();
         }
 
-        public T? GetById(Guid? value)
+        public T GetById(Guid? value)
         {
             return _repository.GetByID(value);
         }
