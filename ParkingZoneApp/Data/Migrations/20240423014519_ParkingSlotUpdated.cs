@@ -5,7 +5,7 @@
 namespace ParkingZoneApp.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ParkingSlotAdded : Migration
+    public partial class ParkingSlotUpdated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
