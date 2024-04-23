@@ -12,7 +12,7 @@ namespace ParkingZoneApp.Services
             _repository = repository;
         }
 
-        public virtual void Insert(T value)
+        public void Insert(T value)
         {
             _repository.Add(value);
         }

@@ -13,9 +13,9 @@ namespace ParkingZoneApp.Services
             _parkingSlotRepository = parkingSlotRepository;
         }
 
-        public ICollection<ParkingSlot> GetSlotsByZoneId(Guid zoneId)
+        public ICollection<ParkingSlot> GetSlotsByZoneId(Guid parkingZoneId)
         {
-            return _parkingSlotRepository.GetAllParkingSlots().Where(x => x.ParkingZoneId == zoneId).ToList();
+            return _parkingSlotRepository.GetAll().Where(x => x.ParkingZoneId == parkingZoneId).ToList();
         }
     }
 }
