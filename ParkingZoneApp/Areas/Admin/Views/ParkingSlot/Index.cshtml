@@ -1,10 +1,10 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<ParkingZoneApp.Models.Entities.ParkingSlot>
+@model IEnumerable<ParkingZoneApp.ViewModels.ParkingSlots.ListItemVM>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Parking slots for @Html.DisplayNameFor(model => model.ParkingZone.Name)</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,28 +13,30 @@
     <thead>
         <tr>
             <th>
-                ID
+                @Html.Display("Number")
             </th>
             <th>
-                Tariff
+                @Html.Display("Tariff")
             </th>
             <th>
-                Available for booking
+                @Html.Display("Available for booking")
             </th>
-            <th></th>
+            <th>
+                @Html.Display("Actions")
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.CategoryType)
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tariff)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsAvailable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -6,8 +6,15 @@ namespace ParkingZoneApp.Repository
 {
     public class ParkingSlotRepository : Repository<ParkingSlot>, IParkingSlotRepository
     {
+        private readonly ApplicationDbContext _context;
         public ParkingSlotRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
+        }
+
+        public ICollection<ParkingSlot> GetAllParkingSlots()
+        {
+            return _context.ParkingSlot.ToList();
         }
     }
 }

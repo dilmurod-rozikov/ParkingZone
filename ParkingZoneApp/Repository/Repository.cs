@@ -30,7 +30,7 @@ namespace ParkingZoneApp.Repository
             _context.SaveChanges();
         }
 
-        public T? GetByID(Guid? id)
+        public T? GetByID(Guid id)
         {
             return _dbSet.Find(id);
         }

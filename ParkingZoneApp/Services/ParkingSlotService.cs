@@ -6,8 +6,16 @@ namespace ParkingZoneApp.Services
 {
     public class ParkingSlotService : Services<ParkingSlot>, IParkingSlotService
     {
-        public ParkingSlotService(IParkingSlotRepository repository) : base(repository)
+        private readonly IParkingSlotRepository _parkingSlotRepository;
+
+        public ParkingSlotService(IParkingSlotRepository parkingSlotRepository) : base(parkingSlotRepository)
         {
+            _parkingSlotRepository = parkingSlotRepository;
+        }
+
+        public ICollection<ParkingSlot> GetAllParkingSlots()
+        {
+            return _parkingSlotRepository.GetAllParkingSlots();
         }
     }
 }

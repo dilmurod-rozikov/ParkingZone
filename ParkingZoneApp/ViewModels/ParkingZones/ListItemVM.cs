@@ -6,13 +6,16 @@ namespace ParkingZoneApp.ViewModels.ParkingZones
     public class ListItemVM
     {
         [Required]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
+
         [Required]
         public string Name { get; set; }
+
         [Required]
         public string Address { get; set; }
+
         [Required]
-        public DateOnly? CreatedDate { get; init; }
+        public DateOnly CreatedDate { get; init; }
 
         public ListItemVM()
         {

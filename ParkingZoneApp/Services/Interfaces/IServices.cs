@@ -10,7 +10,7 @@
 
         IEnumerable<T> GetAll();
 
-        T? GetById(Guid? value);
+        T? GetById(Guid value);
 
     }
 }
