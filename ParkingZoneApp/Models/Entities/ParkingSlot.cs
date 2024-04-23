@@ -15,7 +15,7 @@ namespace ParkingZoneApp.Models.Entities
         public int Number { get; set; }
 
         [Required]
-        public Category Tariff { get; set; } = Category.Standard;
+        public SlotCategory Category { get; set; } = SlotCategory.Standard;
 
         [Required]
         public bool IsAvailable { get; set; }

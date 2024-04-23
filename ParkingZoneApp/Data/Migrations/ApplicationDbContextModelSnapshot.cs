@@ -230,6 +230,9 @@ namespace ParkingZoneApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
@@ -238,9 +241,6 @@ namespace ParkingZoneApp.Data.Migrations
 
                     b.Property<Guid>("ParkingZoneId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Tariff")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

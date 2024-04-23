@@ -4,6 +4,6 @@ namespace ParkingZoneApp.Services.Interfaces
 {
     public interface IParkingSlotService : IServices<ParkingSlot>
     {
-        ICollection<ParkingSlot> GetAllParkingSlots();
+        ICollection<ParkingSlot> GetSlotsByZoneId(Guid zoneId);
     }
 }

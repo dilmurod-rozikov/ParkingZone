@@ -1,6 +1,6 @@
 ﻿namespace ParkingZoneApp.Models.Enums
 {
-    public enum Category
+    public enum SlotCategory
     {
         Standard,
         Business,

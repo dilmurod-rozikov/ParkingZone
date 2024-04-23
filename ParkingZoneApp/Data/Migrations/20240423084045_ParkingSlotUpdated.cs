@@ -11,18 +11,18 @@ namespace ParkingZoneApp.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "CategoryType",
+                name: "Tariff",
                 table: "ParkingSlot",
-                newName: "Tariff");
+                newName: "Category");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Tariff",
+                name: "Category",
                 table: "ParkingSlot",
-                newName: "CategoryType");
+                newName: "Tariff");
         }
     }
 }

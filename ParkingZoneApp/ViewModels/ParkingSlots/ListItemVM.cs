@@ -14,7 +14,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlots
         public int Number { get; set; }
 
         [Required]
-        public Category Tariff { get; set; }
+        public SlotCategory Category { get; set; }
 
         [Required]
         public bool IsAvailable { get; set; }
@@ -26,7 +26,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlots
         {
             Id = slot.Id;
             Number = slot.Number;
-            Tariff = slot.Tariff;
+            Category = slot.Category;
             IsAvailable = slot.IsAvailable;
         }
 

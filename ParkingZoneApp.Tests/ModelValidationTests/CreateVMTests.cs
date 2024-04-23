@@ -1,4 +1,4 @@
-﻿    using ParkingZoneApp.ViewModels.ParkingZones;
+﻿using ParkingZoneApp.ViewModels.ParkingZones;
 using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.Tests.ModelValidationTests

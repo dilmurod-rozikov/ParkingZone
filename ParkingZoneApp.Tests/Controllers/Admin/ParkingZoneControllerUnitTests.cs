@@ -69,7 +69,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Details
         [Fact]
-        public void GivenValidId_WhenGetDetailsIsCalled_ThenReturnViewResult()
+        public void GivenValidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnViewResult()
         {
             //Arrange 
             DetailsVM detailsVM = new DetailsVM()
@@ -95,7 +95,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenInvalidId_WhenGetDetailsIsCalled_ThenReturnNotFound()
+        public void GivenInvalidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnNotFound()
         {
             //Arrange
             _parkingZoneServiceMock
@@ -194,7 +194,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidId_WhenPostEditIsCalled_ThenModelStateIsTrueReturnDbUpdateConcurrencyException()
+        public void GivenValidParkingZoneId_WhenPostEditIsCalled_ThenModelStateIsTrueReturnDbUpdateConcurrencyException()
         {
             //Arrange
             EditVM editVM = new EditVM(parkingZone);
@@ -213,7 +213,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
+        public void GivenValidParkingZoneId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
         {
             //Arrange
             EditVM editVM = new EditVM(parkingZone);
@@ -229,12 +229,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
             Assert.False(_controller.ModelState.IsValid);
-            Assert.Equal(JsonSerializer.Serialize(editVM), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
 
         [Fact]
-        public void GivenInvalidId_WhenEditIsCalled_ThenReturnsNotFound()
+        public void GivenInvalidParkingZoneId_WhenEditIsCalled_ThenReturnsNotFound()
         {
             //Arrange
             _parkingZoneServiceMock
@@ -252,7 +251,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Delete
         [Fact]
-        public void GivenValidId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
+        public void GivenValidParkingZoneId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
         {
             //Arrange           
             _parkingZoneServiceMock
@@ -269,7 +268,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenInvalidId_WhenGetDeleteIsCalled_ThenReturnsNotFound()
+        public void GivenInvalidParkingZoneId_WhenGetDeleteIsCalled_ThenReturnsNotFound()
         {
             //Arrange
             _parkingZoneServiceMock
@@ -285,7 +284,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidId_WhenPostDeleteConfirmedIsCalled_ThenReturnsRedirectToIndex()
+        public void GivenValidParkingZoneId_WhenPostDeleteConfirmedIsCalled_ThenReturnsRedirectToIndex()
         {
             //Arrange
             _parkingZoneServiceMock

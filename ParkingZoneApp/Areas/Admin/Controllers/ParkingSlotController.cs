@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingSlots;
 
@@ -16,9 +15,9 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             _parkingSlotService = parkingSlotService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(Guid parkingZoneId)
         {
-            var parkingSlots = _parkingSlotService.GetAllParkingSlots();
+            var parkingSlots = _parkingSlotService.GetSlotsByZoneId(parkingZoneId);
             var listItemVMs = ListItemVM.MapToVM(parkingSlots);
             return View(listItemVMs);
         }
