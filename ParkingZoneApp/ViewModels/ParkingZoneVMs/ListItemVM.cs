@@ -3,20 +3,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.ViewModels.ParkingZones
 {
-    public class EditVM
+    public class ListItemVM
     {
         [Required]
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
+
         [Required]
         public string Name { get; set; }
+
         [Required]
         public string Address { get; set; }
+
         [Required]
-        public DateOnly? CreatedDate { get; init; }
+        public DateOnly CreatedDate { get; init; }
 
-        public EditVM() { }
+        public ListItemVM()
+        {
+        }
 
-        public EditVM(ParkingZone parkingZone)
+        public ListItemVM(ParkingZone parkingZone)
         {
             Id = parkingZone.Id;
             Name = parkingZone.Name;
@@ -24,12 +29,10 @@ namespace ParkingZoneApp.ViewModels.ParkingZones
             CreatedDate = parkingZone.CreatedDate;
         }
 
-        public ParkingZone MapToModel(ParkingZone parkingZone)
+
+        public static IEnumerable<ListItemVM> MapToVM(IEnumerable<ParkingZone> parkingZones)
         {
-            parkingZone.Id = Id;
-            parkingZone.Name = Name;
-            parkingZone.Address = Address;
-            return parkingZone;
+            return parkingZones.Select(parkingZone => new ListItemVM(parkingZone));
         }
     }
 }

@@ -24,7 +24,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Details/5
-        public IActionResult Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 
@@ -57,7 +57,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Edit/5
-        public IActionResult Edit(Guid? id)
+        public IActionResult Edit(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 
@@ -73,7 +73,7 @@ namespace ParkingZoneApp.Areas.Admin
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid? id, EditVM parkingZoneEditVM)
+        public IActionResult Edit(Guid id, EditVM parkingZoneEditVM)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 
@@ -84,7 +84,6 @@ namespace ParkingZoneApp.Areas.Admin
             {
                 try
                 {
-
                     parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
                     _parkingZoneService.Update(parkingZone);
                 }
@@ -102,7 +101,7 @@ namespace ParkingZoneApp.Areas.Admin
         }
 
         // GET: Admin/ParkingZones/Delete/5
-        public IActionResult Delete(Guid? id)
+        public IActionResult Delete(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
 
@@ -115,7 +114,7 @@ namespace ParkingZoneApp.Areas.Admin
         // POST: Admin/ParkingZones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid? id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
             var existingParkingZone = _parkingZoneService.GetById(id);
             if (existingParkingZone is null)
@@ -125,7 +124,7 @@ namespace ParkingZoneApp.Areas.Admin
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ParkingZoneExists(Guid? id)
+        private bool ParkingZoneExists(Guid id)
         {
             return _parkingZoneService.GetById(id) != null;
         }

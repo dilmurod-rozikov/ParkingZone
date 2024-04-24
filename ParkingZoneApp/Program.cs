@@ -23,6 +23,9 @@ namespace ParkingZoneApp
             builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
             builder.Services.AddScoped<IParkingZoneService, ParkingZoneService>();
 
+            builder.Services.AddScoped<IParkingSlotRepository, ParkingSlotRepository>();
+            builder.Services.AddScoped<IParkingSlotService, ParkingSlotService>();
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -43,6 +46,10 @@ namespace ParkingZoneApp
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "Admin",
+                pattern: "{area:exists}/{controller=ParkingSlots}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "Admin",

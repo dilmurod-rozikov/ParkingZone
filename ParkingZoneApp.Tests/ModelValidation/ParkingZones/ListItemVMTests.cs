@@ -1,27 +1,25 @@
 ﻿using ParkingZoneApp.ViewModels.ParkingZones;
 using System.ComponentModel.DataAnnotations;
 
-namespace ParkingZoneApp.Tests.ModelValidationTests
+namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
 {
-    public class EditVMTests
+    public class ListItemVMTests
     {
         public static IEnumerable<object[]> TestData =>
-           new List<object[]>
-           {
+            new List<object[]>
+            {
                 new object[] { Guid.NewGuid(), null, "Test1", new DateOnly(2024, 4, 12), false },
-                new object[] { null, "Test2", "Test2", new DateOnly(2024, 4, 12), false },
                 new object[] { Guid.NewGuid(), "Test3", null, new DateOnly(2024, 4, 12), false },
-                new object[] { Guid.NewGuid(), "Test4", "Test4", null, false },
                 new object[] { Guid.NewGuid(), "Test5", "Test5", new DateOnly(2024, 4, 12), true }
-           };
+            };
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void GivenItemToBeValidated_WhenCreatingEditVM_ThenValidationIsPerformed
-            (Guid? id, string name, string address, DateOnly? createdDate, bool expectedValidation)
+        public void GivenItemToBeValidated_WhenCreatingListItemVM_ThenValidationIsPerformed
+            (Guid id, string name, string address, DateOnly createdDate, bool expectedValidation)
         {
             //Arrange
-            EditVM editVM = new EditVM()
+            var listItemVM = new ListItemVM()
             {
                 Id = id,
                 Name = name,
@@ -29,14 +27,15 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
                 CreatedDate = createdDate
             };
 
-            var validationContext = new ValidationContext(editVM, null, null);
-            var validationResult = new List<ValidationResult>();
+            var validationContext = new ValidationContext(listItemVM);
+            var validationResults = new List<ValidationResult>();
 
             //Act
-            var result = Validator.TryValidateObject(editVM, validationContext, validationResult);
+            bool result = Validator.TryValidateObject(listItemVM, validationContext, validationResults);
 
             //Assert
             Assert.Equal(expectedValidation, result);
         }
+
     }
 }
