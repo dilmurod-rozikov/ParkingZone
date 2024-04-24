@@ -1,13 +1,13 @@
 ﻿using ParkingZoneApp.ViewModels.ParkingZones;
 using System.ComponentModel.DataAnnotations;
 
-namespace ParkingZoneApp.Tests.ModelValidationTests
+namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
 {
     public class CreateVMTests
     {
         public static IEnumerable<object[]> TestData =>
             new List<object[]>
-            {             
+            {
                 new object[] { null, "test 1", false },
                 new object[] { "test 2", null, false },
                 new object[] { "test 3", "test 3", true },
@@ -21,8 +21,8 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
             //Arrange
             CreateVM createVM = new CreateVM()
             {
-                Name = name, 
-                Address = address, 
+                Name = name,
+                Address = address,
             };
 
             var validationContext = new ValidationContext(createVM, null, null);

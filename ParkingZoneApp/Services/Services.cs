@@ -27,12 +27,12 @@ namespace ParkingZoneApp.Services
             _repository.Delete(value);
         }
 
-        public virtual IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll()
         {
             return _repository.GetAll();
         }
 
-        public T GetById(Guid value)
+        public T? GetById(Guid value)
         {
             return _repository.GetByID(value);
         }

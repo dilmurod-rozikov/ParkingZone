@@ -22,12 +22,17 @@ namespace ParkingZoneApp.ViewModels.ParkingSlots
         [Required]
         public ParkingZone ParkingZone { get; set; }
 
+        public ListItemVM()
+        {
+        }
+
         public ListItemVM(ParkingSlot slot)
         {
             Id = slot.Id;
             Number = slot.Number;
             Category = slot.Category;
             IsAvailable = slot.IsAvailable;
+            ParkingZone = slot.ParkingZone;
         }
 
         public static IEnumerable<ListItemVM> MapToVM(IEnumerable<ParkingSlot> slots)

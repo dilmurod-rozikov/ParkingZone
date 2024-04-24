@@ -1,7 +1,7 @@
 ﻿using ParkingZoneApp.ViewModels.ParkingZones;
 using System.ComponentModel.DataAnnotations;
 
-namespace ParkingZoneApp.Tests.ModelValidationTests
+namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
 {
     public class ListItemVMTests
     {
@@ -17,7 +17,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingListItemVM_ThenValidationIsPerformed
             (Guid id, string name, string address, DateOnly createdDate, bool expectedValidation)
-        {   
+        {
             //Arrange
             var listItemVM = new ListItemVM()
             {
@@ -27,7 +27,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests
                 CreatedDate = createdDate
             };
 
-            var validationContext = new ValidationContext(listItemVM, null, null);
+            var validationContext = new ValidationContext(listItemVM);
             var validationResults = new List<ValidationResult>();
 
             //Act

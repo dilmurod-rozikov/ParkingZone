@@ -11,10 +11,5 @@ namespace ParkingZoneApp.Repository
         {
             _context = context;
         }
-
-        public ICollection<ParkingSlot> GetAllParkingSlots()
-        {
-            return _context.ParkingSlot.ToList();
-        }
     }
 }

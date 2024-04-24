@@ -42,13 +42,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             };
             var expectedListOfItems = new List<ListItemVM>()
             {
-                new ListItemVM()
-                {
-                    Id = parkingZone.Id,
-                    Name = parkingZone.Name,
-                    Address = parkingZone.Address,
-                    CreatedDate = parkingZone.CreatedDate,
-                }
+                new ListItemVM(parkingZone) { }
             };
 
             _parkingZoneServiceMock

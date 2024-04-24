@@ -1,7 +1,7 @@
 ﻿using ParkingZoneApp.ViewModels.ParkingZones;
 using System.ComponentModel.DataAnnotations;
 
-namespace ParkingZoneApp.Tests.ModelValidationTests
+namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
 {
     public class DetailVMTests
     {
