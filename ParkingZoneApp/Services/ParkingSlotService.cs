@@ -1,4 +1,5 @@
-﻿using ParkingZoneApp.Models.Entities;
+﻿using ParkingZoneApp.Models;
+using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
 
@@ -15,7 +16,7 @@ namespace ParkingZoneApp.Services
 
         public bool IsUniqueNumber(Guid id, int number)
         {
-            return GetAll().Any(x => x.Number == number);
+            return GetSlotsByZoneId(id).Any(x => x.Number == number);
         }
 
         public ICollection<ParkingSlot> GetSlotsByZoneId(Guid parkingZoneId)
