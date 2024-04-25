@@ -1,0 +1,52 @@
+﻿@using ParkingZoneApp.Enums
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ParkingZoneApp.ViewModels.ParkingSlotVMs.CreateVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create a new Parking Slot</h1>
+
+<h4>ParkingSlot</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <input type="hidden" value="@Model.ParkingZoneId" asp-for="ParkingZoneId"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="Number" class="control-label"></label>
+                <input asp-for="Number" class="form-control" type="number" min="1"/>
+                <span asp-validation-for="Number" class="text-danger"></span>
+            </div>
+            <br />
+            <div>
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="Category" class="form-control" required>
+                    @foreach (var value in Enum.GetValues(typeof(SlotCategory)))
+                    {
+                        <option value="@value">@value</option>
+                    }
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <br />
+            <div>
+                <label>
+                    <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+                </label>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" /> | 
+                <a asp-route-zoneId="@Model.ParkingZoneId" asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

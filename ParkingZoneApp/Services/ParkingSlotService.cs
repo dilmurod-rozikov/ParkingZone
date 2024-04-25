@@ -13,9 +13,20 @@ namespace ParkingZoneApp.Services
             _parkingSlotRepository = parkingSlotRepository;
         }
 
+        public bool IsUniqueNumber(Guid id, int number)
+        {
+            return GetAll().Any(x => x.Number == number);
+        }
+
         public ICollection<ParkingSlot> GetSlotsByZoneId(Guid parkingZoneId)
         {
             return _parkingSlotRepository.GetAll().Where(x => x.ParkingZoneId == parkingZoneId).ToList();
+        }
+
+        public new void Insert(ParkingSlot parkingSlot)
+        {
+            parkingSlot.Id = Guid.NewGuid();
+            base.Insert(parkingSlot);
         }
     }
 }

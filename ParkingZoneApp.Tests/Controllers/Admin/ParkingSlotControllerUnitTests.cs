@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ParkingZoneApp.Areas.Admin.Controllers;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
@@ -29,7 +30,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         {
             Id = Guid.NewGuid(),
             Number = 1,
-            Category = Models.Enums.SlotCategory.Standard,
+            Category = SlotCategory.Standard,
             IsAvailable = true,
             ParkingZoneId = parkingZone.Id,
             ParkingZone = parkingZone

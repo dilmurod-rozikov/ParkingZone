@@ -4,46 +4,56 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Parking slots for @Html.DisplayNameFor(model => model)</h1>
+<h1>Slots for Parking Zone</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-controller="ParkingSlot" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-success">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.Display("Number")
+                <h6>No</h6>
             </th>
             <th>
-                @Html.Display("Category")
+                <h6>Number</h6>
             </th>
             <th>
-                @Html.Display("Available for booking")
+                <h6>Category</h6>
             </th>
             <th>
-                @Html.Display("Actions")
+                <h6>Available</h6>
+            </th>
+            <th>
+                <h6>Actions</h6>
             </th>
         </tr>
     </thead>
     <tbody>
+    @{
+        int index = 1;
+    }
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @index
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Number)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsAvailable)
+                </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsAvailable)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
             </td>
         </tr>
+    index++;
 }
     </tbody>
 </table>

@@ -1,12 +1,13 @@
 ﻿using ParkingZoneApp.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace ParkingZoneApp.ViewModels.ParkingZones
+namespace ParkingZoneApp.ViewModels.ParkingZoneVMs
 {
     public class CreateVM
     {
         [Required]
         public string Name { get; set; }
+
         [Required]
         public string Address { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
@@ -24,7 +25,7 @@ namespace ParkingZoneApp.Tests.Services
         {
             Id = Guid.NewGuid(),
             Number = 1, 
-            Category = Models.Enums.SlotCategory.Standard,
+            Category = SlotCategory.Standard,
             IsAvailable = false,
             ParkingZoneId = parkingZone.Id,
             ParkingZone = parkingZone

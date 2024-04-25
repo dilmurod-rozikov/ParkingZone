@@ -1,6 +1,6 @@
-﻿using ParkingZoneApp.Models;
+﻿using ParkingZoneApp.Enums;
+using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
-using ParkingZoneApp.Models.Enums;
 using ParkingZoneApp.ViewModels.ParkingSlots;
 using System.ComponentModel.DataAnnotations;
 

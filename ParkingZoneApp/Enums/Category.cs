@@ -1,4 +1,4 @@
-﻿namespace ParkingZoneApp.Models.Enums
+﻿namespace ParkingZoneApp.Enums
 {
     public enum SlotCategory
     {
