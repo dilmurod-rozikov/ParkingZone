@@ -5,7 +5,7 @@ using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
-using ParkingZoneApp.ViewModels.ParkingZones;
+using ParkingZoneApp.ViewModels.ParkingZoneVMs;
 using System.Text.Json;
 
 namespace ParkingZoneApp.Tests.Controllers.Admin
