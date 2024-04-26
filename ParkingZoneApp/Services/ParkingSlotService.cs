@@ -1,5 +1,4 @@
-﻿using ParkingZoneApp.Models;
-using ParkingZoneApp.Models.Entities;
+﻿using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
 

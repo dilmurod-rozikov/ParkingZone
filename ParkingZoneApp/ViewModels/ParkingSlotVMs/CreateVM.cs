@@ -10,7 +10,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
         public int Number { get; set; } = 1;
 
         [Required]
-        public SlotCategory Category { get; set; } = SlotCategory.Standard;
+        public SlotCategory Category { get; set; } 
 
         [Required]
         public bool IsAvailable { get; set; }

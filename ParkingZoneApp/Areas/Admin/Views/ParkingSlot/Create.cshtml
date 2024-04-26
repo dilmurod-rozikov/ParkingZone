@@ -22,13 +22,7 @@
             <br />
             <div>
                 <label asp-for="Category" class="control-label"></label>
-                <select asp-for="Category" class="form-control" required>
-                    @foreach (var value in Enum.GetValues(typeof(SlotCategory)))
-                    {
-                        <option value="@value">@value</option>
-                    }
-                </select>
-                <span asp-validation-for="Category" class="text-danger"></span>
+                <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()"></select>
             </div>
             <br />
             <div>
