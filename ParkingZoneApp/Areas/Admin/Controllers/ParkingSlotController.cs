@@ -49,7 +49,6 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
                 _parkingSlotService.Insert(parkingSlot);
                 return RedirectToAction("Index", new { zoneId = parkingSlot.ParkingZoneId });
             }
-
             return View(slotCreateVM);
         }
     }
