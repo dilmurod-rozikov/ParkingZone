@@ -1,10 +1,12 @@
 ﻿using Moq;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;
 using System.Text.Json;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace ParkingZoneApp.Tests.Services
 {
@@ -20,14 +22,19 @@ namespace ParkingZoneApp.Tests.Services
             CreatedDate = new DateOnly(2024, 7, 7)
         };
 
-        private readonly ParkingSlot parkingSlot = new()
+        private static readonly ParkingSlot parkingSlot = new()
         {
             Id = Guid.NewGuid(),
             Number = 1, 
-            Category = Models.Enums.SlotCategory.Standard,
+            Category = SlotCategory.Standard,
             IsAvailable = false,
             ParkingZoneId = parkingZone.Id,
             ParkingZone = parkingZone
+        };
+
+        private readonly List<ParkingSlot> slots = new List<ParkingSlot>()
+        {
+            parkingSlot,
         };
 
         public ParkingSlotServiceTests()
@@ -89,20 +96,16 @@ namespace ParkingZoneApp.Tests.Services
         public void GivenParkingSlotModel_WhenGetAllIsCalled_ThenReturnAllSlots()
         {
             //Arrange
-            var expected = new List<ParkingSlot>()
-            {
-                parkingSlot
-            };
             _parkingSlotRepositoryMock
                     .Setup(x => x.GetAll())
-                    .Returns(expected);
+                    .Returns(slots);
 
             //Act
             var result = _parkingSlotServiceMock.GetAll();
 
             //Assert
             Assert.IsType<List<ParkingSlot>>(result);
-            Assert.Equal(JsonSerializer.Serialize(expected), JsonSerializer.Serialize(result));
+            Assert.Equal(JsonSerializer.Serialize(slots), JsonSerializer.Serialize(result));
             _parkingSlotRepositoryMock.Verify(x => x.GetAll());
             _parkingSlotRepositoryMock.VerifyNoOtherCalls();
         }
@@ -130,5 +133,57 @@ namespace ParkingZoneApp.Tests.Services
 
         #endregion
 
+        #region GetSlotByZoneId
+        [Fact]
+        public void GivenParkingZoneId_WhenGetSlotsByZoneIdIsCalled_ThenReturnCollectionOfSlots()
+        {
+            //Arrange
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+
+            //Act
+            var result = _parkingSlotServiceMock.GetSlotsByZoneId(parkingZone.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<List<ParkingSlot>>(result);
+            Assert.Equal(JsonSerializer.Serialize(result), JsonSerializer.Serialize(slots));
+            _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+            _parkingSlotRepositoryMock.VerifyNoOtherCalls();
+        }
+        #endregion
+
+        #region IsUniqueNumber
+        [Fact]
+        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnTrue()
+        {
+            //Arrange
+            slots.Add(new() { Id = Guid.NewGuid(), Number = 2, ParkingZoneId = parkingZone.Id });
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+
+            //Act
+            var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 3);
+
+            //Assert
+            Assert.True(!result);
+            _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+            _parkingSlotRepositoryMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnFalse()
+        {
+            //Arrange
+            slots.Add(new() { Id = Guid.NewGuid(), Number = 1, ParkingZoneId = parkingZone.Id });
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+
+            //Act
+            var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 1);
+
+            //Assert
+            Assert.False(!result);
+            _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+            _parkingSlotRepositoryMock.VerifyNoOtherCalls();
+        }
+        #endregion
     }
 }

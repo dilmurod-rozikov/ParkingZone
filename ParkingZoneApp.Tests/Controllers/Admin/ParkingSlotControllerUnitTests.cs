@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ParkingZoneApp.Areas.Admin.Controllers;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingSlots;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 using System.Text.Json;
 
 namespace ParkingZoneApp.Tests.Controllers.Admin
@@ -19,17 +21,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Name = "name",
             Address = "address",
             CreatedDate = new DateOnly(),
-            ParkingSlots = new List<ParkingSlot>()
-            {
-                new()
-            }
+            ParkingSlots = [ new() ]
         };
 
         private readonly ParkingSlot parkingSlot = new()
         {
             Id = Guid.NewGuid(),
             Number = 1,
-            Category = Models.Enums.SlotCategory.Standard,
+            Category = SlotCategory.Standard,
             IsAvailable = true,
             ParkingZoneId = parkingZone.Id,
             ParkingZone = parkingZone
@@ -53,7 +52,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
             var expectedListOfItems = new List<ListItemVM>()
             {
-                new ListItemVM(parkingSlot) { }
+                new(parkingSlot) { }
             };
 
             _parkingSlotServiceMock
@@ -68,6 +67,91 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(expectedListOfItems));
             _parkingSlotServiceMock.Verify(x => x.GetSlotsByZoneId(parkingZone.Id), Times.Once);
             _parkingSlotServiceMock.VerifyNoOtherCalls();
+        }
+        #endregion
+
+        #region Create
+        [Fact]
+        public void GivenParkingZoneId_WhenCreateGetIsCalled_ThenReturnViewResult()
+        {
+            //Arrange
+            CreateVM expectedCreateVM = new()
+            {
+                ParkingZoneId = parkingZone.Id,
+            };
+
+            //Act
+            var result = _controller.Create(expectedCreateVM.ParkingZoneId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(expectedCreateVM.ParkingZoneId), JsonSerializer.Serialize(parkingZone.Id));
+        }
+
+        [Fact]
+        public void GivenCreateVM_WhenCreatePostIsCalled_ThenReturnModelError()
+        {
+            //Arrange
+            CreateVM expectedCreateVM = new()
+            {
+                Number = parkingSlot.Number,
+                Category = parkingSlot.Category,
+                ParkingZoneId = parkingSlot.ParkingZoneId,
+                IsAvailable = parkingSlot.IsAvailable
+            };
+
+            _parkingSlotServiceMock
+                    .Setup(x => x.IsUniqueNumber(expectedCreateVM.ParkingZoneId, expectedCreateVM.Number))
+                    .Returns(false);
+
+            //Act
+            var result = _controller.Create(expectedCreateVM);
+
+            //Assert
+            Assert.NotNull(result);
+            _parkingSlotServiceMock
+                    .Verify(x => x.IsUniqueNumber(parkingZone.Id, parkingSlot.Number), Times.Once);
+        }
+
+        [Fact]
+        public void GivenCreateVM_WhenCreatePostIsCalled_ThenModelStateIsFalseAndReturnsViewResult()
+        {
+            //Arrange
+            CreateVM expectedCreateVM = new();
+            _controller.ModelState.AddModelError("Number", "Number is required");
+
+            //Act
+            var result = _controller.Create(expectedCreateVM);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.IsAssignableFrom<CreateVM>(model);
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Equal(JsonSerializer.Serialize(expectedCreateVM), JsonSerializer.Serialize(model));
+        }
+
+        [Fact]
+        public void GivenCreateVM_WhenCreatePostIsCalled_ThenModelStateIsTrueAndReturnsRedirectToIndex()
+        {
+            //Arrange
+            CreateVM expectedCreateVM = new()
+            {
+                Number = parkingSlot.Number,
+                Category = parkingSlot.Category,
+                IsAvailable = parkingSlot.IsAvailable,
+                ParkingZoneId = parkingSlot.ParkingZoneId,
+            };
+
+            _parkingSlotServiceMock
+                    .Setup(x => x.Insert(parkingSlot));
+
+            //Act
+            var result = _controller.Create(expectedCreateVM);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.True(_controller.ModelState.IsValid);
+            _parkingSlotServiceMock.Verify(x => x.Insert(It.IsAny<ParkingSlot>()), Times.Once);
         }
         #endregion
     }

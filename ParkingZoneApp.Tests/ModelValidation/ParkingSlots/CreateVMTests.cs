@@ -1,31 +1,32 @@
-﻿using ParkingZoneApp.ViewModels.ParkingZoneVMs;
+﻿using ParkingZoneApp.Enums;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 using System.ComponentModel.DataAnnotations;
 
-namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
+namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
 {
     public class CreateVMTests
     {
         public static IEnumerable<object[]> TestData =>
-            new List<object[]>
-            {
-                new object[] { null, "test 1", false },
-                new object[] { "test 2", null, false },
-                new object[] { "test 3", "test 3", true },
-            };
+             new List<object[]>
+             {
+                 new object[] { 20, SlotCategory.VIP, true, Guid.NewGuid(), true },
+             };
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingCreateVM_ThenValidationIsPerformed
-            (string name, string address, bool expectedValidation)
+            (int number, SlotCategory category, bool isAvailable, Guid id, bool expectedValidation)
         {
             //Arrange
             CreateVM createVM = new CreateVM()
             {
-                Name = name,
-                Address = address,
+                Number = number,
+                Category = category,
+                IsAvailable = isAvailable,
+                ParkingZoneId = id,
             };
 
-            var validationContext = new ValidationContext(createVM, null, null);
+            var validationContext = new ValidationContext(createVM);
             var validationResult = new List<ValidationResult>();
 
             //Act

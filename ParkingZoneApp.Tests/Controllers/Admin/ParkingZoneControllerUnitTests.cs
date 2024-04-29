@@ -5,7 +5,7 @@ using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
-using ParkingZoneApp.ViewModels.ParkingZones;
+using ParkingZoneApp.ViewModels.ParkingZoneVMs;
 using System.Text.Json;
 
 namespace ParkingZoneApp.Tests.Controllers.Admin
@@ -116,7 +116,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                 Address = "Test Address",
             };
 
-            _parkingZoneServiceMock 
+            _parkingZoneServiceMock
                     .Setup(x => x.Insert(parkingZone));
 
             //Act
@@ -134,7 +134,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         {
             //Arrange
             CreateVM createVM = new CreateVM();
-
             _controller.ModelState.AddModelError("id", "id is required");
     
             //Act
@@ -210,7 +209,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidParkingZoneId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
         {
             //Arrange
-            EditVM editVM = new EditVM(parkingZone);
             _controller.ModelState.AddModelError("field", "property is invalid");
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
@@ -220,7 +218,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             var result = _controller.Edit(parkingZone.Id);
 
             //Assert
-            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.IsType<ViewResult>(result);
             Assert.NotNull(result);
             Assert.False(_controller.ModelState.IsValid);
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);

@@ -4,31 +4,40 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Parking slots for @Html.DisplayNameFor(model => model)</h1>
+<h1>Slots for Parking Zone</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-controller="ParkingSlot" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-success">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.Display("Number")
+                @Html.DisplayName("No")
             </th>
             <th>
-                @Html.Display("Category")
+                @Html.DisplayName("Number")
             </th>
             <th>
-                @Html.Display("Available for booking")
+                @Html.DisplayName("Category")
             </th>
             <th>
-                @Html.Display("Actions")
+                @Html.DisplayName("Available")
+            </th>
+            <th>
+                @Html.DisplayName("Actions")
             </th>
         </tr>
     </thead>
     <tbody>
+    @{
+        int index = 1;
+    }
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @index
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Number)
             </td>
@@ -36,14 +45,15 @@
                 @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsAvailable)
+                @Html.Raw(item.IsAvailable ? "Available" : "Not Available")
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
             </td>
         </tr>
+    index++;
 }
     </tbody>
 </table>
