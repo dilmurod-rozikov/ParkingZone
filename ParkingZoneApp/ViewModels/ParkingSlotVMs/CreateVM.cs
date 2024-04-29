@@ -7,10 +7,10 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
     public class CreateVM
     {
         [Required]
-        public int Number { get; set; } = 1;
+        public int Number { get; set; }
 
         [Required]
-        public SlotCategory Category { get; set; } 
+        public SlotCategory Category { get; set; }
 
         [Required]
         public bool IsAvailable { get; set; }

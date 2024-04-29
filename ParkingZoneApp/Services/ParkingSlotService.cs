@@ -15,7 +15,7 @@ namespace ParkingZoneApp.Services
 
         public bool IsUniqueNumber(Guid id, int number)
         {
-            return GetSlotsByZoneId(id).Any(x => x.Number == number);
+            return !GetSlotsByZoneId(id).Any(x => x.Number == number);
         }
 
         public ICollection<ParkingSlot> GetSlotsByZoneId(Guid parkingZoneId)

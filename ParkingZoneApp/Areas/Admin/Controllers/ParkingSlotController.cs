@@ -20,15 +20,14 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         {
             var parkingSlots = _parkingSlotService.GetSlotsByZoneId(zoneId);
             var listItemVMs = ListItemVM.MapToVM(parkingSlots).ToList();
-            var sorted = listItemVMs.OrderBy(item => item.Number);
             ViewData["parkingZoneId"] = zoneId;
-            return View(sorted);
+            return View(listItemVMs);
         }
 
         [HttpGet]
         public IActionResult Create(Guid parkingZoneId)
         {
-            CreateVM createVM = new CreateVM()
+            CreateVM createVM = new()
             {
                 ParkingZoneId = parkingZoneId
             };

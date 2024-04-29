@@ -116,7 +116,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                 Address = "Test Address",
             };
 
-            _parkingZoneServiceMock 
+            _parkingZoneServiceMock
                     .Setup(x => x.Insert(parkingZone));
 
             //Act

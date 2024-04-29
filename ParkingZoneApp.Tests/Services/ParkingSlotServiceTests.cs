@@ -154,7 +154,7 @@ namespace ParkingZoneApp.Tests.Services
 
         #region IsUniqueNumber
         [Fact]
-        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnTrueIfNumberIsUnique()
+        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnTrue()
         {
             //Arrange
             slots.Add(new() { Id = Guid.NewGuid(), Number = 2, ParkingZoneId = parkingZone.Id });
@@ -164,13 +164,13 @@ namespace ParkingZoneApp.Tests.Services
             var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 3);
 
             //Assert
-            Assert.True(!result);
+            Assert.True(result);
             _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
             _parkingSlotRepositoryMock.VerifyNoOtherCalls();
         }
 
         [Fact]
-        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnFalseIfNumberIsUnique()
+        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnFalse()
         {
             //Arrange
             slots.Add(new() { Id = Guid.NewGuid(), Number = 1, ParkingZoneId = parkingZone.Id });
@@ -180,7 +180,7 @@ namespace ParkingZoneApp.Tests.Services
             var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 1);
 
             //Assert
-            Assert.False(!result);
+            Assert.False(result);
             _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
             _parkingSlotRepositoryMock.VerifyNoOtherCalls();
         }
