@@ -14,15 +14,12 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     {
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly ParkingZonesController _controller;
-        private readonly ParkingZone parkingZone = new ParkingZone()
+        private readonly ParkingZone parkingZone = new()
         {
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
-            ParkingSlots = new List<ParkingSlot>()
-            {
-                new()
-            }
+            ParkingSlots = [ new() ]
         };
 
         public ParkingZoneControllerUnitTests()
@@ -42,7 +39,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             };
             var expectedListOfItems = new List<ListItemVM>()
             {
-                new ListItemVM(parkingZone) { }
+                new(parkingZone)
             };
 
             _parkingZoneServiceMock
@@ -66,8 +63,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnViewResult()
         {
             //Arrange 
-            DetailsVM detailsVM = new DetailsVM()
-            { 
+            DetailsVM detailsVM = new()
+            {
                 Id = parkingZone.Id,
                 Name = parkingZone.Name,
                 Address = parkingZone.Address,
@@ -110,7 +107,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsTrueAndReturnsRedirectToIndex()
         {
             //Arrange
-            var createVM = new CreateVM()
+            CreateVM createVM = new()
             {
                 Name = "Test Name",
                 Address = "Test Address",
@@ -150,7 +147,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenNothing_WhenGetCreateIsCalled_ReturnsViewResult()
         {
             //Arrange
-      
+
             //Act
             var result = _controller.Create();
 
@@ -165,8 +162,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidIDAndEditVM_WhenPostEditIsCalled_ThenModelStateIsTrueReturnsRedirectToIndex()
         {
             //Arrange
-            EditVM editVM = new(parkingZone);
-            editVM.Address = null;
+            EditVM editVM = new(parkingZone)
+            {
+                Address = null
+            };
 
             _parkingZoneServiceMock
                     .Setup(x => x.GetById(parkingZone.Id))
@@ -239,8 +238,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.IsType<NotFoundResult>(result);
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
-
-
         #endregion
 
         #region Delete
