@@ -15,7 +15,6 @@ namespace ParkingZoneApp.Areas.Admin
             _parkingZoneService = parkingZoneService;
         }
 
-        // GET: Admin/ParkingZones
         public IActionResult Index()
         {
             var parkingZones = _parkingZoneService.GetAll();
@@ -23,7 +22,6 @@ namespace ParkingZoneApp.Areas.Admin
             return View(listItemVMs);
         }
 
-        // GET: Admin/ParkingZones/Details/5
         public IActionResult Details(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
@@ -35,13 +33,11 @@ namespace ParkingZoneApp.Areas.Admin
             return View(detailsVM);
         }
 
-        // GET: Admin/ParkingZones/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/ParkingZones/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateVM parkingZoneCreateVM)
@@ -56,7 +52,6 @@ namespace ParkingZoneApp.Areas.Admin
             return View(parkingZoneCreateVM);
         }
 
-        // GET: Admin/ParkingZones/Edit/5
         public IActionResult Edit(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
@@ -68,9 +63,6 @@ namespace ParkingZoneApp.Areas.Admin
             return View(parkingZoneEditVM);
         }
 
-        // POST: Admin/ParkingZones/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, EditVM parkingZoneEditVM)
@@ -87,12 +79,9 @@ namespace ParkingZoneApp.Areas.Admin
                     parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
                     _parkingZoneService.Update(parkingZone);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException) when (!ParkingZoneExists(parkingZone.Id))
                 {
-                    if (!ParkingZoneExists(parkingZone.Id))
-                        return NotFound();
-                    else
-                        throw;
+                    return NotFound();
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -100,7 +89,6 @@ namespace ParkingZoneApp.Areas.Admin
             return View(parkingZoneEditVM);
         }
 
-        // GET: Admin/ParkingZones/Delete/5
         public IActionResult Delete(Guid id)
         {
             var parkingZone = _parkingZoneService.GetById(id);
@@ -111,7 +99,6 @@ namespace ParkingZoneApp.Areas.Admin
             return View(parkingZone);
         }
 
-        // POST: Admin/ParkingZones/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)

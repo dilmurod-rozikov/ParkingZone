@@ -1,39 +1,38 @@
-﻿using ParkingZoneApp.ViewModels.ParkingZoneVMs;
+﻿using ParkingZoneApp.Enums;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 using System.ComponentModel.DataAnnotations;
-
-namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
+namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
 {
     public class EditVMTests
     {
         public static IEnumerable<object[]> TestData =>
-           new List<object[]>
-           {
-                new object[] { Guid.NewGuid(), null, "Test1", false },
-                new object[] { Guid.NewGuid(), "Test3", null, false },
-                new object[] { Guid.NewGuid(), "Test5", "Test5", true }
-           };
+            new List<object[]>
+            {
+                new object[] { Guid.NewGuid(), 12, SlotCategory.VIP, true, Guid.NewGuid(), true},
+            };
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingEditVM_ThenValidationIsPerformed
-            (Guid id, string name, string address, bool expectedValidation)
+            (Guid id, int number, SlotCategory category, bool isAvailable, Guid parkingZoneId, bool expectedValidation)
         {
             //Arrange
             EditVM editVM = new()
             {
                 Id = id,
-                Name = name,
-                Address = address,
+                Number = number,
+                Category = category,
+                IsAvailable = isAvailable,
+                ParkingZoneId = parkingZoneId,
             };
 
             var validationContext = new ValidationContext(editVM, null, null);
             var validationResult = new List<ValidationResult>();
-
             //Act
             var result = Validator.TryValidateObject(editVM, validationContext, validationResult);
 
             //Assert
-            Assert.Equal(expectedValidation, result);
+            Assert.Equal(result, expectedValidation);
         }
     }
 }

@@ -6,7 +6,6 @@ using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;
 using System.Text.Json;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace ParkingZoneApp.Tests.Services
 {
@@ -14,28 +13,25 @@ namespace ParkingZoneApp.Tests.Services
     {
         private readonly Mock<IParkingSlotRepository> _parkingSlotRepositoryMock;
         private readonly IParkingSlotService _parkingSlotServiceMock;
-        private static readonly ParkingZone parkingZone = new ParkingZone()
+        private static readonly ParkingZone parkingZone = new()
         {
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
-            CreatedDate = new DateOnly(2024, 7, 7)
+            CreatedDate = new(2024, 7, 7)
         };
 
         private static readonly ParkingSlot parkingSlot = new()
         {
             Id = Guid.NewGuid(),
-            Number = 1, 
+            Number = 1,
             Category = SlotCategory.Standard,
             IsAvailable = false,
             ParkingZoneId = parkingZone.Id,
             ParkingZone = parkingZone
         };
 
-        private readonly List<ParkingSlot> slots = new List<ParkingSlot>()
-        {
-            parkingSlot,
-        };
+        private readonly List<ParkingSlot> slots = [parkingSlot];
 
         public ParkingSlotServiceTests()
         {
@@ -164,7 +160,7 @@ namespace ParkingZoneApp.Tests.Services
             var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 3);
 
             //Assert
-            Assert.True(!result);
+            Assert.False(result);
             _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
             _parkingSlotRepositoryMock.VerifyNoOtherCalls();
         }
@@ -180,7 +176,7 @@ namespace ParkingZoneApp.Tests.Services
             var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 1);
 
             //Assert
-            Assert.False(!result);
+            Assert.True(result);
             _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
             _parkingSlotRepositoryMock.VerifyNoOtherCalls();
         }

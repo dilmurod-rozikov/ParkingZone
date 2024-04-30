@@ -1,4 +1,5 @@
 ﻿using ParkingZoneApp.Enums;
+using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
@@ -25,7 +26,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
                 Number = Number,
                 Category = Category,
                 IsAvailable = IsAvailable,
-                ParkingZoneId = ParkingZoneId
+                ParkingZoneId = ParkingZoneId,
             };
         }
     }

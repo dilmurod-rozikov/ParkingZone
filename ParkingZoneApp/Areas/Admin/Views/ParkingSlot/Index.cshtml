@@ -4,11 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Slots for Parking Zone</h1>
-
-<p>
-    <a asp-action="Create" asp-controller="ParkingSlot" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-success">Create New</a>
-</p>
+<h1>List of all slots for @ViewData["name"]</h1>
+<a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-success">Create New</a>
 <table class="table">
     <thead>
         <tr>
@@ -57,3 +54,6 @@
 }
     </tbody>
 </table>
+<div class="form-group">
+    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back to ParkingZone</a>
+</div>
