@@ -18,7 +18,7 @@ namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
             (int number, SlotCategory category, bool isAvailable, Guid id, bool expectedValidation)
         {
             //Arrange
-            CreateVM createVM = new CreateVM()
+            CreateVM createVM = new()
             {
                 Number = number,
                 Category = category,

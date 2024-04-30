@@ -11,16 +11,20 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
     public class ParkingSlotController : Controller
     {
         private readonly IParkingSlotService _parkingSlotService;
-        public ParkingSlotController(IParkingSlotService parkingSlotService)
+        private readonly IParkingZoneService _parkingZoneService;
+        public ParkingSlotController(IParkingSlotService parkingSlotService, IParkingZoneService parkingZoneService)
         {
             _parkingSlotService = parkingSlotService;
+            _parkingZoneService = parkingZoneService;
         }
 
         public IActionResult Index(Guid zoneId)
         {
             var parkingSlots = _parkingSlotService.GetSlotsByZoneId(zoneId);
             var listItemVMs = ListItemVM.MapToVM(parkingSlots).ToList();
+            var zone = _parkingZoneService.GetById(zoneId);
             ViewData["parkingZoneId"] = zoneId;
+            ViewData["name"] = zone?.Name;
             return View(listItemVMs);
         }
 
@@ -29,7 +33,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         {
             CreateVM createVM = new()
             {
-                ParkingZoneId = parkingZoneId
+                ParkingZoneId = parkingZoneId,
             };
             return View(createVM);
         }
@@ -42,6 +46,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Number", "The parking slot number is not unique");
             }
+
             if (ModelState.IsValid)
             {
                 var parkingSlot = slotCreateVM.MapToModel();
@@ -49,6 +54,42 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
                 return RedirectToAction("Index", new { zoneId = parkingSlot.ParkingZoneId });
             }
             return View(slotCreateVM);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(Guid id)
+        {
+            var slot = _parkingSlotService.GetById(id);
+
+            if (slot is null)
+                return NotFound();
+
+            var editVM = new EditVM(slot);
+            return View(editVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(EditVM slotEditVM, Guid id)
+        {
+            var slot = _parkingSlotService.GetById(id);
+
+            if (slot is null)
+                return NotFound();
+
+            if (_parkingSlotService.IsUniqueNumber(slotEditVM.ParkingZoneId, slotEditVM.Number))
+            {
+                ModelState.AddModelError("Number", "The parking slot number is not unique or not changed");
+            }
+
+            if (ModelState.IsValid)
+            {
+                slot = slotEditVM.MapToModel(slot);
+                _parkingSlotService.Update(slot);
+                return RedirectToAction("Index", new { zoneId = slot.ParkingZoneId });
+            }
+
+            return View(slotEditVM);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     public class ParkingSlotControllerUnitTests
     {
         private readonly Mock<IParkingSlotService> _parkingSlotServiceMock;
+        private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly ParkingSlotController _controller;
         private static readonly ParkingZone parkingZone = new()
         {
@@ -36,8 +37,9 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         public ParkingSlotControllerUnitTests()
         {
-            _parkingSlotServiceMock =new Mock<IParkingSlotService>();
-            _controller = new ParkingSlotController(_parkingSlotServiceMock.Object);
+            _parkingSlotServiceMock = new Mock<IParkingSlotService>();
+            _parkingZoneServiceMock = new Mock<IParkingZoneService>();
+            _controller = new ParkingSlotController(_parkingSlotServiceMock.Object, _parkingZoneServiceMock.Object);
         }
 
         #region Index
@@ -152,6 +154,110 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.NotNull(result);
             Assert.True(_controller.ModelState.IsValid);
             _parkingSlotServiceMock.Verify(x => x.Insert(It.IsAny<ParkingSlot>()), Times.Once);
+        }
+        #endregion
+
+        #region Edit
+        [Fact]
+        public void GivenParkingSlotId_WhenEditGetIsCalled_ThenReturnViewResult()
+        {
+            //Arrange
+            EditVM expectedEditVM = new(parkingSlot);
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+
+            //Act
+            var result = _controller.Edit(parkingSlot.Id);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(expectedEditVM));
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenParkingSlotId_WhenEditGetIsCalled_ThenReturnNotFound()
+        {
+            //Arrange
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
+
+            //Act
+            var result = _controller.Edit(parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnNotFound()
+        {
+            //Arrange
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
+
+            //Act
+            var result = _controller.Edit(parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnModelError()
+        {
+            //Arrange
+            EditVM editVM = new(parkingSlot);
+            _controller.ModelState.AddModelError("Number", "Number is not valid");
+            _parkingSlotServiceMock
+                    .Setup(x => x.GetById(parkingSlot.Id))
+                    .Returns(parkingSlot);
+            _parkingSlotServiceMock
+                    .Setup(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number))
+                    .Returns(false);
+
+            //Act
+            var result = _controller.Edit(editVM, parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.False(_controller.ModelState.IsValid);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+            _parkingSlotServiceMock
+                    .Verify(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number), Times.Once);
+        }
+
+        [Fact]
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenModelStateIsValidReturnsToIndex()
+        {
+            //Arrange
+            EditVM editVM = new(parkingSlot);
+            editVM.Number = 123;
+            var slot = editVM.MapToModel(parkingSlot);
+            _parkingSlotServiceMock
+                    .Setup(x => x.GetById(parkingSlot.Id))
+                    .Returns(parkingSlot);
+
+            _parkingSlotServiceMock.Setup(x => x.Update(slot));
+
+            _parkingSlotServiceMock
+                    .Setup(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number))
+                    .Returns(false);
+
+            //Act
+            var result = _controller.Edit(editVM, parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.NotEqual(JsonSerializer.Serialize(result), JsonSerializer.Serialize(editVM));
+            Assert.IsType<RedirectToActionResult>(result);
+            Assert.True(_controller.ModelState.IsValid);
+            _parkingSlotServiceMock.Verify(x => x.Update(parkingSlot), Times.Once);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+            _parkingSlotServiceMock
+                    .Verify(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number), Times.Once);
         }
         #endregion
     }

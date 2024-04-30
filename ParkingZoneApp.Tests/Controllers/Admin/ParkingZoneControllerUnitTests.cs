@@ -133,7 +133,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenInvalidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult()
         {
             //Arrange
-            CreateVM createVM = new CreateVM();
+            CreateVM createVM = new();
             _controller.ModelState.AddModelError("id", "id is required");
     
             //Act
@@ -165,7 +165,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenValidIDAndEditVM_WhenPostEditIsCalled_ThenModelStateIsTrueReturnsRedirectToIndex()
         {
             //Arrange
-            EditVM editVM = new EditVM(parkingZone);
+            EditVM editVM = new(parkingZone);
             editVM.Address = null;
 
             _parkingZoneServiceMock
@@ -239,6 +239,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.IsType<NotFoundResult>(result);
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once);
         }
+
+
         #endregion
 
         #region Delete

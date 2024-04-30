@@ -19,7 +19,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
             (Guid id, string name, string address, bool expectedValidation)
         {
             //Arrange
-            EditVM editVM = new EditVM()
+            EditVM editVM = new()
             {
                 Id = id,
                 Name = name,
