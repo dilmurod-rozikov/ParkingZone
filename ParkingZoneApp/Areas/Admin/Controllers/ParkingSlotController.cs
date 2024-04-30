@@ -72,8 +72,8 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EditVM slotEditVM, Guid id)
         {
-            if (id != slotEditVM.Id) 
-                return NotFound(nameof(slotEditVM));
+            if (id != slotEditVM.Id)
+                return NotFound();
             var slot = _parkingSlotService.GetById(id);
 
             if (slot is null)

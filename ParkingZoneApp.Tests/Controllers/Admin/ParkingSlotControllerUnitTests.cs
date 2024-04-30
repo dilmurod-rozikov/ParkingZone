@@ -191,18 +191,34 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnNotFound()
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnNotFoundIfIdAndSlotIdDoesNotMatch()
         {
             //Arrange
-            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
+            EditVM editVM = new(parkingSlot);
 
             //Act
-            var result = _controller.Edit(parkingSlot.Id);
+            var result = _controller.Edit(editVM, parkingSlot.Id);
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<NotFoundResult>(result);
-            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnNotFoundIfSlotIsNull()
+        {
+            //Arrange
+            EditVM editVM = new(parkingSlot);
+            editVM.Id = Guid.Empty;
+            _parkingSlotServiceMock.Setup(x => x.GetById(editVM.Id));
+
+
+            //Act
+            var result = _controller.Edit(editVM, editVM.Id);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+            _parkingSlotServiceMock.Verify(x => x.GetById(editVM.Id), Times.Once);
         }
 
         [Fact]
