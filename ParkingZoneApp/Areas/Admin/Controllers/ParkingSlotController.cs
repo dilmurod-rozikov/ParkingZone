@@ -77,9 +77,9 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             if (slot is null)
                 return NotFound();
 
-            if (_parkingSlotService.IsUniqueNumber(slotEditVM.ParkingZoneId, slotEditVM.Number))
+            if (_parkingSlotService.IsUniqueNumber(slotEditVM.ParkingZoneId, slotEditVM.Number) && slot.Number != slotEditVM.Number)
             {
-                ModelState.AddModelError("Number", "The parking slot number is not unique or not changed");
+                ModelState.AddModelError("Number", "The parking slot number is not unique");
             }
 
             if (ModelState.IsValid)

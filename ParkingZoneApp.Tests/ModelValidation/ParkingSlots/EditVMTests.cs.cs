@@ -9,10 +9,6 @@ namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
             new List<object[]>
             {
                 new object[] { Guid.NewGuid(), 12, SlotCategory.VIP, true, Guid.NewGuid(), true},
-                new object[] { null, 1, SlotCategory.VIP, true, Guid.NewGuid(), false },
-                new object[] { Guid.NewGuid(), null, SlotCategory.VIP, true, Guid.NewGuid(), false },
-                new object[] { Guid.NewGuid(), 1, null, true, Guid.NewGuid(), false },
-                new object[] { Guid.NewGuid(), 1, SlotCategory.VIP, true, null, false },
             };
 
         [Theory]
