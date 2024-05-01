@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParkingZoneApp", "ParkingZoneApp.csproj", "{2CA2179D-247D-4EAF-AE1D-DF43881A2F9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParkingZoneApp.Tests", "..\ParkingZoneApp.Tests\ParkingZoneApp.Tests.csproj", "{78E0301C-3F91-44E6-8B6A-C087BC28B10B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParkingZoneApp.Tests", "..\ParkingZoneApp.Tests\ParkingZoneApp.Tests.csproj", "{78E0301C-3F91-44E6-8B6A-C087BC28B10B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
