@@ -93,5 +93,17 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
 
             return View(slotEditVM);
         }
+
+        [HttpGet]
+        public IActionResult Details(Guid id)
+        {
+            var slot = _parkingSlotService.GetById(id);
+
+            if (slot is null)
+                return NotFound();
+
+            DetailsVM detailsVM = new(slot);
+            return View(detailsVM);
+        }
     }
 }

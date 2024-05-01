@@ -21,7 +21,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingZones
             (Guid? id, string name, string address, DateOnly? createdDate, bool expectedValidation)
         {
             //Arrange
-            DetailsVM detailsVM = new DetailsVM()
+            DetailsVM detailsVM = new()
             {
                 Id = id,
                 Name = name,

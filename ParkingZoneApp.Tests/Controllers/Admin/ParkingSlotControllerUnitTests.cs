@@ -276,5 +276,39 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                     .Verify(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number), Times.Once);
         }
         #endregion
+
+        #region Details
+        [Fact]
+        public void GivenParkingSlotId_WhenGetDetailsIsCalled_ThenReturnViewResult()
+        {
+            //Arrange
+            DetailsVM expectedVM = new(parkingSlot);
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+
+            //Act
+            var result = _controller.Details(parkingSlot.Id);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(expectedVM));
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenParkingSlotId_WhenGetDetailsIsCalled_ThenReturnNotFound()
+        {
+            //Arrange
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
+
+            //Act
+            var result = _controller.Details(parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+        #endregion
     }
 }
