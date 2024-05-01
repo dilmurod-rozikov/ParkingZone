@@ -208,10 +208,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnNotFoundIfSlotIsNull()
         {
             //Arrange
-            EditVM editVM = new(parkingSlot);
-            editVM.Id = Guid.Empty;
+            EditVM editVM = new(parkingSlot)
+            {
+                Id = Guid.Empty
+            };
             _parkingSlotServiceMock.Setup(x => x.GetById(editVM.Id));
-
 
             //Act
             var result = _controller.Edit(editVM, editVM.Id);
@@ -249,8 +250,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenModelStateIsValidReturnsToIndex()
         {
             //Arrange
-            EditVM editVM = new(parkingSlot);
-            editVM.Number = 123;
+            EditVM editVM = new(parkingSlot)
+            {
+                Number = 123
+            };
             var slot = editVM.MapToModel(parkingSlot);
             _parkingSlotServiceMock
                     .Setup(x => x.GetById(parkingSlot.Id))
@@ -308,6 +311,70 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.NotNull(result);
             Assert.IsType<NotFoundResult>(result);
             _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+        #endregion
+
+        #region Delete
+        [Fact]
+        public void GivenParkingSlotId_WhenGetDeleteIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
+
+            //Act
+            var result = _controller.Delete(parkingSlot.Id);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenParkingSlotId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
+        {
+            //Arrange
+            _parkingSlotServiceMock
+                    .Setup(x => x.GetById(parkingSlot.Id))
+                    .Returns(parkingSlot);
+
+            //Act
+            var result = _controller.Delete(parkingSlot.Id);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(parkingSlot));
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenParkingSlotId_WhenPostDeleteIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
+
+            //Act
+            var result = _controller.Delete(parkingSlot.Id);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenParkingSlotId_WhenPostDeleteIsCalled_ThenReturnsRedirectToActionResult()
+        {
+            //Arrange
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+            _parkingSlotServiceMock.Setup(x => x.Remove(parkingSlot));
+
+            //Act
+            var result = _controller.DeleteConfirmed(parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+            _parkingSlotServiceMock.Verify(x => x.Remove(parkingSlot), Times.Once);
         }
         #endregion
     }
