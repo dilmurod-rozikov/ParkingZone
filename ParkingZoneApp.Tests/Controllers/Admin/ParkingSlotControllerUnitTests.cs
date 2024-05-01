@@ -208,10 +208,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnNotFoundIfSlotIsNull()
         {
             //Arrange
-            EditVM editVM = new(parkingSlot);
-            editVM.Id = Guid.Empty;
+            EditVM editVM = new(parkingSlot)
+            {
+                Id = Guid.Empty
+            };
             _parkingSlotServiceMock.Setup(x => x.GetById(editVM.Id));
-
 
             //Act
             var result = _controller.Edit(editVM, editVM.Id);
@@ -249,8 +250,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenModelStateIsValidReturnsToIndex()
         {
             //Arrange
-            EditVM editVM = new(parkingSlot);
-            editVM.Number = 123;
+            EditVM editVM = new(parkingSlot)
+            {
+                Number = 123
+            };
             var slot = editVM.MapToModel(parkingSlot);
             _parkingSlotServiceMock
                     .Setup(x => x.GetById(parkingSlot.Id))
