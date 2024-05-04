@@ -5,6 +5,7 @@ using ParkingZoneApp.Repository;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.Services;
+using ParkingZoneApp.Models.Entities;
 
 namespace ParkingZoneApp
 {
@@ -27,7 +28,7 @@ namespace ParkingZoneApp
             builder.Services.AddScoped<IParkingSlotService, ParkingSlotService>();
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddDefaultIdentity<IdentityUser>()
+            builder.Services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
             
