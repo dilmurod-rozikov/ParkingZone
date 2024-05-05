@@ -65,7 +65,8 @@ namespace ParkingZoneApp.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             var name = user.Name;
-            userName = user.UserName;
+
+            Username = userName;
 
             Input = new InputModel
             {
@@ -115,7 +116,6 @@ namespace ParkingZoneApp.Areas.Identity.Pages.Account.Manage
             if (Input.Name != user.Name)
             {
                 user.Name = Input.Name;
-                user.UserName = Input.Name;
                 var setNameResult = await _userManager.UpdateAsync(user);
                 if (!setNameResult.Succeeded)
                 {

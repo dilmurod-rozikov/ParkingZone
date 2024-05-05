@@ -16,6 +16,10 @@
                 <label asp-for="Input.Name" class="form-label">Enter your name</label>
             </div>
             <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" />
+                <label asp-for="Username" class="form-label">Enter your username</label>
+            </div>
+            <div class="form-floating mb-3">
                 <input asp-for="Input.PhoneNumber" class="form-control"/>
                 <label asp-for="Input.PhoneNumber" class="form-label">Enter your phone number</label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
