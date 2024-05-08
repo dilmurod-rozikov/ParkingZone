@@ -32,7 +32,8 @@ namespace ParkingZoneApp.Controllers
         {
             var zones = _parkingZoneService.GetAll().ToList();
             freeSlotsVMs.ListOfZones = new SelectList(zones, "Id", "Name");
-            freeSlotsVMs.ParkingSlots = _parkingSlotService.GetAllFreeSlots(freeSlotsVMs.SelectedZoneId);
+            freeSlotsVMs.ParkingSlots = _parkingSlotService
+                .GetAllFreeSlots(freeSlotsVMs.SelectedZoneId, freeSlotsVMs.StartingTime, freeSlotsVMs.Duration);
             return View(freeSlotsVMs);
         }
     }

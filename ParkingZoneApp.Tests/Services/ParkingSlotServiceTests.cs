@@ -13,6 +13,7 @@ namespace ParkingZoneApp.Tests.Services
     {
         private readonly Mock<IParkingSlotRepository> _parkingSlotRepositoryMock;
         private readonly IParkingSlotService _parkingSlotServiceMock;
+        private static readonly Guid slotId = Guid.NewGuid();
         private static readonly ParkingZone parkingZone = new()
         {
             Id = Guid.NewGuid(),
@@ -23,12 +24,24 @@ namespace ParkingZoneApp.Tests.Services
 
         private static readonly ParkingSlot parkingSlot = new()
         {
-            Id = Guid.NewGuid(),
+            Id = slotId,
             Number = 1,
             Category = SlotCategory.Standard,
-            IsAvailable = false,
+            IsAvailable = true,
             ParkingZoneId = parkingZone.Id,
-            ParkingZone = parkingZone
+            ParkingZone = parkingZone,
+            Reservations = new List<Reservation>()
+            {
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    StartingTime = DateTime.UtcNow,
+                    Duration = 1,
+                    SlotId = slotId,
+                    ZoneId = parkingZone.Id,
+                    ParkingSlot = parkingSlot,
+                }
+            }
         };
 
         private readonly List<ParkingSlot> slots = [parkingSlot];
@@ -181,5 +194,59 @@ namespace ParkingZoneApp.Tests.Services
             _parkingSlotRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
+
+        #region IsSlotAvailableForReservation
+        [Fact]
+        public void GivenSlotStartTimeAndDuration_WhenIsSlotAvailableForReservationIsCalled_ThenReturnTrue()
+        {
+            //Arrange
+           
+            //Act
+            var result = _parkingSlotServiceMock.IsSlotAvailableForReservation(parkingSlot, DateTime.UtcNow.AddHours(2), 2);
+
+            //Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void GivenSlotStartTimeAndDuration_WhenIsSlotAvailableForReservationIsCalled_ThenReturnFalse()
+        {
+            //Arrange
+
+            //Act
+            var result = _parkingSlotServiceMock.IsSlotAvailableForReservation(parkingSlot, DateTime.UtcNow, 2);
+
+            //Assert
+            Assert.False(result);
+        }
+        #endregion
+
+        #region GetAllFreeSlots
+        [Fact]
+        public void GivenParkingZoneIdStartingTimeAndDuration_WhenGetAllFreeSlotsIsCalled_ThenReturnCollectionOfSlots()
+        {
+            //Arrange
+            Reservation reservation = new()
+            {
+                Id = Guid.NewGuid(),
+                StartingTime = DateTime.UtcNow,
+                Duration = 1,
+                SlotId = slotId,
+                ZoneId = parkingZone.Id,
+                ParkingSlot = parkingSlot,
+            };
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+
+            //Act
+            var result = _parkingSlotServiceMock
+                .GetAllFreeSlots(parkingZone.Id, reservation.StartingTime, reservation.Duration);
+
+            //Assert
+            Assert.NotNull(result);
+            _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+            _parkingSlotRepositoryMock.VerifyNoOtherCalls();
+        }
+        #endregion
+
     }
 }

@@ -7,6 +7,8 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
 {
     public class FreeSlotsVMs
     {
+        public static DateTime now = DateTime.Now;
+
         [Required]
         public Guid Id { get; set; }
 
@@ -15,7 +17,7 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         public int Duration { get; set; }
 
         [Required]
-        public DateTime StartingTime { get; set; } = DateTime.Now;
+        public DateTime StartingTime { get; set; } = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
 
         [Required]
         public Guid SelectedZoneId { get; set; }

@@ -45,7 +45,6 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             _controller = new ReservationController(_reservationServiceMock.Object, _zoneServiceMock.Object, _slotServiceMock.Object);
         }
 
-
         #region FreeSlots
         [Fact]
         public void GivenNothing_WhenGetFreeSlotsIsCalled_ThenReturnViewResult()
@@ -60,8 +59,9 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             var result = _controller.FreeSlots();
 
             //Assert
-            Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(expected[0]));
             _zoneServiceMock.Verify(x => x.GetAll(), Times.Once);
         }
 
@@ -73,20 +73,24 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             {
                 Id = Guid.NewGuid(),
                 Duration = 1,
-                StartingTime = DateTime.UtcNow,
-                SelectedZoneId =parkingZone.Id
+                StartingTime = DateTime.Now,
+                SelectedZoneId = parkingZone.Id
             };
 
             _zoneServiceMock.Setup(x => x.GetAll()).Returns(parkingZones);
-            _slotServiceMock.Setup(x => x.GetAllFreeSlots(freeSlotsVMs.SelectedZoneId)).Returns(parkingSlots);
+            _slotServiceMock.Setup(x => x
+                .GetAllFreeSlots(freeSlotsVMs.SelectedZoneId, freeSlotsVMs.StartingTime, freeSlotsVMs.Duration))
+                .Returns(parkingSlots);
             //Act
             var result = _controller.FreeSlots(freeSlotsVMs);
 
             //Assert
-            Assert.IsType<ViewResult>(result);
+            var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(freeSlotsVMs));
             _zoneServiceMock.Verify(x => x.GetAll(), Times.Once);
-            _slotServiceMock.Verify(x => x.GetAllFreeSlots(freeSlotsVMs.SelectedZoneId), Times.Once);
+            _slotServiceMock.Verify(x => x.GetAllFreeSlots
+                (freeSlotsVMs.SelectedZoneId, freeSlotsVMs.StartingTime, freeSlotsVMs.Duration), Times.Once);
         }
         #endregion
     }
