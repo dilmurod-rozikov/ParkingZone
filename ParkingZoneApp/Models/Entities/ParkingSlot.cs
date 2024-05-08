@@ -21,9 +21,13 @@ namespace ParkingZoneApp.Models.Entities
         public bool IsAvailable { get; set; }
 
         [Required]
+        [ForeignKey(nameof(ParkingZone))]
         public Guid ParkingZoneId { get; set; }
 
         [Required]
-        public ParkingZone ParkingZone { get; set; }
+        public virtual ParkingZone ParkingZone { get; set; }
+
+        [Required]
+        public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

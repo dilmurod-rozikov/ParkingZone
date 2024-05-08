@@ -23,6 +23,11 @@ namespace ParkingZoneApp.Services
             return _parkingSlotRepository.GetAll().Where(x => x.ParkingZoneId == parkingZoneId).ToList();
         }
 
+        public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId)
+        {
+            return GetSlotsByZoneId(zoneId).Where(x => x.IsAvailable).ToList();
+        }
+
         public new void Insert(ParkingSlot parkingSlot)
         {
             parkingSlot.Id = Guid.NewGuid();

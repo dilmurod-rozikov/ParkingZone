@@ -8,6 +8,8 @@ namespace ParkingZoneApp.Services.Interfaces
 
         public bool IsUniqueNumber(Guid id, int number);
 
+        public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId);
+
         public new void Insert(ParkingSlot parkingSlot);
     }
 }
