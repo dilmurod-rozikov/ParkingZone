@@ -7,21 +7,21 @@ namespace ParkingZoneApp.Controllers
 {
     public class ReservationController : Controller
     {
+        private readonly IReservationService _reservationService;
         private readonly IParkingZoneService _parkingZoneService;
         private readonly IParkingSlotService _parkingSlotService;
-        private readonly IReservationService _reservationService;
         public ReservationController(
-            IParkingZoneService parkingZoneService,
             IReservationService reservationService,
+            IParkingZoneService parkingZoneService,
             IParkingSlotService parkingSlotService)
         {
-            _parkingZoneService = parkingZoneService;
             _reservationService = reservationService;
+            _parkingZoneService = parkingZoneService;
             _parkingSlotService = parkingSlotService;
         }
 
         public IActionResult FreeSlots()
-        {   
+        { 
             var zones = _parkingZoneService.GetAll().ToList();
             FreeSlotsVMs freeSlotsVMs = new(zones);
             return View(freeSlotsVMs);
