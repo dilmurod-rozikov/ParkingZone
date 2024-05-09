@@ -29,5 +29,8 @@ namespace ParkingZoneApp.Models.Entities
 
         [Required]
         public virtual ApplicationUser User { get; set; }
+
+        [Required]
+        public virtual Guid UserId { get; set;}
     }
 }
