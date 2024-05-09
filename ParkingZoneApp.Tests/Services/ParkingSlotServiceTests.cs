@@ -195,29 +195,59 @@ namespace ParkingZoneApp.Tests.Services
         }
         #endregion
 
-        #region IsSlotAvailableForReservation
-        [Fact]
-        public void GivenSlotStartTimeAndDuration_WhenIsSlotAvailableForReservationIsCalled_ThenReturnTrue()
+        #region IsSlotFreeForReservation
+        public static IEnumerable<object[]> Data =>
+        new List<object[]>
         {
-            //Arrange
-           
-            //Act
-            var result = _parkingSlotServiceMock.IsSlotAvailableForReservation(parkingSlot, DateTime.UtcNow.AddHours(2), 2);
+            // Slot is available for reservation
+            new object[]
+            {
+                new List<Reservation>
+                {
+                    new() { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 1 }
+                },             
+                new DateTime(2024, 5, 8, 13, 0, 0),
+                2,
+                true
+            },
+            // Slot is fully occupied
+            new object[]
+            {
+                new List<Reservation>
+                {
+                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 5 }
+                },
+                new DateTime(2024, 5, 8, 10, 0, 0),
+                3,
+                false
+            },
+            // Slot is partially occupied
+            new object[]
+            {
+                new List<Reservation>
+                {
+                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 12, 0, 0), Duration = 3 }
+                },
+                new DateTime(2024, 5, 8, 11, 0, 0),
+                2,
+                false
+            }
+        };
 
-            //Assert
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void GivenSlotStartTimeAndDuration_WhenIsSlotAvailableForReservationIsCalled_ThenReturnFalse()
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void GivenSlotStartTimeAndDuration_WhenIsSlotFreeForReservationCalled_ThenReturnExpectedResult
+            (List<Reservation> reservations, DateTime startTime, int duration, bool expectedResult)
         {
-            //Arrange
+            // Arrange
+            ParkingSlot slot = new ParkingSlot();
+            slot.Reservations = reservations;
 
-            //Act
-            var result = _parkingSlotServiceMock.IsSlotAvailableForReservation(parkingSlot, DateTime.UtcNow, 2);
+            // Act
+            var result = _parkingSlotServiceMock.IsSlotFreeForReservation(slot, startTime, duration);
 
-            //Assert
-            Assert.False(result);
+            // Assert
+            Assert.Equal(expectedResult, result);
         }
         #endregion
 
