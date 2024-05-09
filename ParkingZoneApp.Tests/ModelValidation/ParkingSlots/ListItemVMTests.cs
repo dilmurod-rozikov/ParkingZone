@@ -1,6 +1,5 @@
 ﻿using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
-using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.ViewModels.ParkingSlots;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,7 +20,7 @@ namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingSlots
             (Guid id, int number, SlotCategory category, bool isAvailable, ParkingZone parkingZone, bool expectedValidation)
         {
             //Arrange
-            ListItemVM listItemVM = new ListItemVM()
+            ListItemVM listItemVM = new()
             {
                 Id = id,
                 Number = number,

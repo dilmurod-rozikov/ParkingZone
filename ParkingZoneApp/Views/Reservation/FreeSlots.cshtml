@@ -1,0 +1,86 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ParkingZoneApp.ViewModels.ReservationVMs.FreeSlotsVMs
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Filter for reservation</h4>
+<div class="row">
+    <div class="col-md">
+        <form asp-action="FreeSlots">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div style="display: inline-block;">
+                    <label asp-for="SelectedZoneId" class="control-label">Select ParkingZone</label>
+                    <select asp-for="SelectedZoneId" class="form-select" asp-items="@Model.ListOfZones"></select>
+                </div>
+                <div style="display: inline-block; width: 150px; margin-left: 50px;">
+                    <label asp-for="Duration" class="control-label">Duration in hours</label>
+                    <input asp-for="Duration" class="form-control" value="1" min="1" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+                <div style="display: inline-block; margin-left: 50px;">
+                    <label asp-for="StartingTime" class="control-label">Starting time</label>
+                    <input asp-for="StartingTime" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                    <span asp-validation-for="StartingTime" class="text-danger"></span>
+                </div>
+                <div style="display: inline-block; margin-left: 50px;">
+                    <input type="submit" value="Search" class="btn btn-primary" /> |
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+        </form>
+        <hr/>
+    </div>
+</div>
+
+@if (Model.ParkingSlots is not null && Model.ParkingSlots.Count() > 0)
+{
+<h2>Free Slots</h2>
+<table class="table">
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayName("No")
+        </th>
+        <th>
+            @Html.DisplayName("Number")
+        </th>
+        <th>
+            @Html.DisplayName("Category")
+        </th>
+        <th>
+            @Html.DisplayName("Reserve")
+        </th>
+    </tr>
+</thead>
+<tbody>
+    @{
+        int index = 1;
+    }
+    @foreach (var item in Model.ParkingSlots)
+    {
+        <tr>
+            <td>
+                @index
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                <a asp-action="Reserve" asp-route-id="@item.Id" class="btn btn-primary">Reserve</a> 
+            </td>
+        </tr>
+        index++;
+    }
+</tbody>
+</table>
+}
+else if (Model.ParkingSlots is not null && Model.ParkingSlots.Count() == 0)
+{
+    <h3 style="color: red;">No available slots</h3>
+}
+

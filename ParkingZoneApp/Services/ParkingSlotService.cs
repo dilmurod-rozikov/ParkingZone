@@ -23,6 +23,21 @@ namespace ParkingZoneApp.Services
             return _parkingSlotRepository.GetAll().Where(x => x.ParkingZoneId == parkingZoneId).ToList();
         }
 
+        public bool IsSlotFreeForReservation(ParkingSlot slot, DateTime startTime, int duration)
+        {
+            return !slot.Reservations.Any(x => 
+                (startTime >= x.StartingTime && startTime.AddHours(duration) <= x.StartingTime.AddHours(x.Duration)) ||
+                (startTime >= x.StartingTime && startTime < x.StartingTime.AddHours(x.Duration)) ||
+                (startTime <= x.StartingTime && x.StartingTime < startTime.AddHours(duration))
+
+            );
+        }
+
+        public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId, DateTime startingTime, int duration)
+        {
+            return GetSlotsByZoneId(zoneId).Where(x => x.IsAvailable && IsSlotFreeForReservation(x, startingTime, duration));
+        }
+
         public new void Insert(ParkingSlot parkingSlot)
         {
             parkingSlot.Id = Guid.NewGuid();

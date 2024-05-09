@@ -21,6 +21,6 @@ namespace ParkingZoneApp.Models
         public DateOnly CreatedDate { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         [Required]
-        public ICollection<ParkingSlot> ParkingSlots { get; set; }
+        public virtual ICollection<ParkingSlot> ParkingSlots { get; set; }
     }
 }

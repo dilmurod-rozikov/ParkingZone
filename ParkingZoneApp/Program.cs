@@ -26,11 +26,14 @@ namespace ParkingZoneApp
             builder.Services.AddScoped<IParkingSlotRepository, ParkingSlotRepository>();
             builder.Services.AddScoped<IParkingSlotService, ParkingSlotService>();
 
+            builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+            builder.Services.AddScoped<IReservationService, ReservationService>();
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
-            
+          
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -54,6 +57,10 @@ namespace ParkingZoneApp
             app.MapControllerRoute(
                 name: "Admin",
                 pattern: "{area:exists}/{controller=ParkingSlot}/{action=Index}/{id?}");
+            
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{area:exists}/{controller=Reservation}/{action=FreeSlots}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",
