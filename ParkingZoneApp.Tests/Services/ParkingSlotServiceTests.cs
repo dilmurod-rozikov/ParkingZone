@@ -39,7 +39,6 @@ namespace ParkingZoneApp.Tests.Services
                     Duration = 1,
                     SlotId = slotId,
                     ZoneId = parkingZone.Id,
-                    ParkingSlot = parkingSlot,
                 }
             }
         };
@@ -204,8 +203,8 @@ namespace ParkingZoneApp.Tests.Services
             {
                 new List<Reservation>
                 {
-                    new() { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 1 }
-                },             
+                    new() { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 1u }
+                },            
                 new DateTime(2024, 5, 8, 13, 0, 0),
                 2,
                 true
@@ -215,7 +214,7 @@ namespace ParkingZoneApp.Tests.Services
             {
                 new List<Reservation>
                 {
-                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 5 }
+                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 5u }
                 },
                 new DateTime(2024, 5, 8, 10, 0, 0),
                 3,
@@ -226,7 +225,7 @@ namespace ParkingZoneApp.Tests.Services
             {
                 new List<Reservation>
                 {
-                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 12, 0, 0), Duration = 3 }
+                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 12, 0, 0), Duration = 3u }
                 },
                 new DateTime(2024, 5, 8, 11, 0, 0),
                 2,
@@ -237,7 +236,7 @@ namespace ParkingZoneApp.Tests.Services
         [Theory]
         [MemberData(nameof(Data))]
         public void GivenSlotStartTimeAndDuration_WhenIsSlotFreeForReservationCalled_ThenReturnExpectedResult
-            (List<Reservation> reservations, DateTime startTime, int duration, bool expectedResult)
+            (List<Reservation> reservations, DateTime startTime, uint duration, bool expectedResult)
         {
             // Arrange
             ParkingSlot slot = new ParkingSlot();
@@ -260,10 +259,9 @@ namespace ParkingZoneApp.Tests.Services
             {
                 Id = Guid.NewGuid(),
                 StartingTime = DateTime.UtcNow,
-                Duration = 1,
+                Duration = 1u,
                 SlotId = slotId,
                 ZoneId = parkingZone.Id,
-                ParkingSlot = parkingSlot,
             };
             _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
 
