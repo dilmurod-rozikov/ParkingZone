@@ -5,7 +5,7 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
 {
     public class ReserveVM
     {
-        private static DateTime now = DateTime.Now;
+        private static readonly DateTime now = DateTime.Now;
 
         [Required]
         public Guid Id { get; set; }
@@ -53,8 +53,8 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
                 Id = Id,
                 Duration = Duration,
                 StartingTime = StartingTime,
-                SlotId = SlotId,
-                ZoneId = ZoneId,
+                ParkingSlotId = SlotId,
+                ParkingZoneId = ZoneId,
                 VehicleNumber = VehicleNumber,
             };
     }

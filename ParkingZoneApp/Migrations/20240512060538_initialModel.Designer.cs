@@ -9,11 +9,11 @@ using ParkingZoneApp.Data;
 
 #nullable disable
 
-namespace ParkingZoneApp.Data.Migrations
+namespace ParkingZoneApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240511045212_ChangeUserIdType")]
-    partial class ChangeUserIdType
+    [Migration("20240512060538_initialModel")]
+    partial class initialModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -268,7 +268,10 @@ namespace ParkingZoneApp.Data.Migrations
                     b.Property<long>("Duration")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("SlotId")
+                    b.Property<Guid>("ParkingSlotId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ParkingZoneId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartingTime")
@@ -276,20 +279,15 @@ namespace ParkingZoneApp.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VehicleNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ZoneId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SlotId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("ParkingSlotId");
 
                     b.ToTable("Reservation");
                 });
@@ -380,21 +378,11 @@ namespace ParkingZoneApp.Data.Migrations
 
             modelBuilder.Entity("ParkingZoneApp.Models.Entities.Reservation", b =>
                 {
-                    b.HasOne("ParkingZoneApp.Models.Entities.ParkingSlot", "ParkingSlot")
+                    b.HasOne("ParkingZoneApp.Models.Entities.ParkingSlot", null)
                         .WithMany("Reservations")
-                        .HasForeignKey("SlotId")
+                        .HasForeignKey("ParkingSlotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ParkingZoneApp.Models.Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParkingSlot");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ParkingZoneApp.Models.Entities.ParkingSlot", b =>

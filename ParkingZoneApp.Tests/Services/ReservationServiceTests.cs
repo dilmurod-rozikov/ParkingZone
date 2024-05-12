@@ -15,9 +15,9 @@ namespace ParkingZoneApp.Tests.Services
         {
             Id = Guid.NewGuid(),
             Duration = 2,
-            SlotId = Guid.NewGuid(),
+            ParkingSlotId = Guid.NewGuid(),
             StartingTime = DateTime.UtcNow,
-            ZoneId = Guid.NewGuid(),
+            ParkingZoneId = Guid.NewGuid(),
         };
 
         public ReservationServiceTests()

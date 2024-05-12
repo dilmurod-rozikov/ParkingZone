@@ -37,8 +37,8 @@ namespace ParkingZoneApp.Tests.Services
                     Id = Guid.NewGuid(),
                     StartingTime = DateTime.UtcNow,
                     Duration = 1,
-                    SlotId = slotId,
-                    ZoneId = parkingZone.Id,
+                    ParkingSlotId = slotId,
+                    ParkingZoneId = parkingZone.Id,
                 }
             }
         };
@@ -260,8 +260,8 @@ namespace ParkingZoneApp.Tests.Services
                 Id = Guid.NewGuid(),
                 StartingTime = DateTime.UtcNow,
                 Duration = 1u,
-                SlotId = slotId,
-                ZoneId = parkingZone.Id,
+                ParkingSlotId = slotId,
+                ParkingZoneId = parkingZone.Id,
             };
             _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
 

@@ -38,8 +38,8 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                     StartingTime = DateTime.Now,
                     Duration = 2,
                     VehicleNumber = "",
-                    SlotId = parkingSlotId,
-                    ZoneId = parkingZoneId
+                    ParkingSlotId = parkingSlotId,
+                    ParkingZoneId = parkingZoneId
                 }
             ]
         };

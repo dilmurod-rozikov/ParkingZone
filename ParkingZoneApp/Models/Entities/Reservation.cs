@@ -21,11 +21,11 @@ namespace ParkingZoneApp.Models.Entities
 
         [Required]
         [ForeignKey(nameof(ParkingZone))]
-        public Guid ZoneId { get; set; }
+        public Guid ParkingZoneId { get; set; }
 
         [Required]
         [ForeignKey(nameof(ParkingSlot))]
-        public Guid SlotId { get; set; }
+        public Guid ParkingSlotId { get; set; }
 
         [Required]
         public virtual string UserId { get; set;}
