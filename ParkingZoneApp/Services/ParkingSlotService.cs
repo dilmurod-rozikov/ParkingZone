@@ -29,13 +29,12 @@ namespace ParkingZoneApp.Services
                 (startTime >= x.StartingTime & startTime.AddHours(duration) <= x.StartingTime.AddHours(x.Duration)) |
                 (startTime >= x.StartingTime & startTime < x.StartingTime.AddHours(x.Duration)) |
                 (startTime <= x.StartingTime & x.StartingTime < startTime.AddHours(duration))
-
             );
         }
 
         public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId, DateTime startingTime, uint duration)
         {
-            return GetSlotsByZoneId(zoneId).Where(x => x.IsAvailable && IsSlotFreeForReservation(x, startingTime, duration));
+            return GetSlotsByZoneId(zoneId).Where(x => x.IsAvailable & IsSlotFreeForReservation(x, startingTime, duration));
         }
 
         public new void Insert(ParkingSlot parkingSlot)
