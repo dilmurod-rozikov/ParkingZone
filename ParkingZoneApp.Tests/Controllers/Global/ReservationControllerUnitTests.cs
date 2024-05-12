@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using ParkingZoneApp.Controllers;
 using ParkingZoneApp.Enums;
@@ -148,25 +149,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsNotFoundResult()
-        {
-            //Arrage
-            ReserveVM reserveVM = new()
-            {
-                SlotId = parkingSlot.Id,
-            };
-            _slotServiceMock.Setup(x => x.GetById(reserveVM.Id));
-
-            //Act
-            var result = _controller.Reserve(reserveVM);
-
-            //Assert
-            Assert.IsType<NotFoundResult>(result);
-            _slotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
-        }
-
-        [Fact]
-        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelError()
+        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForOccupiedReservation()
         {
             //Arrage
             ReserveVM reserveVM = new()
@@ -176,8 +159,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                 Duration = 5,
                 VehicleNumber = "DDD000"
             };
-            _slotServiceMock.Setup(x => x.GetById(reserveVM.SlotId)).Returns(parkingSlot);
-
+            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).Returns(parkingSlot);
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(parkingSlot, reserveVM.StartingTime, reserveVM.Duration))
                 .Returns(false);
@@ -192,7 +174,37 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             var model = Assert.IsType<ViewResult>(result).Model;
             Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(reserveVM));
             Assert.False(_controller.ModelState.IsValid);
-            _slotServiceMock.Verify(x => x.GetById(reserveVM.SlotId), Times.Once);
+            _slotServiceMock.Verify(x => x.GetById(parkingSlotId), Times.Once());
+            _slotServiceMock.Verify(x => x.IsSlotFreeForReservation
+                        (parkingSlot, reserveVM.StartingTime, reserveVM.Duration), Times.Once);
+        }
+
+        [Fact]
+        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForVehivleNumber()
+        {
+            //Arrage
+            ReserveVM reserveVM = new()
+            {
+                SlotId = parkingSlot.Id,
+                StartingTime = new DateTime(2024, 5, 9, 11, 11, 0, 0, 0),
+                Duration = 5,
+            };
+            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).Returns(parkingSlot);
+            _slotServiceMock
+                .Setup(x => x.IsSlotFreeForReservation(parkingSlot, reserveVM.StartingTime, reserveVM.Duration))
+                .Returns(true);
+
+            _controller.ModelState.AddModelError("VehicleNumber", "Vehicle Number is required.");
+
+            //Act
+            var result = _controller.Reserve(reserveVM);
+
+            //Assert
+            Assert.NotNull(result);
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(reserveVM));
+            Assert.False(_controller.ModelState.IsValid);
+            _slotServiceMock.Verify(x => x.GetById(parkingSlotId), Times.Once());
             _slotServiceMock.Verify(x => x.IsSlotFreeForReservation
                         (parkingSlot, reserveVM.StartingTime, reserveVM.Duration), Times.Once);
         }
@@ -200,6 +212,40 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         [Fact]
         public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsViewResult()
         {
+            //Arrage
+            ReserveVM reserveVM = new()
+            {
+                SlotId = parkingSlot.Id,
+                StartingTime = new DateTime(2024, 5, 9, 11, 11, 0, 0, 0),
+                Duration = 5,
+                VehicleNumber = "DDD000"
+            };
+            var mockClaimsPrincipal = CreateMockClaimsPrincipal();
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal }
+            };
+            _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+
+            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).Returns(parkingSlot);
+            _reservationServiceMock.Setup(x => x.Insert(It.IsAny<Reservation>()));
+            _slotServiceMock
+                .Setup(x => x.IsSlotFreeForReservation(parkingSlot, reserveVM.StartingTime, reserveVM.Duration))
+                .Returns(true);
+
+            //Act
+            var result = _controller.Reserve(reserveVM);
+
+            //Assert
+            Assert.NotNull(result);
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(reserveVM));
+            Assert.Equal("Parking slot reserved successfully.", _controller.TempData["ReservationSuccess"]);
+            _slotServiceMock.Verify(x => x.GetById(parkingSlotId), Times.Once());
+            _reservationServiceMock.Verify(x => x.Insert(It.IsAny<Reservation>()), Times.Once());
+            _slotServiceMock.Verify(x => x.IsSlotFreeForReservation
+                        (parkingSlot, reserveVM.StartingTime, reserveVM.Duration), Times.Once);
         }
 
         private ClaimsPrincipal CreateMockClaimsPrincipal()

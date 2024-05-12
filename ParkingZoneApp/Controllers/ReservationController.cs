@@ -47,6 +47,10 @@ namespace ParkingZoneApp.Controllers
         public IActionResult Reserve(Guid slotId, DateTime startTime, uint duration)
         {
             var slot = _parkingSlotService.GetById(slotId);
+
+            if (slot is null)
+                return NotFound();
+
             var zone = _parkingZoneService.GetById(slot.ParkingZoneId);
             ReserveVM reserveVM = new(duration, startTime, slot.Id, zone.Id, zone.Name, zone.Address, slot.Number);
             return View(reserveVM);
@@ -57,17 +61,15 @@ namespace ParkingZoneApp.Controllers
         public IActionResult Reserve(ReserveVM reserveVM)
         {
             var slot = _parkingSlotService.GetById(reserveVM.SlotId);
-            reserveVM.ParkingSlot = slot;
 
             if (slot is null)
                 return NotFound();
 
-            bool isSlotFree = _parkingSlotService.IsSlotFreeForReservation(reserveVM.ParkingSlot, reserveVM.StartingTime, reserveVM.Duration);
+            bool isSlotFree = _parkingSlotService.IsSlotFreeForReservation(slot, reserveVM.StartingTime, reserveVM.Duration);
 
             if (!isSlotFree)
             {
-                ModelState.AddModelError("StartingTime", "Slot is not free for selected period");
-                
+                ModelState.AddModelError("StartingTime", "Slot is not free for selected period");               
             }
             else if (reserveVM.VehicleNumber.IsNullOrEmpty())
             {
