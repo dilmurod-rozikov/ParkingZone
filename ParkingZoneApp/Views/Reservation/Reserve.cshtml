@@ -1,0 +1,53 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ParkingZoneApp.ViewModels.ReservationVMs.ReserveVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.ZoneName, in @Model.ZoneAddress</h3>
+<hr />
+<h4>Reserve Parking Slot Number @Model.SlotNumber</h4>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Reserve">
+            <input type="hidden" value="@Model.SlotId" asp-for="SlotId" />
+            <input type="hidden" value="@Model.ZoneId" asp-for="ZoneId" />
+            <input type="hidden" value="@Model.ZoneName" asp-for="ZoneName" />
+            <input type="hidden" value="@Model.ZoneAddress" asp-for="ZoneAddress" />
+            <input type="hidden" value="@Model.SlotNumber" asp-for="SlotNumber" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label asp-for="StartingTime" class="control-label">Start time: </label>
+                <input asp-for="StartingTime" class="form-control"/>
+                <span asp-validation-for="StartingTime" class="text-danger"></span>
+                <br />
+                <label asp-for="Duration" class="control-label">Duration:</label>
+                <input asp-for="Duration" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+                <br />
+                <label asp-for="VehicleNumber" class="control-label">Vehicle Number</label>
+                <input asp-for="VehicleNumber" class="form-control" />
+                <span asp-validation-for="VehicleNumber" class="text-danger"></span>
+            </div>
+            <br />
+            @if (Context.Request.Method == "POST" && TempData["ReservationSuccess"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["ReservationSuccess"]
+                </div>
+                <script>
+                    setTimeout(function () {
+                        document.getElementById("ReservationSuccess").style.display = "none";
+                    }, 3000);
+                    setTimeout(function () {
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    }, 3000);
+                </script>
+            }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>

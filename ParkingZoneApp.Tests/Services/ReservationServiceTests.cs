@@ -1,5 +1,4 @@
 ﻿using Moq;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
@@ -16,11 +15,9 @@ namespace ParkingZoneApp.Tests.Services
         {
             Id = Guid.NewGuid(),
             Duration = 2,
-            SlotId = Guid.NewGuid(),
+            ParkingSlotId = Guid.NewGuid(),
             StartingTime = DateTime.UtcNow,
-            ParkingSlot = new ParkingSlot(),
-            User = new ApplicationUser(),
-            ZoneId = Guid.NewGuid(),
+            ParkingZoneId = Guid.NewGuid(),
         };
 
         public ReservationServiceTests()

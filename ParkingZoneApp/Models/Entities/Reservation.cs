@@ -11,26 +11,23 @@ namespace ParkingZoneApp.Models.Entities
         public Guid Id { get; set; }
 
         [Required]
-        public int Duration { get; set; }
+        public uint Duration { get; set; }
 
         [Required]
         public DateTime StartingTime { get; set; }
 
         [Required]
+        public string VehicleNumber { get; set; }
+
+        [Required]
         [ForeignKey(nameof(ParkingZone))]
-        public Guid ZoneId { get; set; }
+        public Guid ParkingZoneId { get; set; }
 
         [Required]
         [ForeignKey(nameof(ParkingSlot))]
-        public Guid SlotId { get; set; }
+        public Guid ParkingSlotId { get; set; }
 
         [Required]
-        public virtual ParkingSlot ParkingSlot { get; set; }
-
-        [Required]
-        public virtual ApplicationUser User { get; set; }
-
-        [Required]
-        public virtual Guid UserId { get; set;}
+        public virtual string UserId { get; set;}
     }
 }

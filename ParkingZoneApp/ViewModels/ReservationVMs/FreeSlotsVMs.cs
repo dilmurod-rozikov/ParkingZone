@@ -7,14 +7,14 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
 {
     public class FreeSlotsVMs
     {
-        public static DateTime now = DateTime.Now;
+        private static DateTime now = DateTime.Now;
 
         [Required]
         public Guid Id { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Duration must be higher than 0")]
-        public int Duration { get; set; }
+        public uint Duration { get; set; }
 
         [Required]
         public DateTime StartingTime { get; set; } = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);

@@ -8,9 +8,9 @@ namespace ParkingZoneApp.Services.Interfaces
 
         public bool IsUniqueNumber(Guid id, int number);
 
-        public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId, DateTime startingTime, int duration);
+        public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId, DateTime startingTime, uint duration);
 
-        public bool IsSlotFreeForReservation(ParkingSlot slot, DateTime startTime, int duration);
+        public bool IsSlotFreeForReservation(ParkingSlot slot, DateTime startTime, uint duration);
 
         public new void Insert(ParkingSlot parkingSlot);
     }
