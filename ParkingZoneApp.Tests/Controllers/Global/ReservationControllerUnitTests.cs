@@ -132,7 +132,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         {
             //Arrage
             ReserveVM reserveVM = new(5, new DateTime(2024, 5, 9, 11, 11, 11, 0, 0), parkingSlot.Id,
-                    parkingZone.Id, parkingZone.Name, parkingZone.Address, parkingSlot.Number);
+                    parkingZone.Id);
 
             _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
             _zoneServiceMock.Setup(x => x.GetById(parkingZone.Id)).Returns(parkingZone);
