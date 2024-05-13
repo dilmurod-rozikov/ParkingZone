@@ -28,14 +28,23 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         [Required]
         public virtual ParkingSlot ParkingSlot { get; set; }
 
+        public string ZoneName { get; set; }
+
+        public string ZoneAddress {  get; set; }
+
+        public int SlotNumber { get; set; }
+
         public ReserveVM() {  }
 
-        public ReserveVM(uint duration, DateTime startTime, Guid slotId, Guid zoneId)
+        public ReserveVM(uint duration, DateTime startTime, Guid slotId, Guid zoneId, string zoneName, string zoneAddress, int slotNumber)
         {
             Duration = duration;
             StartingTime = startTime;
             SlotId = slotId;
             ZoneId = zoneId;
+            ZoneName = zoneName;
+            ZoneAddress = zoneAddress;
+            SlotNumber = slotNumber;
         }
 
         public Reservation MapToModel() =>

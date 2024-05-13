@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
-using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ReservationVMs;
 using System.Security.Claims;
@@ -60,10 +58,7 @@ namespace ParkingZoneApp.Controllers
                 return NotFound();
 
             var zone = _parkingZoneService.GetById(slot.ParkingZoneId);
-            ViewData["ZoneName"] = zone.Name;
-            ViewData["ZoneAddress"] = zone.Address;
-            ViewData["SlotNumber"] = slot.Number;
-            ReserveVM reserveVM = new(duration, startTime, slot.Id, zone.Id);
+            ReserveVM reserveVM = new(duration, startTime, slot.Id, zone.Id, zone.Name, zone.Address, slot.Number);
             return View(reserveVM);
         }
 
@@ -76,11 +71,16 @@ namespace ParkingZoneApp.Controllers
             if (slot is null)
                 return NotFound();
 
+            var zone = _parkingZoneService.GetById(reserveVM.ZoneId);
+
+            if (zone is null)
+                return NotFound();
+
             bool isSlotFree = _parkingSlotService.IsSlotFreeForReservation(slot, reserveVM.StartingTime, reserveVM.Duration);
 
             if (!isSlotFree)
             {
-                ModelState.AddModelError("StartingTime", "Slot is not free for selected period");               
+                ModelState.AddModelError("StartingTime", "Slot is not free for selected period");          
             }
             else if (reserveVM.VehicleNumber.IsNullOrEmpty())
             {

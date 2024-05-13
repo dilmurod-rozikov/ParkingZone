@@ -4,14 +4,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>@ViewData["ZoneName"], in @ViewData["ZoneAddress"]</h3>
+<h3>@Model.ZoneName, in @Model.ZoneAddress</h3>
 <hr />
-<h4>Reserve Parking Slot Number @ViewData["SlotNumber"]</h4>
+<h4>Reserve Parking Slot Number @Model.SlotNumber</h4>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Reserve">
             <input type="hidden" value="@Model.SlotId" asp-for="SlotId" />
             <input type="hidden" value="@Model.ZoneId" asp-for="ZoneId" />
+            <input type="hidden" value="@Model.ZoneName" asp-for="ZoneName" />
+            <input type="hidden" value="@Model.ZoneAddress" asp-for="ZoneAddress" />
+            <input type="hidden" value="@Model.SlotNumber" asp-for="SlotNumber" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div>
                 <label asp-for="StartingTime" class="control-label">Start time: </label>
