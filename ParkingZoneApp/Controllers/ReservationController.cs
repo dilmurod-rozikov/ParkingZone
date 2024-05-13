@@ -60,7 +60,10 @@ namespace ParkingZoneApp.Controllers
                 return NotFound();
 
             var zone = _parkingZoneService.GetById(slot.ParkingZoneId);
-            ReserveVM reserveVM = new(duration, startTime, slot.Id, zone.Id, zone.Name, zone.Address, slot.Number);
+            ViewData["ZoneName"] = zone.Name;
+            ViewData["ZoneAddress"] = zone.Address;
+            ViewData["SlotNumber"] = slot.Number;
+            ReserveVM reserveVM = new(duration, startTime, slot.Id, zone.Id);
             return View(reserveVM);
         }
 
