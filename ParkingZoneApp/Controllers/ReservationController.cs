@@ -27,6 +27,10 @@ namespace ParkingZoneApp.Controllers
         public IActionResult FreeSlots()
         {
             var zones = _parkingZoneService.GetAll().ToList();
+
+            if (zones is null)
+                return NotFound();
+
             FreeSlotsVMs freeSlotsVMs = new(zones);
             return View(freeSlotsVMs);
         }
@@ -35,6 +39,10 @@ namespace ParkingZoneApp.Controllers
         public IActionResult FreeSlots(FreeSlotsVMs freeSlotsVMs)
         {
             var zones = _parkingZoneService.GetAll().ToList();
+
+            if (zones is null)
+                return NotFound();
+
             freeSlotsVMs.ListOfZones = new SelectList(zones, "Id", "Name");
 
             freeSlotsVMs.ParkingSlots = _parkingSlotService
