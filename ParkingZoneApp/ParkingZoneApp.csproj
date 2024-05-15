@@ -33,8 +33,4 @@
     <PackageReference Include="NEST" Version="7.17.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-  </ItemGroup>
-
 </Project>

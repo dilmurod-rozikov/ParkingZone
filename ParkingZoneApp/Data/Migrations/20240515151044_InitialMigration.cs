@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ParkingZoneApp.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddParkingSlot : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +29,7 @@ namespace ParkingZoneApp.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -176,7 +176,7 @@ namespace ParkingZoneApp.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Number = table.Column<int>(type: "int", nullable: false),
-                    CategoryType = table.Column<int>(type: "int", nullable: false),
+                    Category = table.Column<int>(type: "int", nullable: false),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     ParkingZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -187,6 +187,29 @@ namespace ParkingZoneApp.Data.Migrations
                         name: "FK_ParkingSlot_ParkingZone_ParkingZoneId",
                         column: x => x.ParkingZoneId,
                         principalTable: "ParkingZone",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reservation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Duration = table.Column<long>(type: "bigint", nullable: false),
+                    StartingTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    VehicleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParkingZoneId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParkingSlotId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservation_ParkingSlot_ParkingSlotId",
+                        column: x => x.ParkingSlotId,
+                        principalTable: "ParkingSlot",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -234,6 +257,11 @@ namespace ParkingZoneApp.Data.Migrations
                 name: "IX_ParkingSlot_ParkingZoneId",
                 table: "ParkingSlot",
                 column: "ParkingZoneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservation_ParkingSlotId",
+                table: "Reservation",
+                column: "ParkingSlotId");
         }
 
         /// <inheritdoc />
@@ -255,13 +283,16 @@ namespace ParkingZoneApp.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ParkingSlot");
+                name: "Reservation");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ParkingSlot");
 
             migrationBuilder.DropTable(
                 name: "ParkingZone");
