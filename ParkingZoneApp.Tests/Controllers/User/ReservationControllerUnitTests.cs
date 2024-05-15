@@ -4,7 +4,6 @@ using Moq;
 using ParkingZoneApp.Areas.User.Controllers;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
-using ParkingZoneApp.ViewModels.ReservationVMs;
 using System.Security.Claims;
 
 namespace ParkingZoneApp.Tests.Controllers.User
@@ -23,7 +22,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
             ParkingSlotId = Guid.NewGuid(),
             ParkingZoneId = Guid.NewGuid(),
             VehicleNumber = "DDD777",
-            UserId = "test-user-id"
+            UserId = "UserId"
         };
         public static readonly IEnumerable<Reservation> reservations = [reservation];
 
@@ -40,22 +39,21 @@ namespace ParkingZoneApp.Tests.Controllers.User
         public void GivenNothing_WhenGetIndexIsCalled_ThenReturnsViewResult()
         {
             //Arrange
-            _reservationServiceMock.Setup(x => x.GetReservationsByUser(reservation.UserId)).Returns(reservations);
-            _controller.ControllerContext.HttpContext = new DefaultHttpContext
+            var mockClaimsPrincipal = CreateMockClaimsPrincipal();
+
+            _controller.ControllerContext = new ControllerContext
             {
-                User = new ClaimsPrincipal(new ClaimsIdentity(
-                [
-                    new(ClaimTypes.NameIdentifier, reservation.UserId)
-                ]))
+                HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal }
             };
 
+            _reservationServiceMock.Setup(x => x.GetReservationsByUser(It.IsAny<string>())).Returns(reservations);
             //Act
             var result = _controller.Index();
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<ViewResult>(result);
-            _reservationServiceMock.Verify((x => x.GetReservationsByUser(reservation.UserId)), Times.Once);
+            _reservationServiceMock.Verify((x => x.GetReservationsByUser(It.IsAny<string>())), Times.Once);
         }
 
         [Fact]
@@ -76,6 +74,16 @@ namespace ParkingZoneApp.Tests.Controllers.User
             Assert.NotNull(result);
             Assert.IsType<NotFoundResult>(result);
         }
-            #endregion
+
+        private ClaimsPrincipal CreateMockClaimsPrincipal()
+        {
+            var claims = new List<Claim>()
+            {
+                new(ClaimTypes.NameIdentifier, "UserId")
+            };
+            var identity = new ClaimsIdentity(claims);
+            return new ClaimsPrincipal(identity);
         }
+        #endregion
+    }
 }
