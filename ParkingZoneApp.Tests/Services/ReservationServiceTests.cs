@@ -10,15 +10,18 @@ namespace ParkingZoneApp.Tests.Services
     public class ReservationServiceTests
     {
         private readonly Mock<IReservationRepository> reservationRepositoryMock;
-        private readonly IReservationService reservationService;
-        private readonly Reservation reservation = new()
+        private readonly ReservationService reservationService;
+        private static readonly Reservation reservation = new()
         {
             Id = Guid.NewGuid(),
             Duration = 2,
             ParkingSlotId = Guid.NewGuid(),
             StartingTime = DateTime.UtcNow,
             ParkingZoneId = Guid.NewGuid(),
+            UserId = "Test-user-id"
         };
+
+        private readonly IEnumerable<Reservation> reservations = [reservation];
 
         public ReservationServiceTests()
         {
@@ -79,10 +82,7 @@ namespace ParkingZoneApp.Tests.Services
         public void GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
-            IEnumerable<Reservation> expectedReservations = new List<Reservation>()
-            {
-                reservation
-            };
+            IEnumerable<Reservation> expectedReservations = [ reservation ];
             reservationRepositoryMock
                     .Setup(x => x.GetAll())
                     .Returns(expectedReservations);
@@ -115,6 +115,26 @@ namespace ParkingZoneApp.Tests.Services
             reservationRepositoryMock.Verify(x => x.GetByID(reservation.Id), Times.Once);
             reservationRepositoryMock.VerifyNoOtherCalls();
         }
+        #endregion
+
+        #region GetReservationsByUser
+        [Fact]
+        public void GivenUserId_WhenGetReservationsByUserIsCalled_ThenReturnsListOfReservations()
+        {
+            //Arrage
+            reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
+
+            //Act
+            var result = reservationService.GetReservationsByUser(reservation.UserId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IEnumerable<Reservation>>(result);
+            Assert.Equal(JsonSerializer.Serialize(reservations), JsonSerializer.Serialize(result));
+            reservationRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+            reservationRepositoryMock.VerifyNoOtherCalls();
+        }
+
         #endregion
     }
 }

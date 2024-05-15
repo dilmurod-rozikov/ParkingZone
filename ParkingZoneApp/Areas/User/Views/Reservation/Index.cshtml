@@ -1,0 +1,69 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<ParkingZoneApp.ViewModels.ReservationVMs.IndexVM>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Reservations by @User.Identity.Name</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("No")
+            </th>
+            <th>
+                @Html.DisplayName("Start date")
+            </th>
+            <th>
+                @Html.DisplayName("Duration")
+            </th>
+            <th>
+                @Html.DisplayName("Vehicle number")
+            </th>
+            <th>
+                @Html.DisplayName("Slot number")
+            </th>
+            <th>
+                @Html.DisplayName("Zone name")
+            </th>
+            <th>
+                @Html.DisplayName("Zone address")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int index = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @index
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Duration)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SlotNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ZoneName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ZoneAddress)
+                </td>
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>
+<div class="form-group">
+    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back to ParkingZone</a>
+</div>
