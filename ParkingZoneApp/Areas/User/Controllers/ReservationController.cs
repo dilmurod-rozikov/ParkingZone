@@ -35,5 +35,42 @@ namespace ParkingZoneApp.Areas.User.Controllers
             var indexVM = ListItemVM.MapToVM(reservations, _parkingZoneService, _parkingSlotService);
             return View(indexVM);
         }
+
+        [HttpGet]
+        public IActionResult Prolong(Guid reservationId)
+        {
+            var reservation = _reservationService.GetById(reservationId);
+
+            if(reservation is null)
+                return NotFound();
+
+            ProlongVM prolongVM = new()
+            {
+                Id = reservationId,
+                StartTime = reservation.StartingTime,
+                FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
+            };
+
+            return View(prolongVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Prolong(ProlongVM prolongVM)
+        {
+            var reservation = _reservationService.GetById(prolongVM.Id);
+
+            if(reservation is null)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                reservation = prolongVM.MapToModel(reservation);
+                _reservationService.Update(reservation);
+                TempData["SuccessMessage"] = "Reservation successfully prolonged.";
+            }
+
+            return View(prolongVM);
+        }
     }
 }
