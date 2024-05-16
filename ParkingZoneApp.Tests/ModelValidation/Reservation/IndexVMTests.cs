@@ -18,7 +18,7 @@ namespace ParkingZoneApp.Tests.ModelValidation.Reservation
             (DateTime startTime, uint duration, int slotnumber, string address, string name, string number, bool expectedValidation)
         {
             //Arrage
-            IndexVM indexVM = new()
+            ListItemVM indexVM = new()
             {
                 StartDate = startTime,
                 Duration = duration,

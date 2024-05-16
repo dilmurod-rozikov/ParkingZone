@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.ViewModels.ReservationVMs
 {
-    public class IndexVM
+    public class ListItemVM
     {
         [Required]
         public DateTime StartDate { get; set; }
@@ -25,9 +25,9 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         [Required]
         public int SlotNumber { get; set; }
 
-        public IndexVM() { }
+        public ListItemVM() { }
 
-        public IndexVM(Reservation reservation, ParkingSlot slot, ParkingZone zone)
+        public ListItemVM(Reservation reservation, ParkingSlot slot, ParkingZone zone)
         {
             StartDate = reservation.StartingTime;
             Duration = reservation.Duration;
@@ -37,14 +37,14 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
             ZoneName = zone.Name;
         }
 
-        public static IEnumerable<IndexVM> MapToVM
+        public static IEnumerable<ListItemVM> MapToVM
             (IEnumerable<Reservation> reservations, IParkingZoneService _parkingZoneService, IParkingSlotService _parkingSlotService)
                 => reservations.Select(reservation =>
             {
                 var zone = _parkingZoneService.GetById(reservation.ParkingZoneId);
                 var slot = _parkingSlotService.GetById(reservation.ParkingSlotId);
 
-                return new IndexVM(reservation, slot, zone);
+                return new ListItemVM(reservation, slot, zone);
             }
             ).OrderByDescending(x => x.StartDate);
     }
