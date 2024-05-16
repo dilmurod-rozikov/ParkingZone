@@ -30,8 +30,10 @@ namespace ParkingZoneApp.Areas.User.Controllers
 
             if(userId.IsNullOrEmpty())
                 return NotFound();
+
             var reservations = _reservationService.GetReservationsByUser(userId);
-            return View(IndexVM.MapToVM(reservations, _parkingZoneService, _parkingSlotService));
+            var indexVM = IndexVM.MapToVM(reservations, _parkingZoneService, _parkingSlotService);
+            return View(indexVM);
         }
     }
 }

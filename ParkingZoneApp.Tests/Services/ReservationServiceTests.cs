@@ -10,7 +10,7 @@ namespace ParkingZoneApp.Tests.Services
     public class ReservationServiceTests
     {
         private readonly Mock<IReservationRepository> reservationRepositoryMock;
-        private readonly ReservationService reservationService;
+        private readonly IReservationService reservationService;
         private static readonly Reservation reservation = new()
         {
             Id = Guid.NewGuid(),
@@ -134,7 +134,6 @@ namespace ParkingZoneApp.Tests.Services
             reservationRepositoryMock.Verify(x => x.GetAll(), Times.Once);
             reservationRepositoryMock.VerifyNoOtherCalls();
         }
-
         #endregion
     }
 }
