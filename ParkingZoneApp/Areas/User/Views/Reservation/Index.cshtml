@@ -4,9 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h3>Reservations by @User.Identity.Name</h3>
-<table class="table">
-    <thead>
+<h3 style="color: dodgerblue">Reservations by @User.Identity.Name</h3>
+<br />
+<table class="table" style="border: solid; border-width: 1px; text-align: center;">
+    <thead style="color: white; background-color: mediumseagreen;">
         <tr>
             <th>
                 @Html.DisplayName("No")
@@ -38,7 +39,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+                <td style="border-right: solid; border-width: 1px ;">
                     @index
                 </td>
                 <td>
@@ -65,5 +66,5 @@
     </tbody>
 </table>
 <div class="form-group">
-    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back to ParkingZone</a>
+    <a asp-action="Index" asp-controller="Home" asp-area="" class="btn btn-secondary">Home</a>
 </div>
