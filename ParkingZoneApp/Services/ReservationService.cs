@@ -6,10 +6,12 @@ namespace ParkingZoneApp.Services
 {
     public class ReservationService : Services<Reservation>, IReservationService
     {
-        private readonly IParkingSlotRepository _parkingSlotRepository;
         public ReservationService(IReservationRepository reservationRepository)
-            : base(reservationRepository)
+            : base(reservationRepository) {  }
+
+        public IEnumerable<Reservation> GetReservationsByUser(string userId)
         {
+            return GetAll().Where(x => x.UserId == userId);
         }
     }
 }

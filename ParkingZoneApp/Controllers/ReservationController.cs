@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using ParkingZoneApp.Services.Interfaces;
@@ -76,11 +77,12 @@ namespace ParkingZoneApp.Controllers
             if (zone is null)
                 return NotFound();
 
-            bool isSlotFree = _parkingSlotService.IsSlotFreeForReservation(slot, reserveVM.StartingTime, reserveVM.Duration);
+            bool isSlotFree = _parkingSlotService
+                .IsSlotFreeForReservation(slot, reserveVM.StartingTime, reserveVM.Duration);
 
             if (!isSlotFree)
             {
-                ModelState.AddModelError("StartingTime", "Slot is not free for selected period");          
+                ModelState.AddModelError("StartingTime", "Slot is not free for selected period");
             }
             else if (reserveVM.VehicleNumber.IsNullOrEmpty())
             {
@@ -90,6 +92,10 @@ namespace ParkingZoneApp.Controllers
             {
                 var reservation = reserveVM.MapToModel();
                 reservation.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (reservation.UserId is null)
+                    return NotFound();
+
                 _reservationService.Insert(reservation);
                 TempData["ReservationSuccess"] = "Parking slot reserved successfully.";
             }

@@ -35,19 +35,19 @@
                 <div class="alert alert-success" role="alert">
                     @TempData["ReservationSuccess"]
                 </div>
-                <script>
-                    setTimeout(function () {
-                        document.getElementById("ReservationSuccess").style.display = "none";
-                    }, 3000);
-                    setTimeout(function () {
-                        window.location.href = '@Url.Action("Index", "Home")';
-                    }, 3000);
-                </script>
+                    <script>
+                        setTimeout(function () {
+                            window.location.href = '@Url.Action("Index", "Reservation", new { area = "User" })';
+                        }, 3000);
+                    </script>
             }
+            else
+            {
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
                 <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back</a>
             </div>
+            }
         </form>
     </div>
 </div>
