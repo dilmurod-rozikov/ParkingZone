@@ -28,7 +28,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if(userId.IsNullOrEmpty())
+            if (userId.IsNullOrEmpty())
                 return NotFound();
 
             var reservations = _reservationService.GetReservationsByUser(userId);
@@ -41,7 +41,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
         {
             var reservation = _reservationService.GetById(reservationId);
 
-            if(reservation is null)
+            if (reservation is null)
                 return NotFound();
 
             ProlongVM prolongVM = new()
@@ -60,7 +60,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
         {
             var reservation = _reservationService.GetById(prolongVM.Id);
 
-            if(reservation is null)
+            if (reservation is null)
                 return NotFound();
 
             if (ModelState.IsValid)

@@ -28,6 +28,6 @@ namespace ParkingZoneApp.Models.Entities
         public Guid ParkingSlotId { get; set; }
 
         [Required]
-        public virtual string UserId { get; set;}
+        public virtual string UserId { get; set; }
     }
 }

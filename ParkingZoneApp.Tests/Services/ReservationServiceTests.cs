@@ -82,7 +82,7 @@ namespace ParkingZoneApp.Tests.Services
         public void GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
-            IEnumerable<Reservation> expectedReservations = [ reservation ];
+            IEnumerable<Reservation> expectedReservations = [reservation];
             reservationRepositoryMock
                     .Setup(x => x.GetAll())
                     .Returns(expectedReservations);

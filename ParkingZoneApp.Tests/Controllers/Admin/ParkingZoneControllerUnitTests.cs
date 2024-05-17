@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Models;
-using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZoneVMs;
 using System.Text.Json;
@@ -19,7 +18,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
-            ParkingSlots = [ new() ]
+            ParkingSlots = [new()]
         };
 
         public ParkingZoneControllerUnitTests()
@@ -132,7 +131,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             //Arrange
             CreateVM createVM = new();
             _controller.ModelState.AddModelError("id", "id is required");
-    
+
             //Act
             var result = _controller.Create(createVM);
 

@@ -1,5 +1,4 @@
 ﻿using ParkingZoneApp.Enums;
-using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 

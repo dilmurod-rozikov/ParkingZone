@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Data;
+using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository;
 using ParkingZoneApp.Repository.Interfaces;
-using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.Services;
-using ParkingZoneApp.Models.Entities;
+using ParkingZoneApp.Services.Interfaces;
 
 namespace ParkingZoneApp
 {
@@ -33,7 +33,7 @@ namespace ParkingZoneApp
             builder.Services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
-          
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -2,11 +2,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ParkingZoneApp.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.Areas.Identity.Pages.Account.Manage
 {

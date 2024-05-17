@@ -38,6 +38,6 @@ namespace ParkingZoneApp.Tests.ModelValidationTests.ParkingSlots
             //Assert
             Assert.Equal(expectedValidation, result);
         }
-       
+
     }
 }

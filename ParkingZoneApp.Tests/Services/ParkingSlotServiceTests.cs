@@ -204,7 +204,7 @@ namespace ParkingZoneApp.Tests.Services
                 new List<Reservation>
                 {
                     new() { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 1u }
-                },            
+                },
                 new DateTime(2024, 5, 8, 13, 0, 0),
                 2,
                 true
