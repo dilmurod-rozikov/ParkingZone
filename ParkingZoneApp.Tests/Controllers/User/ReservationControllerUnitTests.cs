@@ -49,14 +49,14 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal }
             };
 
-            _reservationServiceMock.Setup(x => x.GetReservationsByUser(It.IsAny<string>())).Returns(reservations);
+            _reservationServiceMock.Setup(x => x.GetReservationsByUserId(It.IsAny<string>())).Returns(reservations);
             //Act
             var result = _controller.Index();
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<ViewResult>(result);
-            _reservationServiceMock.Verify((x => x.GetReservationsByUser(It.IsAny<string>())), Times.Once);
+            _reservationServiceMock.Verify((x => x.GetReservationsByUserId(It.IsAny<string>())), Times.Once);
         }
 
         [Fact]

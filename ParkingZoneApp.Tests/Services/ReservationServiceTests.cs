@@ -125,7 +125,7 @@ namespace ParkingZoneApp.Tests.Services
             reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
 
             //Act
-            var result = reservationService.GetReservationsByUser(reservation.UserId);
+            var result = reservationService.GetReservationsByUserId(reservation.UserId);
 
             //Assert
             Assert.NotNull(result);
