@@ -22,7 +22,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Name = "name",
             Address = "address",
             CreatedDate = new DateOnly(),
-            ParkingSlots = [ new() ]
+            ParkingSlots = [new()]
         };
 
         private readonly ParkingSlot parkingSlot = new()

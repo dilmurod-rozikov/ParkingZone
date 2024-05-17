@@ -8,6 +8,9 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
     public class ListItemVM
     {
         [Required]
+        public Guid Id { get; set; }
+
+        [Required]
         public DateTime StartDate { get; set; }
 
         [Required]
@@ -29,6 +32,7 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
 
         public ListItemVM(Reservation reservation, ParkingSlot slot, ParkingZone zone)
         {
+            Id = reservation.Id;
             StartDate = reservation.StartingTime;
             Duration = reservation.Duration;
             VehicleNumber = reservation.VehicleNumber;

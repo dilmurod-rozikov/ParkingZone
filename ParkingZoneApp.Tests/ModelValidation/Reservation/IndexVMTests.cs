@@ -28,14 +28,14 @@ namespace ParkingZoneApp.Tests.ModelValidation.Reservation
                 VehicleNumber = number,
             };
 
-        var validationContext = new ValidationContext(indexVM);
-        var validationResult = new List<ValidationResult>();
+            var validationContext = new ValidationContext(indexVM);
+            var validationResult = new List<ValidationResult>();
 
-        //Act
-        bool result = Validator.TryValidateObject(indexVM, validationContext, validationResult);
+            //Act
+            bool result = Validator.TryValidateObject(indexVM, validationContext, validationResult);
 
-        //Assert
-        Assert.Equal(expectedValidation, result);
+            //Assert
+            Assert.Equal(expectedValidation, result);
         }
     }
 }

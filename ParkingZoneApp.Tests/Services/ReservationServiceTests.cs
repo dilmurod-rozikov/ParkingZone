@@ -82,7 +82,7 @@ namespace ParkingZoneApp.Tests.Services
         public void GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
-            IEnumerable<Reservation> expectedReservations = [ reservation ];
+            IEnumerable<Reservation> expectedReservations = [reservation];
             reservationRepositoryMock
                     .Setup(x => x.GetAll())
                     .Returns(expectedReservations);
@@ -125,7 +125,7 @@ namespace ParkingZoneApp.Tests.Services
             reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
 
             //Act
-            var result = reservationService.GetReservationsByUser(reservation.UserId);
+            var result = reservationService.GetReservationsByUserId(reservation.UserId);
 
             //Assert
             Assert.NotNull(result);

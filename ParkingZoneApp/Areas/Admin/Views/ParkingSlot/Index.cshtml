@@ -5,6 +5,10 @@
 }
 
 <h1>List of all slots for @ViewData["name"]</h1>
+<div class="form-group">
+    <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
+    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back</a>
+</div>
 <br />
 <table class="table table-success table-striped table-hover" style="text-align: center;">
     <thead>
@@ -22,7 +26,7 @@
                 @Html.DisplayName("Available")
             </th>
             <th>
-                @Html.DisplayName("Actions")
+                @Html.DisplayName("")
             </th>
         </tr>
     </thead>
@@ -54,7 +58,3 @@
 }
     </tbody>
 </table>
-<div class="form-group">
-    <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
-    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back to ParkingZone</a>
-</div>

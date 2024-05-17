@@ -7,9 +7,9 @@ namespace ParkingZoneApp.Services
     public class ReservationService : Services<Reservation>, IReservationService
     {
         public ReservationService(IReservationRepository reservationRepository)
-            : base(reservationRepository) {  }
+            : base(reservationRepository) { }
 
-        public IEnumerable<Reservation> GetReservationsByUser(string userId)
+        public IEnumerable<Reservation> GetReservationsByUserId(string userId)
         {
             return GetAll().Where(x => x.UserId == userId);
         }

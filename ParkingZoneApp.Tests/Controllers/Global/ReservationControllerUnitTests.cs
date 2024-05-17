@@ -43,7 +43,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                 }
             ]
         };
-        public static readonly IEnumerable<ParkingSlot> parkingSlots = [ parkingSlot ];
+        public static readonly IEnumerable<ParkingSlot> parkingSlots = [parkingSlot];
         private static readonly ParkingZone parkingZone = new()
         {
             Id = parkingZoneId,
@@ -53,7 +53,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             ParkingSlots = parkingSlots.ToList(),
         };
 
-        public static readonly IEnumerable<ParkingZone> parkingZones = [ parkingZone ];
+        public static readonly IEnumerable<ParkingZone> parkingZones = [parkingZone];
         public ReservationControllerUnitTests()
         {
             _reservationServiceMock = new Mock<IReservationService>();

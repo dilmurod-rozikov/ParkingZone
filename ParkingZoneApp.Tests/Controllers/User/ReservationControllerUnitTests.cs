@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using ParkingZoneApp.Areas.User.Controllers;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
+using ParkingZoneApp.ViewModels.ReservationVMs;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace ParkingZoneApp.Tests.Controllers.User
 {
@@ -46,14 +49,14 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal }
             };
 
-            _reservationServiceMock.Setup(x => x.GetReservationsByUser(It.IsAny<string>())).Returns(reservations);
+            _reservationServiceMock.Setup(x => x.GetReservationsByUserId(It.IsAny<string>())).Returns(reservations);
             //Act
             var result = _controller.Index();
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<ViewResult>(result);
-            _reservationServiceMock.Verify((x => x.GetReservationsByUser(It.IsAny<string>())), Times.Once);
+            _reservationServiceMock.Verify((x => x.GetReservationsByUserId(It.IsAny<string>())), Times.Once);
         }
 
         [Fact]
@@ -83,6 +86,117 @@ namespace ParkingZoneApp.Tests.Controllers.User
             };
             var identity = new ClaimsIdentity(claims);
             return new ClaimsPrincipal(identity);
+        }
+        #endregion
+
+        #region Prolong
+        [Fact]
+        public void GivenReservationId_WhenGetProlongIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id));
+
+            //Act
+            var result = _controller.Prolong(reservation.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenReservationId_WhenGetProlongIsCalled_ThenReturnsViewResult()
+        {
+            //Arrange
+            ProlongVM prolongVM = new()
+            {
+                Id = reservation.Id,
+                StartTime = reservation.StartingTime,
+                FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
+            };
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
+
+            //Act
+            var result = _controller.Prolong(reservation.Id);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            ProlongVM prolongVM = new()
+            {
+                Id = reservation.Id,
+                StartTime = reservation.StartingTime,
+                FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
+            };
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id));
+
+            //Act
+            var result = _controller.Prolong(prolongVM);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsViewResult()
+        {
+            //Arrange
+            ProlongVM prolongVM = new()
+            {
+                Id = reservation.Id,
+                StartTime = reservation.StartingTime,
+                FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
+            };
+            _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
+            _reservationServiceMock.Setup(x => x.Update(reservation));
+
+            //Act
+            var result = _controller.Prolong(prolongVM);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.True(_controller.ModelState.IsValid);
+            Assert.Equal("Reservation successfully prolonged.", _controller.TempData["SuccessMessage"]);
+            Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+            _reservationServiceMock.Verify(x => x.Update(reservation), Times.Once);
+        }
+
+        [Fact]
+        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelError()
+        {
+            //Arrange
+            ProlongVM prolongVM = new()
+            {
+                Id = reservation.Id,
+                StartTime = reservation.StartingTime,
+                FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
+            };
+            _controller.ModelState.AddModelError("ProlongDuration", "Prolong time should be at least 1 hour.");
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
+
+            //Act
+            var result = _controller.Prolong(prolongVM);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
         }
         #endregion
     }

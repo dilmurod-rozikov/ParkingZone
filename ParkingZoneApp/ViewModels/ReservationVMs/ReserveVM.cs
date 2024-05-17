@@ -30,11 +30,11 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
 
         public string ZoneName { get; set; }
 
-        public string ZoneAddress {  get; set; }
+        public string ZoneAddress { get; set; }
 
         public int SlotNumber { get; set; }
 
-        public ReserveVM() {  }
+        public ReserveVM() { }
 
         public ReserveVM(uint duration, DateTime startTime, Guid slotId, Guid zoneId, string zoneName, string zoneAddress, int slotNumber)
         {
