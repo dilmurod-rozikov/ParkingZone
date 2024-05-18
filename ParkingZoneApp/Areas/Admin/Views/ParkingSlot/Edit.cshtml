@@ -21,7 +21,15 @@
             <br />
             <div>
                 <label asp-for="Category" class="control-label"></label>
-                <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()"></select>
+                @if(Model.IsSlotInUse)
+                {
+                    <select disabled asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()"></select>
+                    <span asp-validation-for="Category" class="text-danger">This slot is in use, category cannot be modefied. </span>
+                }
+                else
+                {
+                    <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()"></select>
+                }
             </div>
             <br />
             <div>

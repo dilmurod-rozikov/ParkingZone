@@ -8,13 +8,13 @@ namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
         public static IEnumerable<object[]> TestData =>
             new List<object[]>
             {
-                new object[] { Guid.NewGuid(), 12, SlotCategory.VIP, true, Guid.NewGuid(), true},
+                new object[] { Guid.NewGuid(), 12, SlotCategory.VIP, true, Guid.NewGuid(), false, true},
             };
 
         [Theory]
         [MemberData(nameof(TestData))]
         public void GivenItemToBeValidated_WhenCreatingEditVM_ThenValidationIsPerformed
-            (Guid id, int number, SlotCategory category, bool isAvailable, Guid parkingZoneId, bool expectedValidation)
+            (Guid id, int number, SlotCategory category, bool isAvailable, Guid parkingZoneId, bool slotInUse, bool expectedValidation)
         {
             //Arrange
             EditVM editVM = new()
@@ -24,6 +24,7 @@ namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
                 Category = category,
                 IsAvailable = isAvailable,
                 ParkingZoneId = parkingZoneId,
+                IsSlotInUse = slotInUse
             };
 
             var validationContext = new ValidationContext(editVM, null, null);

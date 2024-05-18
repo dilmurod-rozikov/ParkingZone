@@ -22,17 +22,26 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Name = "name",
             Address = "address",
             CreatedDate = new DateOnly(),
-            ParkingSlots = [new()]
+            ParkingSlots = [parkingSlot]
         };
 
-        private readonly ParkingSlot parkingSlot = new()
+        private static readonly ParkingSlot parkingSlot = new()
         {
             Id = Guid.NewGuid(),
             Number = 1,
             Category = SlotCategory.Standard,
             IsAvailable = true,
             ParkingZoneId = parkingZone.Id,
-            ParkingZone = parkingZone
+            ParkingZone = parkingZone,
+            Reservations =
+            [
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    StartingTime = DateTime.Now.AddHours(-2),
+                    Duration = 1
+                }
+            ]
         };
 
         public ParkingSlotControllerUnitTests()
@@ -223,11 +232,35 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnModelError()
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnModelErrorIfNumberIsNotUnique()
         {
             //Arrange
             EditVM editVM = new(parkingSlot);
             _controller.ModelState.AddModelError("Number", "Number is not valid");
+            _parkingSlotServiceMock
+                    .Setup(x => x.GetById(parkingSlot.Id))
+                    .Returns(parkingSlot);
+            _parkingSlotServiceMock
+                    .Setup(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number))
+                    .Returns(false);
+
+            //Act
+            var result = _controller.Edit(editVM, parkingSlot.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.False(_controller.ModelState.IsValid);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+            _parkingSlotServiceMock
+                    .Verify(x => x.IsUniqueNumber(editVM.ParkingZoneId, editVM.Number), Times.Once);
+        }
+
+        [Fact]
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnModelErrorIfSlotIsInUse()
+        {
+            //Arrange
+            EditVM editVM = new(parkingSlot);
+            _controller.ModelState.AddModelError("Category", "This slot is in use, category cannot be modified!");
             _parkingSlotServiceMock
                     .Setup(x => x.GetById(parkingSlot.Id))
                     .Returns(parkingSlot);
@@ -252,7 +285,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             //Arrange
             EditVM editVM = new(parkingSlot)
             {
-                Number = 123
+                Number = 123,
+                IsSlotInUse = false,
             };
             var slot = editVM.MapToModel(parkingSlot);
             _parkingSlotServiceMock
