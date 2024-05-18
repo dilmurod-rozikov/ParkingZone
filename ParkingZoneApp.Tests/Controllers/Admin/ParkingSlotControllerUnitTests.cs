@@ -232,7 +232,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnModelErrorIfNumberIsNotUnique()
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenNumberIsNotUniqueAndModelStateIsFalseAndReturnsViewResult()
         {
             //Arrange
             EditVM editVM = new(parkingSlot);
@@ -256,7 +256,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenReturnModelErrorIfSlotIsInUse()
+        public void GivenEditVMAndParkingSlotId_WhenEditPostIsCalled_ThenSlotIsInUseAndModelStateIsFalseAndReturnsViewResult()
         {
             //Arrange
             EditVM editVM = new(parkingSlot);
