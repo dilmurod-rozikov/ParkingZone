@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
+using Nest;
 using ParkingZoneApp.Areas.User.Controllers;
+using ParkingZoneApp.Enums;
+using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ReservationVMs;
@@ -17,17 +20,29 @@ namespace ParkingZoneApp.Tests.Controllers.User
         private readonly Mock<IParkingSlotService> _slotServiceMock;
         private readonly Mock<IParkingZoneService> _zoneServiceMock;
         private readonly ReservationController _controller;
+        private static readonly Guid parkingSlotId = Guid.NewGuid();
+        private static readonly Guid parkingZoneId = Guid.NewGuid();
         private static readonly Reservation reservation = new()
         {
             Id = Guid.NewGuid(),
             Duration = 2,
-            StartingTime = DateTime.UtcNow,
-            ParkingSlotId = Guid.NewGuid(),
-            ParkingZoneId = Guid.NewGuid(),
+            StartingTime = DateTime.Now,
+            ParkingSlotId = parkingSlotId,
+            ParkingZoneId = parkingZoneId,
             VehicleNumber = "DDD777",
             UserId = "UserId"
         };
         public static readonly IEnumerable<Reservation> reservations = [reservation];
+        private static readonly ParkingSlot parkingSlot = new()
+        {
+            Id = parkingSlotId,
+            Number = 1,
+            Category = SlotCategory.Standard,
+            IsAvailable = true,
+            ParkingZoneId = parkingZoneId,
+            ParkingZone = new(),
+            Reservations = reservations.ToList(),
+        };
 
         public ReservationControllerUnitTests()
         {
@@ -134,6 +149,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
             ProlongVM prolongVM = new()
             {
                 Id = reservation.Id,
+                ProlongDuration = 1,
                 StartTime = reservation.StartingTime,
                 FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
             };
@@ -155,12 +171,17 @@ namespace ParkingZoneApp.Tests.Controllers.User
             ProlongVM prolongVM = new()
             {
                 Id = reservation.Id,
+                ProlongDuration = 1,
                 StartTime = reservation.StartingTime,
                 FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
             };
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
-            _reservationServiceMock.Setup(x => x.Update(reservation));
+            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+            _slotServiceMock
+                .Setup(x => x.IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()))
+                .Returns(true);
+            _reservationServiceMock.Setup(x => x.Update(It.IsAny<Reservation>()));
 
             //Act
             var result = _controller.Prolong(prolongVM);
@@ -172,11 +193,14 @@ namespace ParkingZoneApp.Tests.Controllers.User
             Assert.Equal("Reservation successfully prolonged.", _controller.TempData["SuccessMessage"]);
             Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
             _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
-            _reservationServiceMock.Verify(x => x.Update(reservation), Times.Once);
+            _slotServiceMock.Verify(x => x.GetById(reservation.ParkingSlotId), Times.Once);
+            _reservationServiceMock.Verify(x => x.Update(It.IsAny<Reservation>()), Times.Once);
+            _slotServiceMock.Verify(x => x
+                .IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()), Times.Once);
         }
 
         [Fact]
-        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelError()
+        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelErrorIfDurationIsLessThanOne()
         {
             //Arrange
             ProlongVM prolongVM = new()
@@ -197,6 +221,37 @@ namespace ParkingZoneApp.Tests.Controllers.User
             Assert.False(_controller.ModelState.IsValid);
             Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
             _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+        }
+
+        [Fact]
+        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelErrorIfSlotIsNotFree()
+        {
+            //Arrange
+            ProlongVM prolongVM = new()
+            {
+                Id = reservation.Id,
+                StartTime = reservation.StartingTime,
+                FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
+            };
+            _controller.ModelState.AddModelError("ProlongDuration", "This slot is already reserved for chosen prolong time!");
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+            _slotServiceMock
+                .Setup(x => x.IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()))
+                .Returns(true);
+
+            //Act
+            var result = _controller.Prolong(prolongVM);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.False(_controller.ModelState.IsValid);
+            Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+            _slotServiceMock.Verify(x => x.GetById(reservation.ParkingSlotId), Times.Once);
+            _slotServiceMock.Verify(x => x
+                .IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()), Times.Once);
         }
         #endregion
     }
