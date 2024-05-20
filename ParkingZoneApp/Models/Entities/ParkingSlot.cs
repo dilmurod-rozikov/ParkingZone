@@ -29,5 +29,11 @@ namespace ParkingZoneApp.Models.Entities
 
         [Required]
         public virtual ICollection<Reservation> Reservations { get; set; }
+
+        [NotMapped]
+        public bool IsInUse
+        {
+            get => Reservations.Any(x => x.StartingTime.AddHours(x.Duration) > DateTime.Now);
+        }
     }
 }
