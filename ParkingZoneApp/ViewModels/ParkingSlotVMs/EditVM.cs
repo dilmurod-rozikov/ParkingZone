@@ -33,7 +33,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
             Category = parkingSlot.Category;
             IsAvailable = parkingSlot.IsAvailable;
             ParkingZoneId = parkingSlot.ParkingZoneId;
-            IsSlotInUse = parkingSlot.IsSlotInUse;
+            IsSlotInUse = parkingSlot.IsInUse;
         }
 
         public ParkingSlot MapToModel(ParkingSlot parkingSlot)
