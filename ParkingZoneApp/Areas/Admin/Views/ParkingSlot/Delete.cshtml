@@ -31,7 +31,16 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
+        @if(!Model.IsInUse)
+        {
+            <input type="submit" value="Delete" class="btn btn-danger" />
+        }
+        else
+        {
+            <span  style="color: red; font-weight: bold;">This slot is in use, cannot be DELETED!</span>
+            <br/>
+            <input disabled type="submit" value="Delete" class="btn btn-danger" />
+        }
         <a asp-route-zoneId="@Model.ParkingZoneId" asp-action="Index" class="btn btn-secondary">Back</a>
     </form>
 </div>
