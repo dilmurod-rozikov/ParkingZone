@@ -395,6 +395,23 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
+        public void GivenParkingSlotId_WhenPostDeleteIsCalled_ThenIfSlotIsInUseReturnsModelError()
+        {
+            //Arrange
+            _controller.ModelState.AddModelError("DeleteButton", "This slot is in use, cannot be deleted!");
+            _parkingSlotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+
+            //Act
+            var result = _controller.Delete(parkingSlot.Id);
+
+            //Assert
+            Assert.IsType<ViewResult>(result);
+            Assert.NotNull(result);
+            Assert.False(_controller.ModelState.IsValid);
+            _parkingSlotServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
         public void GivenParkingSlotId_WhenPostDeleteIsCalled_ThenReturnsRedirectToActionResult()
         {
             //Arrange

@@ -70,6 +70,8 @@ namespace ParkingZoneApp.Areas.User.Controllers
                 TempData["SuccessMessage"] = "Reservation successfully prolonged.";
             }
 
+            prolongVM.StartTime = reservation.StartingTime;
+            prolongVM.FinishTime = reservation.StartingTime.AddHours(reservation.Duration);
             return View(prolongVM);
         }
     }

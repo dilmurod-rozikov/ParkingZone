@@ -130,7 +130,11 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             if (existingParkingSlot is null)
                 return NotFound();
 
-            _parkingSlotService.Remove(existingParkingSlot);
+            if (existingParkingSlot.IsInUse)
+                ModelState.AddModelError("DeleteButton", "This slot is in use, cannot be deleted!");
+            else
+                _parkingSlotService.Remove(existingParkingSlot);
+            
             return RedirectToAction("Index", new { zoneId = existingParkingSlot.ParkingZoneId });
         }
     }

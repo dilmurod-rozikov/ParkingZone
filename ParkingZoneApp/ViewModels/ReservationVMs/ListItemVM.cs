@@ -28,6 +28,11 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         [Required]
         public int SlotNumber { get; set; }
 
+        public DateTime FinishDate
+        {
+            get => StartDate.AddHours(Duration);
+        }
+
         public ListItemVM() { }
 
         public ListItemVM(Reservation reservation, ParkingSlot slot, ParkingZone zone)

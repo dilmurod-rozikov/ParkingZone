@@ -13,7 +13,10 @@
                 @Html.DisplayName("No")
             </th>
             <th>
-                @Html.DisplayName("Start date")
+                @Html.DisplayName("Start time")
+            </th>
+            <th>
+                @Html.DisplayName("Finish time")
             </th>
             <th>
                 @Html.DisplayName("Duration")
@@ -42,11 +45,14 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td style="border-right: solid; border-width: 1px ;">
+                <td style="border-right: solid; border-width: 1px;">
                     @index
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FinishDate)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Duration)
