@@ -66,10 +66,10 @@ namespace ParkingZoneApp.Areas.User.Controllers
             prolongVM.StartTime = reservation.StartingTime;
             prolongVM.FinishTime = reservation.StartingTime.AddHours(reservation.Duration);
             var slot = _parkingSlotService.GetById(reservation.ParkingSlotId);
-            bool isExtendable = _parkingSlotService
+            bool isProlongable = _parkingSlotService
                 .IsSlotFreeForReservation(slot, prolongVM.StartTime.AddHours(reservation.Duration), prolongVM.ProlongDuration);
 
-            if (!isExtendable)
+            if (!isProlongable)
             {
                 ModelState.AddModelError("ProlongDuration", "This slot is already reserved for chosen prolong time!");
             }
