@@ -63,6 +63,17 @@ namespace ParkingZoneApp.Areas.User.Controllers
             if (reservation is null)
                 return NotFound();
 
+            prolongVM.StartTime = reservation.StartingTime;
+            prolongVM.FinishTime = reservation.StartingTime.AddHours(reservation.Duration);
+            var slot = _parkingSlotService.GetById(reservation.ParkingSlotId);
+            bool isProlongable = _parkingSlotService
+                .IsSlotFreeForReservation(slot, prolongVM.StartTime.AddHours(reservation.Duration), prolongVM.ProlongDuration);
+
+            if (!isProlongable)
+            {
+                ModelState.AddModelError("ProlongDuration", "This slot is already reserved for chosen prolong time!");
+            }
+
             if (ModelState.IsValid)
             {
                 reservation = prolongVM.MapToModel(reservation);
@@ -70,8 +81,6 @@ namespace ParkingZoneApp.Areas.User.Controllers
                 TempData["SuccessMessage"] = "Reservation successfully prolonged.";
             }
 
-            prolongVM.StartTime = reservation.StartingTime;
-            prolongVM.FinishTime = reservation.StartingTime.AddHours(reservation.Duration);
             return View(prolongVM);
         }
     }
