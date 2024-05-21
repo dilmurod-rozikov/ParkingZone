@@ -17,9 +17,11 @@ namespace ParkingZoneApp.ViewModels.ParkingZoneVMs
         [Required]
         public DateOnly CreatedDate { get; init; }
 
-        public ListItemVM()
-        {
-        }
+        public int NumberOfSlots { get; init; }
+
+        public int SlotInUse { get; set; }
+
+        public ListItemVM() { }
 
         public ListItemVM(ParkingZone parkingZone)
         {
@@ -27,6 +29,8 @@ namespace ParkingZoneApp.ViewModels.ParkingZoneVMs
             Name = parkingZone.Name;
             Address = parkingZone.Address;
             CreatedDate = parkingZone.CreatedDate;
+            NumberOfSlots = parkingZone.ParkingSlots.Count;
+            SlotInUse += parkingZone.ParkingSlots.Count(x => x.IsInUse);
         }
 
 
