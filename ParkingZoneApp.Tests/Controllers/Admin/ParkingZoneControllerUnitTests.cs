@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using ParkingZoneApp.Areas.Admin;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
+using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZoneVMs;
 using System.Text.Json;
@@ -13,12 +15,34 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     {
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly ParkingZonesController _controller;
+        private static readonly Reservation reservation = new()
+        {
+            Id = Guid.NewGuid(),
+            Duration = 1,
+            StartingTime = DateTime.UtcNow,
+            ParkingSlotId = Guid.NewGuid(),
+            ParkingZoneId = Guid.NewGuid(),
+            UserId = "User-test-id",
+            VehicleNumber = "Number",
+        };
+
         private readonly ParkingZone parkingZone = new()
         {
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
-            ParkingSlots = [new()]
+            ParkingSlots =
+            [
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    IsAvailable = false,
+                    Category = SlotCategory.Business,
+                    Number = 1,
+                    ParkingZoneId = Guid.NewGuid(),
+                    Reservations = [reservation],
+                },
+            ]
         };
 
         public ParkingZoneControllerUnitTests()

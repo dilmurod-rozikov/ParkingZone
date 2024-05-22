@@ -175,12 +175,15 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 StartTime = reservation.StartingTime,
                 FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
             };
+
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
             _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()))
                 .Returns(true);
+
             _reservationServiceMock.Setup(x => x.Update(It.IsAny<Reservation>()));
 
             //Act
@@ -192,9 +195,11 @@ namespace ParkingZoneApp.Tests.Controllers.User
             Assert.True(_controller.ModelState.IsValid);
             Assert.Equal("Reservation successfully prolonged.", _controller.TempData["SuccessMessage"]);
             Assert.Equal(JsonSerializer.Serialize(prolongVM), JsonSerializer.Serialize(model));
+
             _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
             _slotServiceMock.Verify(x => x.GetById(reservation.ParkingSlotId), Times.Once);
             _reservationServiceMock.Verify(x => x.Update(It.IsAny<Reservation>()), Times.Once);
+
             _slotServiceMock.Verify(x => x
                 .IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()), Times.Once);
         }

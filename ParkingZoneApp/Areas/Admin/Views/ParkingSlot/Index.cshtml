@@ -4,14 +4,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>List of all slots for @ViewData["name"]</h1>
-<div class="form-group">
+<h1 style="font-family: Bahnschrift">List of all slots for @ViewData["name"]</h1>
+<div class="form-group" style="font-family: Bahnschrift">
     <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
     <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back</a>
 </div>
 <br />
-<table class="table table-success table-striped table-hover" style="text-align: center;">
-    <thead>
+<table class="table table-hover" style="text-align: center; font-size: 25px;
+        font-family: Bahnschrift; color: white; background-color: #008080">
+    <thead style="background-color: #000;">
         <tr>
             <th>
                 @Html.DisplayName("No")

@@ -4,58 +4,52 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>List of all ParkingZones</h1>
+<h1 style="font-family: Bahnschrift">List of all ParkingZones</h1>
 
-<p>
+<p style="font-family: Bahnschrift">
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table table-success table-striped table-hover" style="text-align: center;">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayName("No")
-            </th>
-            <th>
-                @Html.DisplayName("Name")
-            </th>
-            <th>
-                @Html.DisplayName("Addres")
-            </th>
-            <th>
-                @Html.DisplayName("Creation Date")
-            </th>
-            <th>
-                @Html.DisplayName("")
-            </th>
-        </tr>
-    </thead>
-    @{
-        int index = 1;
+
+<style>
+    .crazy-card {
+        color: #fff;
+        border: 2px solid #fff;
+        width: 70%; 
+        font-size: 25px;
+        font-family: Bahnschrift;
+        margin: auto; 
+        border-radius: 15px; 
+        overflow: hidden;
     }
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td style="border-right: solid; border-width: 1px ;">
-                @index
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> 
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a> 
-                <a asp-controller="ParkingSlot" asp-action="Index" asp-route-zoneId="@item.Id" class="btn btn-success">Slots</a>
-            </td>
-        </tr>
-    index++;
+
+    .crazy-card-header {
+        text-align: center;
+        background-color: #008080;
+        padding: 10px;
+        border-bottom: 2px solid #fff;
+    }
+
+    .crazy-card-body {
+        background-color: #000;
+        padding: 10px;
+    }
+</style>
+@foreach (var item in Model)
+{
+    <div class="crazy-card">
+        <div class="crazy-card-body">
+            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Details</a>
+            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+            <a asp-controller="ParkingSlot" asp-action="Index" asp-route-zoneId="@item.Id" class="btn btn-outline-light">Slots</a>
+        </div>       
+        <div class="crazy-card-header">
+            <h2>@Html.DisplayFor(modelItem => item.Name)</h2>
+            <p>Address: @Html.DisplayFor(modelItem => item.Address)</p>
+            <p>Establishment Date: @Html.DisplayFor(modelItem => item.CreatedDate)</p>
+            <p>Available Slots: @item.NumberOfSlots</p>
+            <p>Slots in use: @item.SlotInUse</p>
+        </div>
+</div>
+<br/>
 }
-    </tbody>
-</table>
