@@ -1,4 +1,5 @@
-﻿using ParkingZoneApp.Models.Entities;
+﻿using ParkingZoneApp.Enums;
+using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
 
@@ -11,6 +12,22 @@ namespace ParkingZoneApp.Services
         public ParkingSlotService(IParkingSlotRepository parkingSlotRepository) : base(parkingSlotRepository)
         {
             _parkingSlotRepository = parkingSlotRepository;
+        }
+
+        public ICollection<ParkingSlot> FilterByCategory(ICollection<ParkingSlot> query, SlotCategory? category)
+        {
+            if (category.HasValue)
+                query = query.Where(x => x.Category == category.Value).ToList();
+            
+            return query;
+        }
+
+        public ICollection<ParkingSlot> FilterByFreeSlot(ICollection<ParkingSlot> query, bool? isSlotFree)
+        {
+            if (isSlotFree.HasValue)
+                query = query.Where(x => !x.IsInUse == isSlotFree.Value).ToList();
+            
+            return query;
         }
 
         public bool IsUniqueNumber(Guid zoneId, int number)
