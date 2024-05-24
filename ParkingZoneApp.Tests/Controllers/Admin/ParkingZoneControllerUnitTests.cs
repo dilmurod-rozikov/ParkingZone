@@ -14,6 +14,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     public class ParkingZoneControllerUnitTests
     {
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
+        private readonly Mock<IReservationService> _reservationServiceMock;
         private readonly ParkingZonesController _controller;
         private static readonly Reservation reservation = new()
         {
@@ -21,11 +22,12 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Duration = 1,
             StartingTime = DateTime.UtcNow,
             ParkingSlotId = Guid.NewGuid(),
+            ParkingSlot = new(),
             ParkingZoneId = Guid.NewGuid(),
             UserId = "User-test-id",
             VehicleNumber = "Number",
         };
-
+        private static readonly List<Reservation> reservations = [reservation];
         private readonly ParkingZone parkingZone = new()
         {
             Id = Guid.NewGuid(),
@@ -48,7 +50,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public ParkingZoneControllerUnitTests()
         {
             _parkingZoneServiceMock = new Mock<IParkingZoneService>();
-            _controller = new ParkingZonesController(_parkingZoneServiceMock.Object);
+            _reservationServiceMock = new Mock<IReservationService>();
+            _controller = new ParkingZonesController(_parkingZoneServiceMock.Object, _reservationServiceMock.Object);
         }
 
         #region Index
@@ -78,6 +81,46 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.Equal(JsonSerializer.Serialize(expectedListOfItems), JsonSerializer.Serialize(model));
             _parkingZoneServiceMock.Verify(x => x.GetAll(), Times.Once);
             _parkingZoneServiceMock.VerifyNoOtherCalls();
+        }
+        #endregion
+
+        #region GetCurrentCars
+        [Fact]
+        public void GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>()));
+
+            //Act
+            var result = _controller.GetCurrentCars(parkingZone.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(It.IsAny<Guid>()), Times.Once);
+        }
+
+        [Fact]
+        public void GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsListOfCurrentCars()
+        {
+            //Arrange
+            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).Returns(parkingZone);
+            _reservationServiceMock.Setup(x => x.GetReservationsByZoneId(It.IsAny<Guid>())).Returns(reservations);
+            GetCurrentCarsVM vm =
+                new()
+                {
+                    VehicleNumber = reservation.VehicleNumber,
+                    Number = reservation.ParkingSlot.Number,
+                };
+            //Act
+            var result = _controller.GetCurrentCars(parkingZone.Id);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(new List<GetCurrentCarsVM>() { vm }));
+            _parkingZoneServiceMock.Verify(x => x.GetById(It.IsAny<Guid>()), Times.Once);
+            _reservationServiceMock.Verify(x => x.GetReservationsByZoneId(It.IsAny<Guid>()), Times.Once);
         }
         #endregion
 

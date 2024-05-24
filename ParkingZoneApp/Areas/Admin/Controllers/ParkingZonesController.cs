@@ -10,9 +10,11 @@ namespace ParkingZoneApp.Areas.Admin
     public class ParkingZonesController : Controller
     {
         private readonly IParkingZoneService _parkingZoneService;
-        public ParkingZonesController(IParkingZoneService parkingZoneService)
+        private readonly IReservationService _reservationService;
+        public ParkingZonesController(IParkingZoneService parkingZoneService,IReservationService reservationService)
         {
             _parkingZoneService = parkingZoneService;
+            _reservationService = reservationService;
         }
 
         public IActionResult Index()
@@ -20,6 +22,18 @@ namespace ParkingZoneApp.Areas.Admin
             var parkingZones = _parkingZoneService.GetAll();
             var listItemVMs = ListItemVM.MapToVM(parkingZones);
             return View(listItemVMs);
+        }
+
+        public IActionResult GetCurrentCars(Guid zoneId)
+        {
+            var zone = _parkingZoneService.GetById(zoneId);
+            if (zone is null)
+                return NotFound();
+
+            ViewData["ZoneName"] = zone.Name;
+            var reservations = _reservationService.GetReservationsByZoneId(zoneId);
+            var vms = reservations.Select(x => new GetCurrentCarsVM(x));
+            return View(vms);
         }
 
         public IActionResult Details(Guid id)

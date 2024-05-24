@@ -42,7 +42,8 @@
             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Details</a>
             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
             <a asp-controller="ParkingSlot" asp-action="Index" asp-route-zoneId="@item.Id" class="btn btn-outline-light">Slots</a>
-        </div>       
+            <a asp-action="GetCurrentCars" asp-route-zoneId="@item.Id" class="btn btn-outline-success">Current Cars</a>
+        </div>
         <div class="crazy-card-header">
             <h2>@Html.DisplayFor(modelItem => item.Name)</h2>
             <p>Address: @Html.DisplayFor(modelItem => item.Address)</p>

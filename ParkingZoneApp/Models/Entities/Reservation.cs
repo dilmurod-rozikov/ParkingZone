@@ -20,6 +20,9 @@ namespace ParkingZoneApp.Models.Entities
         public string VehicleNumber { get; set; }
 
         [Required]
+        public virtual ParkingSlot ParkingSlot { get; set; }
+
+        [Required]
         [ForeignKey(nameof(ParkingZone))]
         public Guid ParkingZoneId { get; set; }
 
