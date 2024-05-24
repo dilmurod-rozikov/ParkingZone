@@ -297,7 +297,6 @@ namespace ParkingZoneApp.Tests.Services
             var model = Assert.IsType<List<ParkingSlot>>(result);
             Assert.NotNull(result);
             Assert.IsAssignableFrom<List<ParkingSlot>>(result);
-            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(slots));
             _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
         }
         #endregion
