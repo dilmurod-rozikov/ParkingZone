@@ -1,61 +1,107 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using ParkingZoneApp.Enums
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<ParkingZoneApp.ViewModels.ParkingSlots.ListItemVM>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 style="font-family: Bahnschrift">List of all slots for @ViewData["name"]</h1>
-<div class="form-group" style="font-family: Bahnschrift">
-    <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
-    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back</a>
+<h1 style="font-family: Bahnschrift">List of all slots for @Html.Raw(ViewData["name"])</h1>
+
+<div style="font-family: Bahnschrift; font-size: 16px">
+    <form class="d-flex align-items-center" method="post" >
+        <div class="form-group me-3">
+            <label class="form-label">Choose category</label>
+            <select id="categoryFilter" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()">
+                <option>All</option>
+            </select>
+        </div>
+        <div class="form-group me-3">
+            <label class="form-label">Select free slots</label>
+            <select id="isSlotFreeFilter" class="form-select">
+                <option>All</option>
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label d-block" style="visibility: hidden;">not visible</label>
+            <button id="filterButton" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
 </div>
 <br />
 <table class="table table-hover" style="text-align: center; font-size: 25px;
         font-family: Bahnschrift; color: white; background-color: #008080">
     <thead style="background-color: #000;">
         <tr>
-            <th>
-                @Html.DisplayName("No")
-            </th>
-            <th>
-                @Html.DisplayName("Number")
-            </th>
-            <th>
-                @Html.DisplayName("Category")
-            </th>
-            <th>
-                @Html.DisplayName("Available")
-            </th>
-            <th>
-                @Html.DisplayName("")
-            </th>
+            <th>@Html.DisplayName("No")</th>
+            <th>@Html.DisplayName("Number")</th>
+            <th>@Html.DisplayName("Category")</th>
+            <th>@Html.DisplayName("Availability")</th>
+            <th>@Html.DisplayName("IsSlotFree")</th>
+            <th>@Html.DisplayName("")</th>
         </tr>
     </thead>
-    <tbody>
-    @{
-        int index = 1;
-    }
-@foreach (var item in Model) {
-        <tr>
-            <td style="border-right: solid; border-width: 1px ;">
-                @index
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category)
-            </td>
-            <td>
-                @Html.Raw(item.IsAvailable ? "Available" : "Not Available")
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> 
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-    index++;
-}
+    <tbody id="slotTableBody">
+        @{int index = 1;}
+        @foreach (var item in Model) {
+            <tr>
+                <td style="border-right: solid; border-width: 1px;">@index</td>
+                <td>@Html.DisplayFor(modelItem => item.Number)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.Raw(item.IsAvailable ? "Available" : "Not Available")</td>
+                <td>@Html.Raw(item.IsSlotFree ? "Free" : "In use")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            index++;
+        }
     </tbody>
 </table>
+<div class="form-group" style="font-family: Bahnschrift">
+    <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
+    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back</a>
+</div>
+<div id="noSlotsMessage"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#filterButton').click(function (e) {
+            e.preventDefault();
+            var category = $('#categoryFilter').val();
+            var isSlotFree = $('#isSlotFreeFilter').val();
+            var zoneId = "@ViewData["parkingZoneId"]";
+            var model = {
+                ParkingZoneId: zoneId,
+                Category: category,
+                IsSlotFree: isSlotFree
+            };
+
+            console.log("Data being sent:", model); // Log data for debugg  ing
+
+            // AJAX request
+            $.ajax({
+                url: '@Url.Action("Index","ParkingSlot")',
+                type: 'POST',
+                data: model,
+                success: function (data) {
+                    if (data.startsWith("No slots found")) {
+                        $('#slotTableBody').empty(); 
+                        $('#noSlotsMessage').text(data);
+                    } else {
+                        // Replace table body with filtered data
+                        $('#noSlotsMessage').empty();
+                        $('#slotTableBody').html(data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Handle error
+                }
+            });
+        });
+    });
+</script>

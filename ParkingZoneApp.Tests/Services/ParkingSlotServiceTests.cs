@@ -5,6 +5,7 @@ using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 using System.Text.Json;
 
 namespace ParkingZoneApp.Tests.Services
@@ -30,8 +31,8 @@ namespace ParkingZoneApp.Tests.Services
             IsAvailable = true,
             ParkingZoneId = parkingZone.Id,
             ParkingZone = parkingZone,
-            Reservations = new List<Reservation>()
-            {
+            Reservations =
+            [
                 new()
                 {
                     Id = Guid.NewGuid(),
@@ -39,8 +40,9 @@ namespace ParkingZoneApp.Tests.Services
                     Duration = 1,
                     ParkingSlotId = slotId,
                     ParkingZoneId = parkingZone.Id,
+                    VehicleNumber = "Test-Number"
                 }
-            }
+            ]
         };
 
         private readonly List<ParkingSlot> slots = [parkingSlot];
@@ -196,11 +198,9 @@ namespace ParkingZoneApp.Tests.Services
 
         #region IsSlotFreeForReservation
         public static IEnumerable<object[]> Data =>
-        new List<object[]>
-        {
+        [
             // Slot is available for reservation
-            new object[]
-            {
+            [
                 new List<Reservation>
                 {
                     new() { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 1u }
@@ -208,30 +208,28 @@ namespace ParkingZoneApp.Tests.Services
                 new DateTime(2024, 5, 8, 13, 0, 0),
                 2,
                 true
-            },
+            ],
             // Slot is fully occupied
-            new object[]
-            {
+            [
                 new List<Reservation>
                 {
-                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 5u }
+                    new() { StartingTime = new DateTime(2024, 5, 8, 9, 0, 0), Duration = 5u }
                 },
                 new DateTime(2024, 5, 8, 10, 0, 0),
                 3,
                 false
-            },
+            ],
             // Slot is partially occupied
-            new object[]
-            {
+            [
                 new List<Reservation>
                 {
-                    new Reservation { StartingTime = new DateTime(2024, 5, 8, 12, 0, 0), Duration = 3u }
+                    new() { StartingTime = new DateTime(2024, 5, 8, 12, 0, 0), Duration = 3u }
                 },
                 new DateTime(2024, 5, 8, 11, 0, 0),
                 2,
                 false
-            }
-        };
+            ]
+        ];
 
         [Theory]
         [MemberData(nameof(Data))]
@@ -239,8 +237,10 @@ namespace ParkingZoneApp.Tests.Services
             (List<Reservation> reservations, DateTime startTime, uint duration, bool expectedResult)
         {
             // Arrange
-            ParkingSlot slot = new ParkingSlot();
-            slot.Reservations = reservations;
+            ParkingSlot slot = new()
+            {
+                Reservations = reservations
+            };
 
             // Act
             var result = _parkingSlotServiceMock.IsSlotFreeForReservation(slot, startTime, duration);
@@ -276,5 +276,29 @@ namespace ParkingZoneApp.Tests.Services
         }
         #endregion
 
+        #region Filter
+        [Fact]
+        public void GivenFilterVm_WhenFilterIsCalled_ThenReturnsQueriedCollection()
+        {
+            //Arrange
+            FilterSlotVM filterVM = new()
+            {
+                ParkingZoneId = parkingZone.Id,
+                Category = SlotCategory.Standard,
+                IsSlotFree = true,
+            };
+
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+
+            //Act
+            var result = _parkingSlotServiceMock.Filter(filterVM);
+
+            //Assert
+            var model = Assert.IsType<List<ParkingSlot>>(result);
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<List<ParkingSlot>>(result);
+            _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+        }
+        #endregion
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 
 namespace ParkingZoneApp.Services
 {
@@ -11,6 +12,19 @@ namespace ParkingZoneApp.Services
         public ParkingSlotService(IParkingSlotRepository parkingSlotRepository) : base(parkingSlotRepository)
         {
             _parkingSlotRepository = parkingSlotRepository;
+        }
+
+        public ICollection<ParkingSlot> Filter(FilterSlotVM filterSlotVM)
+        {
+            var query = GetSlotsByZoneId(filterSlotVM.ParkingZoneId);
+
+            if (filterSlotVM.Category.HasValue)
+                query = query.Where(x => x.Category == filterSlotVM.Category.Value).ToList();
+
+            if (filterSlotVM.IsSlotFree.HasValue)
+                query = query.Where(x => !x.IsInUse == filterSlotVM.IsSlotFree.Value).ToList();
+            
+            return query;
         }
 
         public bool IsUniqueNumber(Guid zoneId, int number)

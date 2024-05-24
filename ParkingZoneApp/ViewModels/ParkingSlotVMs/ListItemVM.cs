@@ -22,9 +22,9 @@ namespace ParkingZoneApp.ViewModels.ParkingSlots
         [Required]
         public ParkingZone ParkingZone { get; set; }
 
-        public ListItemVM()
-        {
-        }
+        public bool IsSlotFree { get; set; }
+
+        public ListItemVM() { }
 
         public ListItemVM(ParkingSlot slot)
         {
@@ -33,6 +33,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlots
             Category = slot.Category;
             IsAvailable = slot.IsAvailable;
             ParkingZone = slot.ParkingZone;
+            IsSlotFree = !slot.IsInUse;
         }
 
         public static IEnumerable<ListItemVM> MapToVM(IEnumerable<ParkingSlot> slots)

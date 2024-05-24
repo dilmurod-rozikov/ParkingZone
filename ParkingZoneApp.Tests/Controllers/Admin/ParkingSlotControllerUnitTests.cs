@@ -53,7 +53,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Index
         [Fact]
-        public void GivenParkingZoneId_WhenIndexIsCalled_ThenReturnViewResult()
+        public void GivenParkingZoneId_WhenGetIndexIsCalled_ThenReturnViewResult()
         {
             //Arrange
             var testSlots = new List<ParkingSlot>()
@@ -78,6 +78,33 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(expectedListOfItems));
             _parkingSlotServiceMock.Verify(x => x.GetSlotsByZoneId(parkingZone.Id), Times.Once);
             _parkingSlotServiceMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void GivenFilterSlotVM_WhenPostIndexIsCalled_ThenReturnsPartialView()
+        {
+            //Arrange
+            var slots = new List<ParkingSlot>
+            {
+                parkingSlot
+            };
+            var filterSlotVM = new FilterSlotVM
+            {
+                ParkingZoneId = parkingZone.Id,
+                Category = SlotCategory.Standard,
+                IsSlotFree = true
+            };
+            _parkingSlotServiceMock.Setup(x => x.Filter(filterSlotVM)).Returns(slots);
+
+            //Act
+            var result = _controller.Index(filterSlotVM);
+
+            //Assert
+            var model = Assert.IsType<PartialViewResult>(result).Model;
+            Assert.NotNull(result);
+            Assert.Equal("_FilteredSlotsPartial", ((PartialViewResult)result).ViewName);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(ListItemVM.MapToVM(slots)));
+            _parkingSlotServiceMock.Verify(x => x.Filter(filterSlotVM), Times.Once);
         }
         #endregion
 
