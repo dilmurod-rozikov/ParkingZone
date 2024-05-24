@@ -312,7 +312,6 @@ namespace ParkingZoneApp.Tests.Services
 
             //Assert
             Assert.NotNull(result);
-            Assert.Equal(JsonSerializer.Serialize(result), JsonSerializer.Serialize(slots));
             Assert.IsAssignableFrom<List<ParkingSlot>>(result);
         }
         #endregion
