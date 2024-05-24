@@ -29,17 +29,15 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult FilterData([FromBody]FilterSlotVM vm)
+        public IActionResult Index(FilterSlotVM vm)
         {
             var slotsQuery = _parkingSlotService.GetSlotsByZoneId(vm.ParkingZoneId);
 
             if (vm.Category.HasValue)
                 slotsQuery = _parkingSlotService.FilterByCategory(slotsQuery, vm.Category);
-            
 
             if (vm.IsSlotFree.HasValue)
                 slotsQuery = _parkingSlotService.FilterByFreeSlot(slotsQuery, vm.IsSlotFree);
-            
             var vms = ListItemVM.MapToVM(slotsQuery);
             return PartialView("_FilteredSlotsPartial", vms);
         }
@@ -149,7 +147,8 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             if (existingParkingSlot.IsInUse)
                 ModelState.AddModelError("DeleteButton", "This slot is in use, cannot be deleted!");
             else
-                _parkingSlotService.Remove(existingParkingSlot);        
+                _parkingSlotService.Remove(existingParkingSlot);
+
             return RedirectToAction("Index", new { zoneId = existingParkingSlot.ParkingZoneId });
         }
     }

@@ -1,5 +1,4 @@
 ﻿using ParkingZoneApp.Enums;
-using ParkingZoneApp.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
@@ -9,8 +8,8 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
         [Required]
         public Guid ParkingZoneId { get; set; }
 
-        public SlotCategory? Category { get; set; } = null;
+        public SlotCategory? Category { get; set; }
 
-        public bool? IsSlotFree { get; set; } = null;
+        public bool? IsSlotFree { get; set; }
     }
 }

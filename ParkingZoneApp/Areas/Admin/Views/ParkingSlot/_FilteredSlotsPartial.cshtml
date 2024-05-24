@@ -1,33 +1,25 @@
 ﻿@model IEnumerable<ParkingZoneApp.ViewModels.ParkingSlots.ListItemVM>
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-@{
-    int index = 1;
-}
-@foreach (var item in Model)
-{
-    <tr>
-        <td style="border-right: solid; border-width: 1px;">@index</td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Number)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsAvailable)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsSlotFree)
-        </td>
-        <td>
-            <div>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary"> Edit </a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-            </div>
-        </td>
-    </tr>
-    index++;
-}
+<table class="table table-hover" style="text-align: center; font-size: 25px;
+        font-family: Bahnschrift; color: white; background-color: #008080">
+    <tbody id="slotTableBody">
+        @{
+            int index = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="border-right: solid; border-width: 1px;">@index</td>
+                <td>@Html.DisplayFor(modelItem => item.Number)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.Raw(item.IsAvailable ? "Available" : "Not Available")</td>
+                <td>@Html.Raw(item.IsSlotFree ? "Free" : "In use")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>

@@ -8,7 +8,7 @@
 <h1 style="font-family: Bahnschrift">List of all slots for @Html.Raw(ViewData["name"])</h1>
 
 <div style="font-family: Bahnschrift; font-size: 16px">
-    <div class="d-flex align-items-center" >
+    <form class="d-flex align-items-center" method="post" >
         <div class="form-group me-3">
             <label class="form-label">Choose category</label>
             <select id="categoryFilter" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()">
@@ -27,7 +27,7 @@
             <label class="form-label d-block" style="visibility: hidden;">not visible</label>
             <button id="filterButton" class="btn btn-primary">Filter</button>
         </div>
-    </div>
+    </form>
 </div>
 <br />
 <table class="table table-hover" style="text-align: center; font-size: 25px;
@@ -65,36 +65,41 @@
     <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
     <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back</a>
 </div>
+<div id="noSlotsMessage"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         $('#filterButton').click(function (e) {
-            e.preventDefault(); // Prevent the default form submission
+            e.preventDefault();
             var category = $('#categoryFilter').val();
             var isSlotFree = $('#isSlotFreeFilter').val();
-            var filterModel = {
-                ParkingZoneId: @ViewData["parkingZoneId"],
+            var zoneId = "@ViewData["parkingZoneId"]";
+            var model = {
+                ParkingZoneId: zoneId,
                 Category: category,
                 IsSlotFree: isSlotFree
             };
 
+            console.log("Data being sent:", model); // Log data for debugg  ing
+
             // AJAX request
             $.ajax({
-                url: '@Url.Action("FilterData", "ParkingSlot")',
+                url: '@Url.Action("Index","ParkingSlot")',
                 type: 'POST',
-                contentType: 'application/json', // Set the content type to JSON
-                data: filterModel, // Stringify the model
+                data: model,
                 success: function (data) {
                     if (data.startsWith("No slots found")) {
-                        $('#slotTableBody').empty(); // Clear existing slots
+                        $('#slotTableBody').empty(); 
                         $('#noSlotsMessage').text(data);
                     } else {
-                        $('#noSlotsMessage').empty(); // Clear no slots message if present
+                        // Replace table body with filtered data
+                        $('#noSlotsMessage').empty();
                         $('#slotTableBody').html(data);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
+                    // Handle error
                 }
             });
         });
