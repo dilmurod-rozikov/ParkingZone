@@ -1,13 +1,11 @@
-﻿using ParkingZoneApp.Enums;
-using ParkingZoneApp.Models.Entities;
+﻿using ParkingZoneApp.Models.Entities;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 
 namespace ParkingZoneApp.Services.Interfaces
 {
     public interface IParkingSlotService : IServices<ParkingSlot>
     {
-        public ICollection<ParkingSlot> FilterByFreeSlot(ICollection<ParkingSlot> query, bool? isSlotFree);
-
-        public ICollection<ParkingSlot> FilterByCategory(ICollection<ParkingSlot> query, SlotCategory? category);
+        public ICollection<ParkingSlot> Filter(FilterSlotVM filterSlotVM);
 
         public ICollection<ParkingSlot> GetSlotsByZoneId(Guid parkingZoneId);
 

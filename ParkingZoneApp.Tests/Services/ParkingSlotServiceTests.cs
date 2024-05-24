@@ -276,47 +276,30 @@ namespace ParkingZoneApp.Tests.Services
         }
         #endregion
 
-        #region FilterByCategory
+        #region Filter
         [Fact]
-        public void GivenCollectionOfSlotsAndCategory_WhenFilterByCategoryIsCalled_ThenReturnsQueriedCollection()
+        public void GivenFilterVm_WhenFilterIsCalled_ThenReturnsQueriedCollection()
         {
             //Arrange
             FilterSlotVM filterVM = new()
             {
                 ParkingZoneId = parkingZone.Id,
                 Category = SlotCategory.Standard,
-            };
-
-            //Act
-            var result = _parkingSlotServiceMock.FilterByCategory(slots, filterVM.Category);
-
-            //Assert
-            Assert.NotNull(result);
-            Assert.Equal(JsonSerializer.Serialize(result), JsonSerializer.Serialize(slots));
-            Assert.IsAssignableFrom<List<ParkingSlot>>(result);
-        }
-        #endregion
-
-        #region FilterByFreeSlots
-        [Fact]
-        public void GivenCollectionOfSlotsAndFreeSlots_WhenFilterByCategoryIsCalled_ThenReturnsQueriedCollection()
-        {
-            //Arrange
-            FilterSlotVM filterVM = new()
-            {
-                ParkingZoneId = parkingZone.Id,
                 IsSlotFree = true,
             };
 
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+
             //Act
-            var result = _parkingSlotServiceMock.FilterByFreeSlot(slots, filterVM.IsSlotFree);
+            var result = _parkingSlotServiceMock.Filter(filterVM);
 
             //Assert
+            var model = Assert.IsType<List<ParkingSlot>>(result);
             Assert.NotNull(result);
-            Assert.Equal(JsonSerializer.Serialize(result), JsonSerializer.Serialize(slots));
             Assert.IsAssignableFrom<List<ParkingSlot>>(result);
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(slots));
+            _parkingSlotRepositoryMock.Verify(x => x.GetAll(), Times.Once);
         }
         #endregion
-
     }
 }

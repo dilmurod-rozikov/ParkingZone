@@ -1,7 +1,7 @@
-﻿using ParkingZoneApp.Enums;
-using ParkingZoneApp.Models.Entities;
+﻿using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services.Interfaces;
+using ParkingZoneApp.ViewModels.ParkingSlotVMs;
 
 namespace ParkingZoneApp.Services
 {
@@ -14,18 +14,15 @@ namespace ParkingZoneApp.Services
             _parkingSlotRepository = parkingSlotRepository;
         }
 
-        public ICollection<ParkingSlot> FilterByCategory(ICollection<ParkingSlot> query, SlotCategory? category)
+        public ICollection<ParkingSlot> Filter(FilterSlotVM filterSlotVM)
         {
-            if (category.HasValue)
-                query = query.Where(x => x.Category == category.Value).ToList();
-            
-            return query;
-        }
+            var query = GetSlotsByZoneId(filterSlotVM.ParkingZoneId);
 
-        public ICollection<ParkingSlot> FilterByFreeSlot(ICollection<ParkingSlot> query, bool? isSlotFree)
-        {
-            if (isSlotFree.HasValue)
-                query = query.Where(x => !x.IsInUse == isSlotFree.Value).ToList();
+            if (filterSlotVM.Category.HasValue)
+                query = query.Where(x => x.Category == filterSlotVM.Category.Value).ToList();
+
+            if (filterSlotVM.IsSlotFree.HasValue)
+                query = query.Where(x => !x.IsInUse == filterSlotVM.IsSlotFree.Value).ToList();
             
             return query;
         }
