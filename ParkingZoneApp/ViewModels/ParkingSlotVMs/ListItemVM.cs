@@ -22,7 +22,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlots
         [Required]
         public ParkingZone ParkingZone { get; set; }
 
-        public bool IsSlotFree {  get; set; }
+        public bool IsSlotFree { get; set; }
 
         public ListItemVM() { }
 
