@@ -32,5 +32,11 @@ namespace ParkingZoneApp.Models.Entities
 
         [Required]
         public virtual string UserId { get; set; }
+
+        [NotMapped]
+        public bool IsActive
+        {
+            get => StartingTime <= DateTime.Now && StartingTime.AddHours(Duration) > DateTime.Now;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace ParkingZoneApp.Tests.ModelValidation.ParkingSlots
 
         [Theory]
         [MemberData(nameof(TestData))]
-        public void GivenItemToBeValidated_WhenCreatingGetCurrentCarsVM_ThenValidationIsPerformed
+        public void GivenItemToBeValidated_WhenCreatingFilterSlotsVM_ThenValidationIsPerformed
             (Guid parkingZoneId, SlotCategory category, bool isSlotFree, bool expectedValidation)
         {
             //Arrange

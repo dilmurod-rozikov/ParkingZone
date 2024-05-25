@@ -16,7 +16,7 @@ namespace ParkingZoneApp.Services
 
         public IEnumerable<Reservation> GetReservationsByZoneId(Guid zoneId)
         {
-            return GetAll().Where(x => x.ParkingZoneId == zoneId);
+            return GetAll().Where(x => x.ParkingZoneId == zoneId & x.IsActive);
         }
     }
 }
