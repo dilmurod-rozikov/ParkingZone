@@ -135,5 +135,23 @@ namespace ParkingZoneApp.Tests.Services
             reservationRepositoryMock.VerifyNoOtherCalls();
         }
         #endregion
+
+        #region GetReservationsByZoneId
+        [Fact]
+        public void GivenZoneId_WhenGetReservationsByZoneIdIsCalled_ThenReturnListOfReservations()
+        {
+            //Arrange
+            reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
+
+            //Act
+            var result = reservationService.GetReservationsByZoneId(reservation.ParkingZoneId);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IEnumerable<Reservation>>(result);
+            Assert.Equal(JsonSerializer.Serialize(result), JsonSerializer.Serialize(reservations));
+            reservationRepositoryMock.Verify(x => x.GetAll(), Times.Once);
+        }
+        #endregion
     }
 }
