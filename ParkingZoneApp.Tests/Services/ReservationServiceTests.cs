@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ParkingZoneApp.Models;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
@@ -11,14 +12,15 @@ namespace ParkingZoneApp.Tests.Services
     {
         private readonly Mock<IReservationRepository> reservationRepositoryMock;
         private readonly IReservationService reservationService;
+        private static readonly ParkingZone parkingZone = new() { Id = Guid.NewGuid(), }; 
         private static readonly Reservation reservation = new()
         {
             Id = Guid.NewGuid(),
-            Duration = 2,
+            Duration = 5,
             ParkingSlotId = Guid.NewGuid(),
-            StartingTime = DateTime.UtcNow,
-            ParkingZoneId = Guid.NewGuid(),
-            UserId = "Test-user-id"
+            StartingTime = DateTime.Now.AddHours(-1),
+            ParkingZoneId = parkingZone.Id,
+            UserId = "Test-user-id",
         };
 
         private readonly IEnumerable<Reservation> reservations = [reservation];
@@ -144,7 +146,7 @@ namespace ParkingZoneApp.Tests.Services
             reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
 
             //Act
-            var result = reservationService.GetReservationsByZoneId(reservation.ParkingZoneId);
+            var result = reservationService.GetReservationsByZoneId(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);

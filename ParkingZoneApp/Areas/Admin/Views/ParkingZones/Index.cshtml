@@ -1,4 +1,5 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using ParkingZoneApp.Enums
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @model IEnumerable<ParkingZoneApp.ViewModels.ParkingZoneVMs.ListItemVM>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,18 +15,19 @@
     .crazy-card {
         color: #fff;
         border: 2px solid #fff;
-        width: 70%; 
+        width: 70%;
         font-size: 25px;
         font-family: Bahnschrift;
-        margin: auto; 
-        border-radius: 15px; 
+        margin: auto;
+        border-radius: 15px;
         overflow: hidden;
     }
 
     .crazy-card-header {
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
         background-color: #008080;
-        padding: 10px;
+        padding: 15px;
         border-bottom: 2px solid #fff;
     }
 
@@ -38,6 +40,7 @@
 {
     <div class="crazy-card">
         <div class="crazy-card-body">
+                <h3>@Html.DisplayFor(modelItem => item.Name)</h3>
             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Details</a>
             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
@@ -45,12 +48,58 @@
             <a asp-action="GetCurrentCars" asp-route-zoneId="@item.Id" class="btn btn-outline-success">Current Cars</a>
         </div>
         <div class="crazy-card-header">
-            <h2>@Html.DisplayFor(modelItem => item.Name)</h2>
-            <p>Address: @Html.DisplayFor(modelItem => item.Address)</p>
-            <p>Establishment Date: @Html.DisplayFor(modelItem => item.CreatedDate)</p>
-            <p>Available Slots: @item.NumberOfSlots</p>
-            <p>Slots in use: @item.SlotInUse</p>
+            <div>
+                <p>Address: @Html.DisplayFor(modelItem => item.Address)</p>
+                <p>Created On: @Html.DisplayFor(modelItem => item.CreatedDate)</p>
+                <p>Available Slots: @item.NumberOfSlots</p>
+                <p>Slots in use: @item.SlotInUse</p>
+            </div>
+            <div class="finance-block" style="margin-right: 50px">
+                <div class="zone-block" id="zone-block_@item.Id">
+                    <label>Choose period range</label>
+                    <select class="form-select" style="width:180px" asp-items="@(Html.GetEnumSelectList<PeriodRange>())">
+                        <option>Not chosen</option>
+                    </select>
+                    <div>
+                        @foreach (var category in Enum.GetValues(typeof(SlotCategory)))
+                        {
+                            <p>@category : <label style="color: darkgoldenrod" class="@category-placeholder">0</label> hours reserved.</p>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
-</div>
-<br/>
+    </div>
+    <br />
 }
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.finance-block select').change(function () {
+            var selectedPeriod = $(this).val();
+            var zoneId = $(this).closest(".zone-block").attr("id").split("_")[1];
+            var $this = $(this);
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("FilterByPeriod", "ParkingZones")',
+                data: { zoneId: zoneId, periodRange: selectedPeriod },
+                success: function (data) {
+                    Object.keys(data.categoryHours).forEach(function (key) {
+                        var value = data.categoryHours[key];
+                        var financeBlock = $this.closest(".finance-block");
+                        var placeholderClass = "." + key + "-placeholder";
+                        var placeholderElement = financeBlock.find(placeholderClass);
+                        placeholderElement.text(value);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log("zoneId:", zoneId);
+                    console.log("periodRange:", selectedPeriod);
+                    alert('Error fetching data.');
+                }
+            });
+        });
+    });
+
+</script>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ParkingZoneVMs;
 namespace ParkingZoneApp.Areas.Admin
@@ -34,6 +35,17 @@ namespace ParkingZoneApp.Areas.Admin
             var reservations = _reservationService.GetReservationsByZoneId(zoneId);
             var vms = reservations.Select(x => new GetCurrentCarsVM(x));
             return View(vms);
+        }
+
+        public IActionResult FilterByPeriod(Guid zoneId, PeriodRange periodRange)
+        {
+            var zone = _parkingZoneService.GetById(zoneId);
+            if(zone is null)
+                return NotFound();
+
+            var result = _parkingZoneService.FilterByPeriodOnSlotCategory(zone, periodRange);
+            var myObj = new { categoryHours = result };
+            return Json(myObj);
         }
 
         public IActionResult Details(Guid id)

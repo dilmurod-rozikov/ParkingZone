@@ -80,7 +80,7 @@
                 IsSlotFree: isSlotFree
             };
 
-            console.log("Data being sent:", model); // Log data for debugg  ing
+            console.log("Data being sent:", model);
 
             // AJAX request
             $.ajax({
@@ -92,14 +92,12 @@
                         $('#slotTableBody').empty(); 
                         $('#noSlotsMessage').text(data);
                     } else {
-                        // Replace table body with filtered data
                         $('#noSlotsMessage').empty();
                         $('#slotTableBody').html(data);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
-                    // Handle error
                 }
             });
         });
