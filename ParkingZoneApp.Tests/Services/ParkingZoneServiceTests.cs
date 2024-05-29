@@ -1,4 +1,5 @@
 ﻿using Moq;
+using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
 using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Services;
@@ -16,7 +17,19 @@ namespace ParkingZoneApp.Tests.Services
             Id = Guid.NewGuid(),
             Name = "Test Name",
             Address = "Test Address",
-            CreatedDate = new DateOnly(2024, 7, 7)
+            CreatedDate = new DateOnly(2024, 7, 7),
+            ParkingSlots =
+            [
+                new()
+                {
+                    Category = SlotCategory.Standard,
+                    Id = Guid.NewGuid(),
+                    Reservations =
+                    [
+                        new() { Duration = 5, StartingTime = DateTime.Now.AddHours(-10)}
+                    ]
+                }
+            ],
         };
 
         public ParkingZoneServiceTests()
@@ -113,6 +126,26 @@ namespace ParkingZoneApp.Tests.Services
             Assert.Equal(JsonSerializer.Serialize(parkingZone), JsonSerializer.Serialize(result));
             _parkingZoneRepositoryMock.Verify(x => x.GetByID(parkingZone.Id), Times.Once);
             _parkingZoneRepositoryMock.VerifyNoOtherCalls();
+        }
+        #endregion
+
+        #region FilterByPeriodOnSlotCategory
+        [Fact]
+        public void GivenZoneAndPeriodRange_WhenFilterByPeriodOnSlotCategory_ThenReturnsDictionary()
+        {
+            //Arrange
+            Dictionary<SlotCategory, long> dic = new()
+            {
+                { SlotCategory.Standard, 5 }
+            };
+            
+            //Act
+            var result = _parkingZoneServiceMock.FilterByPeriodOnSlotCategory(parkingZone, PeriodRange.Last7Days);
+            
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<Dictionary<SlotCategory, long>>(result);
+            Assert.Equal(JsonSerializer.Serialize(dic), JsonSerializer.Serialize(result));
         }
         #endregion
     }

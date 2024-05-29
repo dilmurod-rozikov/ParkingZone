@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using NuGet.Protocol;
 using ParkingZoneApp.Areas.Admin;
 using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
@@ -16,33 +17,35 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly Mock<IReservationService> _reservationServiceMock;
         private readonly ParkingZonesController _controller;
+        private static readonly Guid parkingZoneId = Guid.NewGuid();
+        private static readonly Guid parkingSlotId = Guid.NewGuid();
         private static readonly Reservation reservation = new()
         {
             Id = Guid.NewGuid(),
             Duration = 1,
-            StartingTime = DateTime.UtcNow,
-            ParkingSlotId = Guid.NewGuid(),
+            StartingTime = DateTime.Now.AddHours(-10),
+            ParkingSlotId = parkingSlotId,
             ParkingSlot = new(),
-            ParkingZoneId = Guid.NewGuid(),
+            ParkingZoneId = parkingZoneId,
             UserId = "User-test-id",
             VehicleNumber = "Number",
         };
         private static readonly List<Reservation> reservations = [reservation];
         private readonly ParkingZone parkingZone = new()
         {
-            Id = Guid.NewGuid(),
+            Id = parkingZoneId,
             Name = "Test Name",
             Address = "Test Address",
             ParkingSlots =
             [
                 new()
                 {
-                    Id = Guid.NewGuid(),
-                    IsAvailable = false,
+                    Id = parkingSlotId,
+                    ParkingZoneId = parkingZoneId,
                     Category = SlotCategory.Business,
+                    Reservations = reservations,
+                    IsAvailable = false,
                     Number = 1,
-                    ParkingZoneId = Guid.NewGuid(),
-                    Reservations = [reservation],
                 },
             ]
         };
@@ -360,6 +363,46 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             _parkingZoneServiceMock.Verify(x => x.GetById(parkingZone.Id), Times.Once());
             _parkingZoneServiceMock.Verify(x => x.Remove(parkingZone), Times.Once());
         }
+        #endregion
+
+        #region FilterByPeriod
+        [Fact]
+        public void GivenZoneIdAndPeriodRange_WhenFilterByPeriodIsCalled_ThenReturnsNotFound()
+        {
+            //Arrange
+            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>()));
+
+            //Act
+            var result = _controller.FilterByPeriod(parkingZoneId, PeriodRange.Last7Days);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+            _parkingZoneServiceMock.Verify(x => x.GetById(It.IsAny<Guid>()), Times.Once);
+        }
+        [Fact]
+        public void GivenZoneIdAndPeriodRange_WhenFilterByPeriodIsCalled_ThenReturnsTotalCategoryUsage()
+        {
+            //Arrange
+            var dic = new Dictionary<SlotCategory, long>
+            {
+                { SlotCategory.Business, 1}
+            };
+            var myObj = new { categoryHours = dic };
+            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).Returns(parkingZone);
+            _parkingZoneServiceMock.Setup(x => x.FilterByPeriodOnSlotCategory(parkingZone, PeriodRange.Last7Days)).Returns(dic);
+
+            //Act
+            var result = _controller.FilterByPeriod(parkingZoneId, PeriodRange.Last7Days) as JsonResult;
+
+            //Assert
+            Assert.NotNull(result);
+            var data = Assert.IsType<JsonResult>(result).Value;
+            Assert.Equal(JsonSerializer.Serialize(myObj), JsonSerializer.Serialize(data));
+            _parkingZoneServiceMock.Verify(x => x.GetById(It.IsAny<Guid>()), Times.Once);
+            _parkingZoneServiceMock.Verify(x => x.FilterByPeriodOnSlotCategory(parkingZone, PeriodRange.Last7Days), Times.Once);
+        }
+
         #endregion
     }
 }
