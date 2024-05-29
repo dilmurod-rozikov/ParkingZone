@@ -26,7 +26,7 @@ namespace ParkingZoneApp.Tests.Services
                     Id = Guid.NewGuid(),
                     Reservations =
                     [
-                        new() { Duration = 20, StartingTime = DateTime.Now.AddHours(-10)}
+                        new() { Duration = 5, StartingTime = DateTime.Now.AddHours(-10)}
                     ]
                 }
             ],
@@ -136,7 +136,7 @@ namespace ParkingZoneApp.Tests.Services
             //Arrange
             Dictionary<SlotCategory, long> dic = new()
             {
-                { SlotCategory.Standard, 20 }
+                { SlotCategory.Standard, 5 }
             };
             
             //Act
