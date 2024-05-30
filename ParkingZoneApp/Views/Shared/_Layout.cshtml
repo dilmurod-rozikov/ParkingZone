@@ -22,11 +22,17 @@
                             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li>
-                            <a class="navbar-brand" asp-area="" asp-controller="Reservation" asp-action="FreeSlots">Reservation</a>
+                            @if (User.IsInRole("User"))
+                            {
+                                <a class="navbar-brand" asp-area="" asp-controller="Reservation" asp-action="FreeSlots">Reservation</a>
+                            }
                         </li>
                         <li>
-                            <a class="navbar-brand" asp-area="User" asp-controller="Reservation" asp-action="Index">My reservations</a>
-                        </li>
+                            @if (User.IsInRole("User"))
+                            {
+                                <a class="navbar-brand" asp-area="User" asp-controller="Reservation" asp-action="Index">My reservations</a>
+                            }
+                            </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

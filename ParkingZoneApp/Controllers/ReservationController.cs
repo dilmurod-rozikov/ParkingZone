@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using ParkingZoneApp.Services.Interfaces;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace ParkingZoneApp.Controllers
 {
+    [Authorize]
     public class ReservationController : Controller
     {
         private readonly IReservationService _reservationService;
