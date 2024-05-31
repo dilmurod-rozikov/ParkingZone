@@ -34,8 +34,11 @@
                             }
                         </li>
                         <li>
-                            <a class="navbar-brand" asp-area="User" asp-controller="Reservation" asp-action="Index">My reservations</a>
-                        </li>
+                            @if (User.IsInRole("User"))
+                            {
+                                <a class="navbar-brand" asp-area="User" asp-controller="Reservation" asp-action="Index">My reservations</a>
+                            }
+                            </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
