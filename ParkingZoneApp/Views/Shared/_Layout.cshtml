@@ -8,21 +8,30 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ParkingZoneApp.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body style="font-family:Bahnschrift; background-color: #fff5d7;">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav">
-                        <li style="margin-right: 10px; margin-left: 50px;">
+                    <ul class="navbar-nav" style="margin:15px">
+                        <li>
                             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li>
-                            <a class="navbar-brand" asp-area="" asp-controller="Reservation" asp-action="FreeSlots">Reservation</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="panel-btn" asp-area="Admin" asp-controller="ParkingZone" asp-action="Index">Admin Panel</a>
+                            }
+                        </li>
+                        <li>
+                            @if (User.IsInRole("User"))
+                            {
+                                <a class="navbar-brand" asp-area="" asp-controller="Reservation" asp-action="FreeSlots">Reservation</a>
+                            }
                         </li>
                         <li>
                             <a class="navbar-brand" asp-area="User" asp-controller="Reservation" asp-action="Index">My reservations</a>
@@ -38,7 +47,6 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - ParkingZoneApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -50,3 +58,21 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<style>
+    .panel-btn{
+        border: 2px solid white;
+        font-weight: bold;
+        text-decoration: none;
+        color: white;
+        padding: 15px;
+        margin-top:20px;
+        border-radius: 20px;
+        background: #0d6efd;
+    }
+
+    .panel-btn:hover {
+        background-color: #0d6efd;
+        color: white;
+        border-color: #0d6efd; 
+    }
+</style>

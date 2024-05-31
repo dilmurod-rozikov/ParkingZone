@@ -31,8 +31,8 @@
 </div>
 <br />
 <table class="table table-hover" style="text-align: center; font-size: 25px;
-        font-family: Bahnschrift; color: white; background-color: #008080">
-    <thead style="background-color: #000;">
+        font-family: Bahnschrift; color: white; background-color: #39a0ca">
+    <thead style="background-color: #161748;">
         <tr>
             <th>@Html.DisplayName("No")</th>
             <th>@Html.DisplayName("Number")</th>
@@ -63,7 +63,7 @@
 </table>
 <div class="form-group" style="font-family: Bahnschrift">
     <a asp-action="Create" asp-route-parkingZoneId="@ViewData["parkingZoneId"]" class="btn btn-primary">Create New</a>
-    <a asp-action="Index" asp-controller="ParkingZones" class="btn btn-secondary">Back</a>
+    <a asp-action="Index" asp-controller="ParkingZone" class="btn btn-secondary">Back</a>
 </div>
 <div id="noSlotsMessage"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
