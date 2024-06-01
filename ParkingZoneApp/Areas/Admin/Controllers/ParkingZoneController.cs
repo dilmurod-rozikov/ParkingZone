@@ -8,11 +8,11 @@ namespace ParkingZoneApp.Areas.Admin
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class ParkingZonesController : Controller
+    public class ParkingZoneController : Controller
     {
         private readonly IParkingZoneService _parkingZoneService;
         private readonly IReservationService _reservationService;
-        public ParkingZonesController(IParkingZoneService parkingZoneService,IReservationService reservationService)
+        public ParkingZoneController(IParkingZoneService parkingZoneService,IReservationService reservationService)
         {
             _parkingZoneService = parkingZoneService;
             _reservationService = reservationService;

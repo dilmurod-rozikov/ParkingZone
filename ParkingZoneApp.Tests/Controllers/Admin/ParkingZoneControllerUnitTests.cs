@@ -16,7 +16,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     {
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly Mock<IReservationService> _reservationServiceMock;
-        private readonly ParkingZonesController _controller;
+        private readonly ParkingZoneController _controller;
         private static readonly Guid parkingZoneId = Guid.NewGuid();
         private static readonly Guid parkingSlotId = Guid.NewGuid();
         private static readonly Reservation reservation = new()
@@ -54,7 +54,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         {
             _parkingZoneServiceMock = new Mock<IParkingZoneService>();
             _reservationServiceMock = new Mock<IReservationService>();
-            _controller = new ParkingZonesController(_parkingZoneServiceMock.Object, _reservationServiceMock.Object);
+            _controller = new ParkingZoneController(_parkingZoneServiceMock.Object, _reservationServiceMock.Object);
         }
 
         #region Index
