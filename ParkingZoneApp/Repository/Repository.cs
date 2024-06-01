@@ -16,29 +16,32 @@ namespace ParkingZoneApp.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public IEnumerable<T> GetAll() => _dbSet;
+        public async Task<IEnumerable<T>> GetAll()
+        {
+            return await _dbSet.ToListAsync();
+        }
 
-        public void Add(T value)
+        public async Task Add(T value)
         {
             _dbSet.Add(value);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(T value)
+        public async Task Delete(T value)
         {
             _dbSet.Remove(value);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public T? GetByID(Guid id)
+        public async Task<T?> GetByID(Guid id)
         {
-            return _dbSet.Find(id);
+            return await _dbSet.FindAsync(id);
         }
 
-        public void Update(T value)
+        public async Task Update(T value)
         {
             _context.Update(value);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

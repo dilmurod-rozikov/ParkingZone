@@ -2,6 +2,7 @@
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace ParkingZoneApp.ViewModels.ReservationVMs
 {
@@ -46,15 +47,20 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
             ZoneName = zone.Name;
         }
 
-        public static IEnumerable<ListItemVM> MapToVM
-            (IEnumerable<Reservation> reservations, IParkingZoneService _parkingZoneService, IParkingSlotService _parkingSlotService)
-                => reservations.Select(reservation =>
+        public static async Task<IEnumerable<ListItemVM>> MapToVMAsync(IEnumerable<Reservation> reservations, IEnumerable<ParkingZone> parkingZones, IEnumerable<ParkingSlot> parkingSlots)
+        {
+            var tasks = reservations.Select(async reservation =>
             {
-                var zone = _parkingZoneService.GetById(reservation.ParkingZoneId);
-                var slot = _parkingSlotService.GetById(reservation.ParkingSlotId);
+                var zone = parkingZones.FirstOrDefault(z => z.Id == reservation.ParkingZoneId);
+                var slot = parkingSlots.FirstOrDefault(s => s.Id == reservation.ParkingSlotId);
 
                 return new ListItemVM(reservation, slot, zone);
-            }
-            ).OrderByDescending(x => x.StartDate);
+            });
+
+            var results = await Task.WhenAll(tasks);
+            return results.OrderByDescending(x => x.StartDate);
+        }
+
+
     }
 }

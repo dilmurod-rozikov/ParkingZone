@@ -55,13 +55,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Insert
         [Fact]
-        public void GivenParkingSlotModel_WhenInsertIsCalled_ThenReturnNothing()
+        public async Task GivenParkingSlotModel_WhenInsertIsCalled_ThenReturnNothing()
         {
             //Arrange
             _parkingSlotRepositoryMock.Setup(x => x.Add(parkingSlot));
 
             //Act
-            _parkingSlotServiceMock.Insert(parkingSlot);
+            await _parkingSlotServiceMock.Insert(parkingSlot);
 
             //Assert
             _parkingSlotRepositoryMock.Verify(x => x.Add(parkingSlot), Times.Once);
@@ -71,13 +71,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Update
         [Fact]
-        public void GivenParkingSlotModel_WhenUpdateIsCalled_ThenReturnNothing()
+        public async Task GivenParkingSlotModel_WhenUpdateIsCalled_ThenReturnNothing()
         {
             //Arrange
             _parkingSlotRepositoryMock.Setup(x => x.Update(parkingSlot));
 
             //Act
-            _parkingSlotServiceMock.Update(parkingSlot);
+            await _parkingSlotServiceMock.Update(parkingSlot);
 
             //Assert
             _parkingSlotRepositoryMock.Verify(x => x.Update(parkingSlot), Times.Once);
@@ -87,13 +87,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Remove
         [Fact]
-        public void GivenParkingSlotModel_WhenRemoveIsCalled_ThenReturnNothing()
+        public async Task GivenParkingSlotModel_WhenRemoveIsCalled_ThenReturnNothing()
         {
             //Arrange
             _parkingSlotRepositoryMock.Setup(x => x.Delete(parkingSlot));
 
             //Act
-            _parkingSlotServiceMock.Remove(parkingSlot);
+            await _parkingSlotServiceMock.Remove(parkingSlot);
 
             //Assert
             _parkingSlotRepositoryMock.Verify(x => x.Delete(parkingSlot), Times.Once);
@@ -103,15 +103,15 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetAll
         [Fact]
-        public void GivenParkingSlotModel_WhenGetAllIsCalled_ThenReturnAllSlots()
+        public async Task GivenParkingSlotModel_WhenGetAllIsCalled_ThenReturnAllSlots()
         {
             //Arrange
             _parkingSlotRepositoryMock
                     .Setup(x => x.GetAll())
-                    .Returns(slots);
+                    .ReturnsAsync(slots);
 
             //Act
-            var result = _parkingSlotServiceMock.GetAll();
+            var result = await _parkingSlotServiceMock.GetAll();
 
             //Assert
             Assert.IsType<List<ParkingSlot>>(result);
@@ -123,15 +123,15 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetById
         [Fact]
-        public void GivenParkingSlotId_WhenGetByIdIsCalled_ThenReturnTheModel()
+        public async Task GivenParkingSlotId_WhenGetByIdIsCalled_ThenReturnTheModel()
         {
             //Arrange
             _parkingSlotRepositoryMock
                     .Setup(x => x.GetByID(parkingSlot.Id))
-                    .Returns(parkingSlot);
+                    .ReturnsAsync(parkingSlot);
 
             //Act
-            var result = _parkingSlotServiceMock.GetById(parkingSlot.Id);
+            var result = await _parkingSlotServiceMock.GetById(parkingSlot.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -145,13 +145,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetSlotByZoneId
         [Fact]
-        public void GivenParkingZoneId_WhenGetSlotsByZoneIdIsCalled_ThenReturnCollectionOfSlots()
+        public async Task GivenParkingZoneId_WhenGetSlotsByZoneIdIsCalled_ThenReturnCollectionOfSlots()
         {
             //Arrange
-            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(slots);
 
             //Act
-            var result = _parkingSlotServiceMock.GetSlotsByZoneId(parkingZone.Id);
+            var result = await _parkingSlotServiceMock.GetSlotsByZoneIdAsync(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -164,14 +164,14 @@ namespace ParkingZoneApp.Tests.Services
 
         #region IsUniqueNumber
         [Fact]
-        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnTrue()
+        public async Task GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnTrue()
         {
             //Arrange
             slots.Add(new() { Id = Guid.NewGuid(), Number = 2, ParkingZoneId = parkingZone.Id });
-            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(slots);
 
             //Act
-            var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 3);
+            var result = await _parkingSlotServiceMock.IsUniqueNumberAsync(parkingSlot.ParkingZoneId, 3);
 
             //Assert
             Assert.False(result);
@@ -180,14 +180,14 @@ namespace ParkingZoneApp.Tests.Services
         }
 
         [Fact]
-        public void GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnFalse()
+        public async Task GivenIdAndNumber_WhenIsUniqueNumberIsCalled_ThenReturnFalse()
         {
             //Arrange
             slots.Add(new() { Id = Guid.NewGuid(), Number = 1, ParkingZoneId = parkingZone.Id });
-            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(slots);
 
             //Act
-            var result = _parkingSlotServiceMock.IsUniqueNumber(parkingSlot.ParkingZoneId, 1);
+            var result = await _parkingSlotServiceMock.IsUniqueNumberAsync(parkingSlot.ParkingZoneId, 1);
 
             //Assert
             Assert.True(result);
@@ -252,7 +252,7 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetAllFreeSlots
         [Fact]
-        public void GivenParkingZoneIdStartingTimeAndDuration_WhenGetAllFreeSlotsIsCalled_ThenReturnCollectionOfSlots()
+        public async Task GivenParkingZoneIdStartingTimeAndDuration_WhenGetAllFreeSlotsIsCalled_ThenReturnCollectionOfSlots()
         {
             //Arrange
             Reservation reservation = new()
@@ -263,11 +263,11 @@ namespace ParkingZoneApp.Tests.Services
                 ParkingSlotId = slotId,
                 ParkingZoneId = parkingZone.Id,
             };
-            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(slots);
 
             //Act
-            var result = _parkingSlotServiceMock
-                .GetAllFreeSlots(parkingZone.Id, reservation.StartingTime, reservation.Duration);
+            var result = await _parkingSlotServiceMock
+                .GetAllFreeSlotsAsync(parkingZone.Id, reservation.StartingTime, reservation.Duration);
 
             //Assert
             Assert.NotNull(result);
@@ -278,7 +278,7 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Filter
         [Fact]
-        public void GivenFilterVm_WhenFilterIsCalled_ThenReturnsQueriedCollection()
+        public async Task GivenFilterVm_WhenFilterIsCalled_ThenReturnsQueriedCollection()
         {
             //Arrange
             FilterSlotVM filterVM = new()
@@ -288,10 +288,10 @@ namespace ParkingZoneApp.Tests.Services
                 IsSlotFree = true,
             };
 
-            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).Returns(slots);
+            _parkingSlotRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(slots);
 
             //Act
-            var result = _parkingSlotServiceMock.Filter(filterVM);
+            var result = await _parkingSlotServiceMock.FilterAsync(filterVM);
 
             //Assert
             var model = Assert.IsType<List<ParkingSlot>>(result);

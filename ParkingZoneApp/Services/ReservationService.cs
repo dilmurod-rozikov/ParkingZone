@@ -9,14 +9,16 @@ namespace ParkingZoneApp.Services
         public ReservationService(IReservationRepository reservationRepository)
             : base(reservationRepository) { }
 
-        public IEnumerable<Reservation> GetReservationsByUserId(string userId)
+        public async Task<IEnumerable<Reservation>> GetReservationsByUserId(string userId)
         {
-            return GetAll().Where(x => x.UserId == userId);
+            var reservations = await GetAll();
+            return reservations.Where(x => x.UserId == userId);
         }
 
-        public IEnumerable<Reservation> GetReservationsByZoneId(Guid zoneId)
+        public async Task<IEnumerable<Reservation>> GetReservationsByZoneId(Guid zoneId)
         {
-            return GetAll().Where(x => x.ParkingZoneId == zoneId & x.IsActive);
+            var reservations = await GetAll();
+            return reservations.Where(x => x.ParkingZoneId == zoneId & x.IsActive);
         }
     }
 }

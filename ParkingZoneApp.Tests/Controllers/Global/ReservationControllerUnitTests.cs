@@ -64,16 +64,16 @@ namespace ParkingZoneApp.Tests.Controllers.Global
 
         #region FreeSlots
         [Fact]
-        public void GivenNothing_WhenGetFreeSlotsIsCalled_ThenReturnViewResult()
+        public async Task GivenNothing_WhenGetFreeSlotsIsCalled_ThenReturnViewResult()
         {
             //Arrange
             var expected = new List<FreeSlotsVMs>()
             {
                 new(parkingZones)
             };
-            _zoneServiceMock.Setup(x => x.GetAll()).Returns(parkingZones);
+            _zoneServiceMock.Setup(x => x.GetAll()).ReturnsAsync(parkingZones);
             //Act
-            var result = _controller.FreeSlots();
+            var result = await _controller.FreeSlots();
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -83,7 +83,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public void GivenFreeSlotsVM_WhenPostFreeSlotsIsCalled_ThenReturnsViewResult()
+        public async Task GivenFreeSlotsVM_WhenPostFreeSlotsIsCalled_ThenReturnsViewResult()
         {
             //Arrange
             FreeSlotsVMs freeSlotsVMs = new()
@@ -94,32 +94,32 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                 SelectedZoneId = parkingZone.Id
             };
 
-            _zoneServiceMock.Setup(x => x.GetAll()).Returns(parkingZones);
+            _zoneServiceMock.Setup(x => x.GetAll()).ReturnsAsync(parkingZones);
             _slotServiceMock.Setup(x => x
-                .GetAllFreeSlots(freeSlotsVMs.SelectedZoneId, freeSlotsVMs.StartingTime, freeSlotsVMs.Duration))
-                .Returns(parkingSlots);
+                .GetAllFreeSlotsAsync(freeSlotsVMs.SelectedZoneId, freeSlotsVMs.StartingTime, freeSlotsVMs.Duration))
+                .ReturnsAsync(parkingSlots);
             //Act
-            var result = _controller.FreeSlots(freeSlotsVMs);
+            var result = await _controller.FreeSlots(freeSlotsVMs);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
             Assert.NotNull(result);
             Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(freeSlotsVMs));
             _zoneServiceMock.Verify(x => x.GetAll(), Times.Once);
-            _slotServiceMock.Verify(x => x.GetAllFreeSlots
+            _slotServiceMock.Verify(x => x.GetAllFreeSlotsAsync
                 (freeSlotsVMs.SelectedZoneId, freeSlotsVMs.StartingTime, freeSlotsVMs.Duration), Times.Once);
         }
         #endregion
 
         #region Reserve
         [Fact]
-        public void GivenSlotIdAndStartTimeAndDuration_WhenGetReserveIsCalled_ThenReturnsNotFoundResult()
+        public async Task GivenSlotIdAndStartTimeAndDuration_WhenGetReserveIsCalled_ThenReturnsNotFoundResult()
         {
             //Arrage
             _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id));
 
             //Act
-            var result = _controller.Reserve(parkingSlot.Id, DateTime.Now, 5);
+            var result = await _controller.Reserve(parkingSlot.Id, DateTime.Now, 5);
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
@@ -127,17 +127,17 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public void GivenSlotIdAndStartTimeAndDuration_WhenGetReserveIsCalled_ThenReturnsViewResult()
+        public async Task GivenSlotIdAndStartTimeAndDuration_WhenGetReserveIsCalled_ThenReturnsViewResult()
         {
             //Arrage
             ReserveVM reserveVM = new(5, new DateTime(2024, 5, 9, 11, 11, 11, 0, 0), parkingSlot.Id,
                     parkingZone.Id, parkingZone.Name, parkingZone.Address, parkingSlot.Number);
 
-            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
-            _zoneServiceMock.Setup(x => x.GetById(parkingZone.Id)).Returns(parkingZone);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).ReturnsAsync(parkingSlot);
+            _zoneServiceMock.Setup(x => x.GetById(parkingZone.Id)).ReturnsAsync(parkingZone);
 
             //Act
-            var result = _controller.Reserve(parkingSlot.Id, new DateTime(2024, 5, 9, 11, 11, 11, 0, 0), 5);
+            var result = await _controller.Reserve(parkingSlot.Id, new DateTime(2024, 5, 9, 11, 11, 11, 0, 0), 5);
 
             //Assert
             Assert.NotNull(result);
@@ -148,7 +148,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForOccupiedReservation()
+        public async Task GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForOccupiedReservation()
         {
             //Arrage
             ReserveVM reserveVM = new()
@@ -160,8 +160,8 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                 ZoneId = parkingZone.Id,
             };
 
-            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).Returns(parkingSlot);
-            _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).Returns(parkingZone);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).ReturnsAsync(parkingSlot);
+            _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).ReturnsAsync(parkingZone);
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(parkingSlot, reserveVM.StartingTime, reserveVM.Duration))
                 .Returns(false);
@@ -169,7 +169,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             _controller.ModelState.AddModelError("StartingTime", "Slot is not free for selected period");
 
             //Act
-            var result = _controller.Reserve(reserveVM);
+            var result = await _controller.Reserve(reserveVM);
 
             //Assert
             Assert.NotNull(result);
@@ -183,7 +183,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForVehivleNumber()
+        public async Task GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForVehivleNumber()
         {
             //Arrage
             ReserveVM reserveVM = new()
@@ -193,8 +193,8 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                 Duration = 5,
                 ZoneId = parkingZone.Id,
             };
-            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).Returns(parkingSlot);
-            _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).Returns(parkingZone);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).ReturnsAsync(parkingSlot);
+            _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).ReturnsAsync(parkingZone);
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(parkingSlot, reserveVM.StartingTime, reserveVM.Duration))
                 .Returns(true);
@@ -202,7 +202,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             _controller.ModelState.AddModelError("VehicleNumber", "Vehicle Number is required.");
 
             //Act
-            var result = _controller.Reserve(reserveVM);
+            var result = await _controller.Reserve(reserveVM);
 
             //Assert
             Assert.NotNull(result);
@@ -216,7 +216,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public void GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsViewResult()
+        public async Task GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsViewResult()
         {
             //Arrage
             ReserveVM reserveVM = new()
@@ -235,15 +235,15 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             };
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
 
-            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).Returns(parkingSlot);
-            _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).Returns(parkingZone);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).ReturnsAsync(parkingSlot);
+            _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).ReturnsAsync(parkingZone);
             _reservationServiceMock.Setup(x => x.Insert(It.IsAny<Reservation>()));
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(parkingSlot, reserveVM.StartingTime, reserveVM.Duration))
                 .Returns(true);
 
             //Act
-            var result = _controller.Reserve(reserveVM);
+            var result = await _controller.Reserve(reserveVM);
 
             //Assert
             Assert.NotNull(result);

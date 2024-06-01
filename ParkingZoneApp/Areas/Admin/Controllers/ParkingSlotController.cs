@@ -18,20 +18,20 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             _parkingZoneService = parkingZoneService;
         }
 
-        public IActionResult Index(Guid zoneId)
+        public async Task<IActionResult> Index(Guid zoneId)
         {
-            var parkingSlots = _parkingSlotService.GetSlotsByZoneId(zoneId);
+            var parkingSlots = await _parkingSlotService.GetSlotsByZoneIdAsync(zoneId);
             var listItemVMs = ListItemVM.MapToVM(parkingSlots).ToList();
-            var zone = _parkingZoneService.GetById(zoneId);
+            var zone = await _parkingZoneService.GetById(zoneId);
             ViewData["parkingZoneId"] = zoneId;
             ViewData["name"] = zone?.Name;
             return View(listItemVMs);
         }
 
         [HttpPost]
-        public IActionResult Index(FilterSlotVM vm)
+        public async Task<IActionResult> Index(FilterSlotVM vm)
         {
-            var slotsQuery = _parkingSlotService.Filter(vm);
+            var slotsQuery = await _parkingSlotService.FilterAsync(vm);
             var listItemVm = ListItemVM.MapToVM(slotsQuery);
             return PartialView("_FilteredSlotsPartial", listItemVm);
         }
@@ -48,9 +48,9 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateVM slotCreateVM)
+        public async Task<IActionResult> Create(CreateVM slotCreateVM)
         {
-            if (_parkingSlotService.IsUniqueNumber(slotCreateVM.ParkingZoneId, slotCreateVM.Number))
+            if (await _parkingSlotService.IsUniqueNumberAsync(slotCreateVM.ParkingZoneId, slotCreateVM.Number))
             {
                 ModelState.AddModelError("Number", "The parking slot number is not unique");
             }
@@ -58,16 +58,16 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var parkingSlot = slotCreateVM.MapToModel();
-                _parkingSlotService.Insert(parkingSlot);
+                await _parkingSlotService.Insert(parkingSlot);
                 return RedirectToAction("Index", new { zoneId = parkingSlot.ParkingZoneId });
             }
             return View(slotCreateVM);
         }
 
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var slot = _parkingSlotService.GetById(id);
+            var slot = await _parkingSlotService.GetById(id);
 
             if (slot is null)
                 return NotFound();
@@ -78,16 +78,16 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(EditVM slotEditVM, Guid id)
+        public async Task<IActionResult> Edit(EditVM slotEditVM, Guid id)
         {
             if (id != slotEditVM.Id)
                 return NotFound();
-            var slot = _parkingSlotService.GetById(id);
+            var slot = await _parkingSlotService.GetById(id);
 
             if (slot is null)
                 return NotFound();
 
-            if (_parkingSlotService.IsUniqueNumber(slotEditVM.ParkingZoneId, slotEditVM.Number) & slot.Number != slotEditVM.Number)
+            if (await _parkingSlotService.IsUniqueNumberAsync(slotEditVM.ParkingZoneId, slotEditVM.Number) & slot.Number != slotEditVM.Number)
             {
                 ModelState.AddModelError("Number", "The parking slot number is not unique!");
             }
@@ -100,7 +100,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 slot = slotEditVM.MapToModel(slot);
-                _parkingSlotService.Update(slot);
+                await _parkingSlotService.Update(slot);
                 return RedirectToAction("Index", new { zoneId = slot.ParkingZoneId });
             }
 
@@ -108,9 +108,9 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            var slot = _parkingSlotService.GetById(id);
+            var slot = await _parkingSlotService.GetById(id);
 
             if (slot is null)
                 return NotFound();
@@ -120,9 +120,9 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var slot = _parkingSlotService.GetById(id);
+            var slot = await _parkingSlotService.GetById(id);
 
             if (slot is null)
                 return NotFound();
@@ -132,16 +132,16 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var existingParkingSlot = _parkingSlotService.GetById(id);
+            var existingParkingSlot = await _parkingSlotService.GetById(id);
             if (existingParkingSlot is null)
                 return NotFound();
 
             if (existingParkingSlot.IsInUse)
                 ModelState.AddModelError("DeleteButton", "This slot is in use, cannot be deleted!");
             else
-                _parkingSlotService.Remove(existingParkingSlot);
+                await _parkingSlotService.Remove(existingParkingSlot);
 
             return RedirectToAction("Index", new { zoneId = existingParkingSlot.ParkingZoneId });
         }

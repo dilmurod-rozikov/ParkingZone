@@ -40,13 +40,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Insert
         [Fact]
-        public void GivenParkingZoneModel_WhenInsertIsCalled_ThenReturnNothing()
+        public async Task GivenParkingZoneModel_WhenInsertIsCalled_ThenReturnNothing()
         {
             //Arrange
             _parkingZoneRepositoryMock.Setup(x => x.Add(parkingZone));
 
             //Act
-            _parkingZoneServiceMock.Insert(parkingZone);
+            await _parkingZoneServiceMock.Insert(parkingZone);
 
             //Assert
             _parkingZoneRepositoryMock.Verify(x => x.Add(parkingZone), Times.Once);
@@ -56,13 +56,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Update
         [Fact]
-        public void GivenParkingZoneModel_WhenUpdateIsCalled_ThenReturnNothing()
+        public async Task GivenParkingZoneModel_WhenUpdateIsCalled_ThenReturnNothing()
         {
             //Arrange
             _parkingZoneRepositoryMock.Setup(x => x.Update(parkingZone));
 
             //Act
-            _parkingZoneServiceMock.Update(parkingZone);
+            await _parkingZoneServiceMock.Update(parkingZone);
 
             //Assert
             _parkingZoneRepositoryMock.Verify(x => x.Update(parkingZone), Times.Once);
@@ -72,13 +72,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Delete
         [Fact]
-        public void GivenParkingZoneModel_WhenRemoveIsCalled_ThenReturnNothing()
+        public async Task GivenParkingZoneModel_WhenRemoveIsCalled_ThenReturnNothing()
         {
             //Arrange
             _parkingZoneRepositoryMock.Setup(x => x.Delete(parkingZone));
 
             //Act
-            _parkingZoneServiceMock.Remove(parkingZone);
+            await _parkingZoneServiceMock.Remove(parkingZone);
 
             //Assert
             _parkingZoneRepositoryMock.Verify(x => x.Delete(parkingZone), Times.Once);
@@ -88,7 +88,7 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetAll
         [Fact]
-        public void GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
+        public async Task GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
             IEnumerable<ParkingZone> expectedZones = new List<ParkingZone>()
@@ -97,9 +97,9 @@ namespace ParkingZoneApp.Tests.Services
             };
             _parkingZoneRepositoryMock
                     .Setup(x => x.GetAll())
-                    .Returns(expectedZones);
+                    .ReturnsAsync(expectedZones);
             //Act
-            var result = _parkingZoneServiceMock.GetAll();
+            var result = await _parkingZoneServiceMock.GetAll();
 
             //Assert
             Assert.Equal(JsonSerializer.Serialize(expectedZones), JsonSerializer.Serialize(result));
@@ -110,15 +110,15 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetByID
         [Fact]
-        public void GivenGuid_WhenGetByIdIsCalled_ThenReturnModel()
+        public async Task GivenGuid_WhenGetByIdIsCalled_ThenReturnModel()
         {
             //Arrange
             _parkingZoneRepositoryMock
                     .Setup(x => x.GetByID(parkingZone.Id))
-                    .Returns(parkingZone);
+                    .ReturnsAsync(parkingZone);
 
             //Act
-            var result = _parkingZoneServiceMock.GetById(parkingZone.Id);
+            var result = await _parkingZoneServiceMock.GetById(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);

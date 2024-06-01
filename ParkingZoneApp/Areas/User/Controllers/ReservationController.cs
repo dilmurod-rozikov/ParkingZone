@@ -24,22 +24,24 @@ namespace ParkingZoneApp.Areas.User.Controllers
             _parkingSlotService = parkingSlotService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId.IsNullOrEmpty())
                 return NotFound();
 
-            var reservations = _reservationService.GetReservationsByUserId(userId);
-            var indexVM = ListItemVM.MapToVM(reservations, _parkingZoneService, _parkingSlotService);
+            var reservations = await _reservationService.GetReservationsByUserId(userId);
+            var parkingZones = await _parkingZoneService.GetAll();
+            var parkingSlots = await _parkingSlotService.GetAll();
+            var indexVM = await ListItemVM.MapToVMAsync(reservations, parkingZones, parkingSlots);
             return View(indexVM);
         }
 
         [HttpGet]
-        public IActionResult Prolong(Guid reservationId)
+        public async Task<IActionResult> Prolong(Guid reservationId)
         {
-            var reservation = _reservationService.GetById(reservationId);
+            var reservation = await _reservationService.GetById(reservationId);
 
             if (reservation is null)
                 return NotFound();
@@ -56,16 +58,16 @@ namespace ParkingZoneApp.Areas.User.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Prolong(ProlongVM prolongVM)
+        public async Task<IActionResult> Prolong(ProlongVM prolongVM)
         {
-            var reservation = _reservationService.GetById(prolongVM.Id);
+            var reservation = await _reservationService.GetById(prolongVM.Id);
 
             if (reservation is null)
                 return NotFound();
 
             prolongVM.StartTime = reservation.StartingTime;
             prolongVM.FinishTime = reservation.StartingTime.AddHours(reservation.Duration);
-            var slot = _parkingSlotService.GetById(reservation.ParkingSlotId);
+            var slot = await _parkingSlotService.GetById(reservation.ParkingSlotId);
             bool isProlongable = _parkingSlotService
                 .IsSlotFreeForReservation(slot, prolongVM.StartTime.AddHours(reservation.Duration), prolongVM.ProlongDuration);
 
@@ -77,7 +79,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
             if (ModelState.IsValid)
             {
                 reservation = prolongVM.MapToModel(reservation);
-                _reservationService.Update(reservation);
+                await _reservationService.Update(reservation);
                 TempData["SuccessMessage"] = "Reservation successfully prolonged.";
             }
 

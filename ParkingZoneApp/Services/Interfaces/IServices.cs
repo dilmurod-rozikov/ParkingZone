@@ -2,14 +2,14 @@
 {
     public interface IServices<T> where T : class
     {
-        void Insert(T value);
+        Task Insert(T value);
 
-        void Update(T value);
+        Task Update(T value);
 
-        void Remove(T value);
+        Task Remove(T value);
 
-        IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAll();
 
-        T? GetById(Guid value);
+        Task<T?> GetById(Guid value);
     }
 }

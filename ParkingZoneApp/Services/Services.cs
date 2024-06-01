@@ -12,29 +12,29 @@ namespace ParkingZoneApp.Services
             _repository = repository;
         }
 
-        public void Insert(T value)
+        public async Task Insert(T value)
         {
-            _repository.Add(value);
+            await _repository.Add(value);
         }
 
-        public void Update(T value)
+        public async Task Update(T value)
         {
-            _repository.Update(value);
+            await _repository.Update(value);
         }
 
-        public void Remove(T value)
+        public async Task Remove(T value)
         {
-            _repository.Delete(value);
+            await _repository.Delete(value);
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            return _repository.GetAll();
+            return await _repository.GetAll();
         }
 
-        public T? GetById(Guid value)
+        public async Task<T?> GetById(Guid value)
         {
-            return _repository.GetByID(value);
+            return await _repository.GetByID(value);
         }
     }
 }
