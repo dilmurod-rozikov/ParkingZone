@@ -43,7 +43,24 @@ namespace ParkingZoneApp.Tests.Controllers.User
             ParkingZone = new(),
             Reservations = reservations.ToList(),
         };
-
+        private readonly ParkingZone parkingZone = new()
+        {
+            Id = parkingZoneId,
+            Name = "Test Name",
+            Address = "Test Address",
+            ParkingSlots =
+            [
+                new()
+                {
+                    Id = parkingSlotId,
+                    ParkingZoneId = parkingZoneId,
+                    Category = SlotCategory.Business,
+                    Reservations = [reservation],
+                    IsAvailable = false,
+                    Number = 1,
+                },
+            ]
+        };
         public ReservationControllerUnitTests()
         {
             _reservationServiceMock = new Mock<IReservationService>();
@@ -54,9 +71,11 @@ namespace ParkingZoneApp.Tests.Controllers.User
 
         #region Index
         [Fact]
-        public void GivenNothing_WhenGetIndexIsCalled_ThenReturnsViewResult()
+        public async Task GivenNothing_WhenGetIndexIsCalled_ThenReturnsViewResult()
         {
             //Arrange
+            _slotServiceMock.Setup(x => x.GetAll()).ReturnsAsync([parkingSlot]);
+            _zoneServiceMock.Setup(x => x.GetAll()).ReturnsAsync([parkingZone]);
             var mockClaimsPrincipal = CreateMockClaimsPrincipal();
 
             _controller.ControllerContext = new ControllerContext
@@ -64,18 +83,20 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 HttpContext = new DefaultHttpContext { User = mockClaimsPrincipal }
             };
 
-            _reservationServiceMock.Setup(x => x.GetReservationsByUserId(It.IsAny<string>())).Returns(reservations);
+            _reservationServiceMock.Setup(x => x.GetReservationsByUserId(It.IsAny<string>())).ReturnsAsync(reservations);
             //Act
-            var result = _controller.Index();
+            var result = await _controller.Index();
 
             //Assert
             Assert.NotNull(result);
             Assert.IsType<ViewResult>(result);
             _reservationServiceMock.Verify((x => x.GetReservationsByUserId(It.IsAny<string>())), Times.Once);
+            _zoneServiceMock.Verify(x => x.GetAll(), Times.Once);
+            _slotServiceMock.Verify(x => x.GetAll(), Times.Once);
         }
 
         [Fact]
-        public void GivenNothing_WhenGetIndexIsCalled_ThenNotFoundResult()
+        public async Task GivenNothing_WhenGetIndexIsCalled_ThenNotFoundResult()
         {
             //Arrange
             reservation.UserId = null;
@@ -86,7 +107,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
             };
 
             //Act
-            var result = _controller.Index();
+            var result = await _controller.Index();
 
             //Assert
             Assert.NotNull(result);
@@ -106,13 +127,13 @@ namespace ParkingZoneApp.Tests.Controllers.User
 
         #region Prolong
         [Fact]
-        public void GivenReservationId_WhenGetProlongIsCalled_ThenReturnsNotFoundResult()
+        public async Task GivenReservationId_WhenGetProlongIsCalled_ThenReturnsNotFoundResult()
         {
             //Arrange
             _reservationServiceMock.Setup(x => x.GetById(reservation.Id));
 
             //Act
-            var result = _controller.Prolong(reservation.Id);
+            var result = await _controller.Prolong(reservation.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -121,7 +142,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         }
 
         [Fact]
-        public void GivenReservationId_WhenGetProlongIsCalled_ThenReturnsViewResult()
+        public async Task GivenReservationId_WhenGetProlongIsCalled_ThenReturnsViewResult()
         {
             //Arrange
             ProlongVM prolongVM = new()
@@ -130,10 +151,10 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 StartTime = reservation.StartingTime,
                 FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
             };
-            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).ReturnsAsync(reservation);
 
             //Act
-            var result = _controller.Prolong(reservation.Id);
+            var result = await _controller.Prolong(reservation.Id);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -143,7 +164,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         }
 
         [Fact]
-        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsNotFoundResult()
+        public async Task GivenReservationId_WhenPostProlongIsCalled_ThenReturnsNotFoundResult()
         {
             //Arrange
             ProlongVM prolongVM = new()
@@ -156,7 +177,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
             _reservationServiceMock.Setup(x => x.GetById(reservation.Id));
 
             //Act
-            var result = _controller.Prolong(prolongVM);
+            var result = await _controller.Prolong(prolongVM);
 
             //Assert
             Assert.NotNull(result);
@@ -165,7 +186,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         }
 
         [Fact]
-        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsViewResult()
+        public async Task GivenReservationId_WhenPostProlongIsCalled_ThenReturnsViewResult()
         {
             //Arrange
             ProlongVM prolongVM = new()
@@ -177,8 +198,8 @@ namespace ParkingZoneApp.Tests.Controllers.User
             };
 
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
-            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
-            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).ReturnsAsync(reservation);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).ReturnsAsync(parkingSlot);
 
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()))
@@ -187,7 +208,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
             _reservationServiceMock.Setup(x => x.Update(It.IsAny<Reservation>()));
 
             //Act
-            var result = _controller.Prolong(prolongVM);
+            var result = await _controller.Prolong(prolongVM);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -205,7 +226,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         }
 
         [Fact]
-        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelErrorIfDurationIsLessThanOne()
+        public async Task GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelErrorIfDurationIsLessThanOne()
         {
             //Arrange
             ProlongVM prolongVM = new()
@@ -215,10 +236,10 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
             };
             _controller.ModelState.AddModelError("ProlongDuration", "Prolong time should be at least 1 hour.");
-            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).ReturnsAsync(reservation);
 
             //Act
-            var result = _controller.Prolong(prolongVM);
+            var result = await _controller.Prolong(prolongVM);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -229,7 +250,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         }
 
         [Fact]
-        public void GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelErrorIfSlotIsNotFree()
+        public async Task GivenReservationId_WhenPostProlongIsCalled_ThenReturnsModelErrorIfSlotIsNotFree()
         {
             //Arrange
             ProlongVM prolongVM = new()
@@ -239,14 +260,14 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 FinishTime = reservation.StartingTime.AddHours(reservation.Duration),
             };
             _controller.ModelState.AddModelError("ProlongDuration", "This slot is already reserved for chosen prolong time!");
-            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).Returns(reservation);
-            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).Returns(parkingSlot);
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).ReturnsAsync(reservation);
+            _slotServiceMock.Setup(x => x.GetById(parkingSlot.Id)).ReturnsAsync(parkingSlot);
             _slotServiceMock
                 .Setup(x => x.IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()))
                 .Returns(true);
 
             //Act
-            var result = _controller.Prolong(prolongVM);
+            var result = await _controller.Prolong(prolongVM);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;

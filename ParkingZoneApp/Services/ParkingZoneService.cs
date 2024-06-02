@@ -9,11 +9,11 @@ namespace ParkingZoneApp.Services
     {
         public ParkingZoneService(IParkingZoneRepository repository) : base(repository) { }
 
-        public new void Insert(ParkingZone parkingZone)
+        public async new Task Insert(ParkingZone parkingZone)
         {
             parkingZone.Id = Guid.NewGuid();
             parkingZone.CreatedDate = DateOnly.FromDateTime(DateTime.Today);
-            base.Insert(parkingZone);
+            await base.Insert(parkingZone);
         }
 
         public Dictionary<SlotCategory, long> FilterByPeriodOnSlotCategory(ParkingZone zone, PeriodRange range)

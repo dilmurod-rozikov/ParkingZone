@@ -33,13 +33,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Insert
         [Fact]
-        public void GivenReservationModel_WhenInsertIsCalled_ThenReturnNothing()
+        public async Task GivenReservationModel_WhenInsertIsCalled_ThenReturnNothing()
         {
             //Arrange
             reservationRepositoryMock.Setup(x => x.Add(reservation));
 
             //Act
-            reservationService.Insert(reservation);
+            await reservationService.Insert(reservation);
 
             //Assert
             reservationRepositoryMock.Verify(x => x.Add(reservation), Times.Once);
@@ -49,13 +49,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Update
         [Fact]
-        public void GivenReservationModel_WhenUpdateIsCalled_ThenReturnNothing()
+        public async Task GivenReservationModel_WhenUpdateIsCalled_ThenReturnNothing()
         {
             //Arrange
             reservationRepositoryMock.Setup(x => x.Update(reservation));
 
             //Act
-            reservationService.Update(reservation);
+            await reservationService.Update(reservation);
 
             //Assert
             reservationRepositoryMock.Verify(x => x.Update(reservation), Times.Once);
@@ -65,13 +65,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region Delete
         [Fact]
-        public void GivenParkingZoneModel_WhenRemoveIsCalled_ThenReturnNothing()
+        public async Task GivenParkingZoneModel_WhenRemoveIsCalled_ThenReturnNothing()
         {
             //Arrange
             reservationRepositoryMock.Setup(x => x.Delete(reservation));
 
             //Act
-            reservationService.Remove(reservation);
+            await reservationService.Remove(reservation);
 
             //Assert
             reservationRepositoryMock.Verify(x => x.Delete(reservation), Times.Once);
@@ -81,15 +81,15 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetAll
         [Fact]
-        public void GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
+        public async Task GivenNothing_WhenGetAllIsCalled_ThenReturnAllModels()
         {
             //Arrange
             IEnumerable<Reservation> expectedReservations = [reservation];
             reservationRepositoryMock
                     .Setup(x => x.GetAll())
-                    .Returns(expectedReservations);
+                    .ReturnsAsync(expectedReservations);
             //Act
-            var result = reservationService.GetAll();
+            var result = await reservationService.GetAll();
 
             //Assert
             Assert.Equal(JsonSerializer.Serialize(expectedReservations), JsonSerializer.Serialize(result));
@@ -100,15 +100,15 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetByID
         [Fact]
-        public void GivenGuid_WhenGetByIdIsCalled_ThenReturnModel()
+        public async Task GivenGuid_WhenGetByIdIsCalled_ThenReturnModel()
         {
             //Arrange
             reservationRepositoryMock
                     .Setup(x => x.GetByID(reservation.Id))
-                    .Returns(reservation);
+                    .ReturnsAsync(reservation);
 
             //Act
-            var result = reservationService.GetById(reservation.Id);
+            var result = await reservationService.GetById(reservation.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -121,13 +121,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetReservationsByUser
         [Fact]
-        public void GivenUserId_WhenGetReservationsByUserIsCalled_ThenReturnsListOfReservations()
+        public async Task GivenUserId_WhenGetReservationsByUserIsCalled_ThenReturnsListOfReservations()
         {
             //Arrage
-            reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
+            reservationRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(reservations);
 
             //Act
-            var result = reservationService.GetReservationsByUserId(reservation.UserId);
+            var result = await reservationService.GetReservationsByUserId(reservation.UserId);
 
             //Assert
             Assert.NotNull(result);
@@ -140,13 +140,13 @@ namespace ParkingZoneApp.Tests.Services
 
         #region GetReservationsByZoneId
         [Fact]
-        public void GivenZoneId_WhenGetReservationsByZoneIdIsCalled_ThenReturnListOfReservations()
+        public async Task GivenZoneId_WhenGetReservationsByZoneIdIsCalled_ThenReturnListOfReservations()
         {
             //Arrange
-            reservationRepositoryMock.Setup(x => x.GetAll()).Returns(reservations);
+            reservationRepositoryMock.Setup(x => x.GetAll()).ReturnsAsync(reservations);
 
             //Act
-            var result = reservationService.GetReservationsByZoneId(parkingZone.Id);
+            var result = await reservationService.GetReservationsByZoneId(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);

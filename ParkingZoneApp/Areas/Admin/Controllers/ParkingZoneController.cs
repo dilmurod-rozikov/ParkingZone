@@ -18,28 +18,28 @@ namespace ParkingZoneApp.Areas.Admin
             _reservationService = reservationService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var parkingZones = _parkingZoneService.GetAll();
+            var parkingZones = await _parkingZoneService.GetAll();
             var listItemVMs = ListItemVM.MapToVM(parkingZones);
             return View(listItemVMs);
         }
 
-        public IActionResult GetCurrentCars(Guid zoneId)
+        public async Task<IActionResult> GetCurrentCars(Guid zoneId)
         {
-            var zone = _parkingZoneService.GetById(zoneId);
+            var zone = await _parkingZoneService.GetById(zoneId);
             if (zone is null)
                 return NotFound();
 
             ViewData["ZoneName"] = zone.Name;
-            var reservations = _reservationService.GetReservationsByZoneId(zoneId);
+            var reservations = await _reservationService.GetReservationsByZoneId(zoneId);
             var vms = reservations.Select(x => new GetCurrentCarsVM(x));
             return View(vms);
         }
 
-        public IActionResult FilterByPeriod(Guid zoneId, PeriodRange periodRange)
+        public async Task<IActionResult> FilterByPeriod(Guid zoneId, PeriodRange periodRange)
         {
-            var zone = _parkingZoneService.GetById(zoneId);
+            var zone = await _parkingZoneService.GetById(zoneId);
             if(zone is null)
                 return NotFound();
 
@@ -48,9 +48,9 @@ namespace ParkingZoneApp.Areas.Admin
             return Json(myObj);
         }
 
-        public IActionResult Details(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            var parkingZone = _parkingZoneService.GetById(id);
+            var parkingZone = await _parkingZoneService.GetById(id);
 
             if (parkingZone is null)
                 return NotFound();
@@ -66,21 +66,21 @@ namespace ParkingZoneApp.Areas.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateVM parkingZoneCreateVM)
+        public async Task<IActionResult> Create(CreateVM parkingZoneCreateVM)
         {
             if (ModelState.IsValid)
             {
                 var parkingZone = parkingZoneCreateVM.MapToModel();
-                _parkingZoneService.Insert(parkingZone);
+                await _parkingZoneService.Insert(parkingZone);
                 return RedirectToAction(nameof(Index));
             }
 
             return View(parkingZoneCreateVM);
         }
 
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var parkingZone = _parkingZoneService.GetById(id);
+            var parkingZone = await _parkingZoneService.GetById(id);
 
             if (parkingZone is null)
                 return NotFound();
@@ -91,9 +91,9 @@ namespace ParkingZoneApp.Areas.Admin
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, EditVM parkingZoneEditVM)
+        public async Task<IActionResult> Edit(Guid id, EditVM parkingZoneEditVM)
         {
-            var parkingZone = _parkingZoneService.GetById(id);
+            var parkingZone = await _parkingZoneService.GetById(id);
 
             if (parkingZone is null)
                 return NotFound();
@@ -103,7 +103,7 @@ namespace ParkingZoneApp.Areas.Admin
                 try
                 {
                     parkingZone = parkingZoneEditVM.MapToModel(parkingZone);
-                    _parkingZoneService.Update(parkingZone);
+                    await _parkingZoneService.Update(parkingZone);
                 }
                 catch (DbUpdateConcurrencyException) when (!ParkingZoneExists(parkingZone.Id))
                 {
@@ -115,9 +115,9 @@ namespace ParkingZoneApp.Areas.Admin
             return View(parkingZoneEditVM);
         }
 
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var parkingZone = _parkingZoneService.GetById(id);
+            var parkingZone = await _parkingZoneService.GetById(id);
 
             if (parkingZone == null)
                 return NotFound();
@@ -127,13 +127,13 @@ namespace ParkingZoneApp.Areas.Admin
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var existingParkingZone = _parkingZoneService.GetById(id);
+            var existingParkingZone = await _parkingZoneService.GetById(id);
             if (existingParkingZone is null)
                 return NotFound();
 
-            _parkingZoneService.Remove(existingParkingZone);
+            await _parkingZoneService.Remove(existingParkingZone);
             return RedirectToAction(nameof(Index));
         }
 

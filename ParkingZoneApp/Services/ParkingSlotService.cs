@@ -14,9 +14,9 @@ namespace ParkingZoneApp.Services
             _parkingSlotRepository = parkingSlotRepository;
         }
 
-        public ICollection<ParkingSlot> Filter(FilterSlotVM filterSlotVM)
+        public async Task<ICollection<ParkingSlot>> FilterAsync(FilterSlotVM filterSlotVM)
         {
-            var query = GetSlotsByZoneId(filterSlotVM.ParkingZoneId);
+            var query = await GetSlotsByZoneIdAsync(filterSlotVM.ParkingZoneId);
 
             if (filterSlotVM.Category.HasValue)
                 query = query.Where(x => x.Category == filterSlotVM.Category.Value).ToList();
@@ -27,34 +27,38 @@ namespace ParkingZoneApp.Services
             return query;
         }
 
-        public bool IsUniqueNumber(Guid zoneId, int number)
+        public async Task<bool> IsUniqueNumberAsync(Guid zoneId, int number)
         {
-            return GetSlotsByZoneId(zoneId).Any(x => x.Number == number);
+            var slots = await GetSlotsByZoneIdAsync(zoneId);
+            return slots.Any(x => x.Number == number);
         }
 
-        public ICollection<ParkingSlot> GetSlotsByZoneId(Guid parkingZoneId)
+        public async Task<ICollection<ParkingSlot>> GetSlotsByZoneIdAsync(Guid parkingZoneId)
         {
-            return _parkingSlotRepository.GetAll().Where(x => x.ParkingZoneId == parkingZoneId).ToList();
+            var slots = await _parkingSlotRepository.GetAll();
+            return slots.Where(x => x.ParkingZoneId == parkingZoneId).ToList();
         }
 
         public bool IsSlotFreeForReservation(ParkingSlot slot, DateTime startTime, uint duration)
         {
-            return !slot.Reservations.Any(x =>
+            var reservations = slot.Reservations.ToList();
+            return !reservations.Any(x =>
                 (startTime >= x.StartingTime & startTime.AddHours(duration) <= x.StartingTime.AddHours(x.Duration)) |
                 (startTime >= x.StartingTime & startTime < x.StartingTime.AddHours(x.Duration)) |
                 (startTime <= x.StartingTime & x.StartingTime < startTime.AddHours(duration))
             );
         }
 
-        public IEnumerable<ParkingSlot> GetAllFreeSlots(Guid zoneId, DateTime startingTime, uint duration)
+        public async Task<IEnumerable<ParkingSlot>> GetAllFreeSlotsAsync(Guid zoneId, DateTime startingTime, uint duration)
         {
-            return GetSlotsByZoneId(zoneId).Where(x => x.IsAvailable & IsSlotFreeForReservation(x, startingTime, duration));
+            var slots = await GetSlotsByZoneIdAsync(zoneId);
+            return slots.Where(x => x.IsAvailable && IsSlotFreeForReservation(x, startingTime, duration));
         }
 
-        public new void Insert(ParkingSlot parkingSlot)
+        public async new Task Insert(ParkingSlot parkingSlot)
         {
             parkingSlot.Id = Guid.NewGuid();
-            base.Insert(parkingSlot);
+            await base.Insert(parkingSlot);
         }
     }
 }

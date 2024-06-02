@@ -59,7 +59,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Index
         [Fact]
-        public void GivenNothing_WhenIndexIsCalled_ThenReturnsViewResult()
+        public async Task GivenNothing_WhenIndexIsCalled_ThenReturnsViewResult()
         {
             //Arrange
             var testZones = new List<ParkingZone>()
@@ -73,10 +73,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
             _parkingZoneServiceMock
                     .Setup(service => service.GetAll())
-                    .Returns(testZones);
+                    .ReturnsAsync(testZones);
 
             //Act
-            var result = _controller.Index();
+            var result = await _controller.Index();
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -89,13 +89,13 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region GetCurrentCars
         [Fact]
-        public void GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsNotFoundResult()
+        public async Task GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsNotFoundResult()
         {
             //Arrange
             _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>()));
 
             //Act
-            var result = _controller.GetCurrentCars(parkingZone.Id);
+            var result = await _controller.GetCurrentCars(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -104,11 +104,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsListOfCurrentCars()
+        public async Task GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsListOfCurrentCars()
         {
             //Arrange
-            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).Returns(parkingZone);
-            _reservationServiceMock.Setup(x => x.GetReservationsByZoneId(It.IsAny<Guid>())).Returns(reservations);
+            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).ReturnsAsync(parkingZone);
+            _reservationServiceMock.Setup(x => x.GetReservationsByZoneId(It.IsAny<Guid>())).ReturnsAsync(reservations);
             GetCurrentCarsVM vm =
                 new()
                 {
@@ -116,7 +116,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                     Number = reservation.ParkingSlot.Number,
                 };
             //Act
-            var result = _controller.GetCurrentCars(parkingZone.Id);
+            var result = await _controller.GetCurrentCars(parkingZone.Id);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -129,7 +129,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Details
         [Fact]
-        public void GivenValidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnViewResult()
+        public async Task GivenValidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnViewResult()
         {
             //Arrange 
             DetailsVM detailsVM = new()
@@ -142,10 +142,10 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
-                    .Returns(parkingZone);
+                    .ReturnsAsync(parkingZone);
 
             //Act
-            var result = _controller.Details(parkingZone.Id);
+            var result = await _controller.Details(parkingZone.Id);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -155,14 +155,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenInvalidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnNotFound()
+        public async Task GivenInvalidParkingZoneId_WhenGetDetailsIsCalled_ThenReturnNotFound()
         {
             //Arrange
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id));
 
             //Act
-            var result = _controller.Details(parkingZone.Id);
+            var result = await _controller.Details(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -173,7 +173,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Create
         [Fact]
-        public void GivenValidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsTrueAndReturnsRedirectToIndex()
+        public async Task GivenValidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsTrueAndReturnsRedirectToIndex()
         {
             //Arrange
             CreateVM createVM = new()
@@ -186,7 +186,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                     .Setup(x => x.Insert(parkingZone));
 
             //Act
-            var result = _controller.Create(createVM);
+            var result = await _controller.Create(createVM);
 
             //Assert
             Assert.NotNull(result);
@@ -196,14 +196,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenInvalidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult()
+        public async Task GivenInvalidCreateVM_WhenPostCreateIsCalled_ThenModelStateIsFalseAndReturnsViewResult()
         {
             //Arrange
             CreateVM createVM = new();
             _controller.ModelState.AddModelError("id", "id is required");
 
             //Act
-            var result = _controller.Create(createVM);
+            var result = await _controller.Create(createVM);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
@@ -228,7 +228,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Edit
         [Fact]
-        public void GivenValidIDAndEditVM_WhenPostEditIsCalled_ThenModelStateIsTrueReturnsRedirectToIndex()
+        public async Task GivenValidIDAndEditVM_WhenPostEditIsCalled_ThenModelStateIsTrueReturnsRedirectToIndex()
         {
             //Arrange
             EditVM editVM = new(parkingZone)
@@ -238,13 +238,13 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
             _parkingZoneServiceMock
                     .Setup(x => x.GetById(parkingZone.Id))
-                    .Returns(parkingZone);
+                    .ReturnsAsync(parkingZone);
 
             _parkingZoneServiceMock
                     .Setup(x => x.Update(parkingZone));
 
             //Act
-            var result = _controller.Edit(parkingZone.Id, editVM);
+            var result = await _controller.Edit(parkingZone.Id, editVM);
 
             //Assert
             Assert.NotNull(result);
@@ -255,16 +255,16 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidParkingZoneId_WhenPostEditIsCalled_ThenModelStateIsTrueReturnDbUpdateConcurrencyException()
+        public async Task GivenValidParkingZoneId_WhenPostEditIsCalled_ThenModelStateIsTrueReturnDbUpdateConcurrencyException()
         {
             //Arrange
-            EditVM editVM = new EditVM(parkingZone);
+            var editVM = new EditVM(parkingZone);
             _parkingZoneServiceMock
                     .Setup(x => x.Update(parkingZone))
                     .Throws<DbUpdateConcurrencyException>();
 
             //Act
-            var result = _controller.Edit(parkingZone.Id, editVM);
+            var result = await _controller.Edit(parkingZone.Id, editVM);
 
             //Assert
             Assert.NotNull(result);
@@ -274,16 +274,16 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidParkingZoneId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
+        public async Task GivenValidParkingZoneId_WhenEditIsCalled_ThenModelStateIsFalseReturnsViewResult()
         {
             //Arrange
             _controller.ModelState.AddModelError("field", "property is invalid");
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
-                    .Returns(parkingZone);
+                    .ReturnsAsync(parkingZone);
 
             //Act
-            var result = _controller.Edit(parkingZone.Id);
+            var result = await _controller.Edit(parkingZone.Id);
 
             //Assert
             Assert.IsType<ViewResult>(result);
@@ -293,14 +293,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenInvalidParkingZoneId_WhenEditIsCalled_ThenReturnsNotFound()
+        public async Task GivenInvalidParkingZoneId_WhenEditIsCalled_ThenReturnsNotFound()
         {
             //Arrange
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id));
 
             //Act
-            var result = _controller.Edit(parkingZone.Id);
+            var result = await _controller.Edit(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -311,15 +311,15 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region Delete
         [Fact]
-        public void GivenValidParkingZoneId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
+        public async Task GivenValidParkingZoneId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
         {
             //Arrange           
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id))
-                    .Returns(parkingZone);
+                    .ReturnsAsync(parkingZone);
 
             //Act
-            var result = _controller.Delete(parkingZone.Id);
+            var result = await _controller.Delete(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -328,14 +328,14 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenInvalidParkingZoneId_WhenGetDeleteIsCalled_ThenReturnsNotFound()
+        public async Task GivenInvalidParkingZoneId_WhenGetDeleteIsCalled_ThenReturnsNotFound()
         {
             //Arrange
             _parkingZoneServiceMock
                     .Setup(service => service.GetById(parkingZone.Id));
 
             //Act
-            var result = _controller.Delete(parkingZone.Id);
+            var result = await _controller.Delete(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -344,18 +344,18 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         }
 
         [Fact]
-        public void GivenValidParkingZoneId_WhenPostDeleteConfirmedIsCalled_ThenReturnsRedirectToIndex()
+        public async Task GivenValidParkingZoneId_WhenPostDeleteConfirmedIsCalled_ThenReturnsRedirectToIndex()
         {
             //Arrange
             _parkingZoneServiceMock
                     .Setup(x => x.GetById(parkingZone.Id))
-                    .Returns(parkingZone);
+                    .ReturnsAsync(parkingZone);
 
             _parkingZoneServiceMock
                     .Setup(x => x.Remove(parkingZone));
 
             //Act
-            var result = _controller.DeleteConfirmed(parkingZone.Id);
+            var result = await _controller.DeleteConfirmed(parkingZone.Id);
 
             //Assert
             Assert.NotNull(result);
@@ -367,13 +367,13 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
 
         #region FilterByPeriod
         [Fact]
-        public void GivenZoneIdAndPeriodRange_WhenFilterByPeriodIsCalled_ThenReturnsNotFound()
+        public async Task GivenZoneIdAndPeriodRange_WhenFilterByPeriodIsCalled_ThenReturnsNotFound()
         {
             //Arrange
             _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>()));
 
             //Act
-            var result = _controller.FilterByPeriod(parkingZoneId, PeriodRange.Last7Days);
+            var result = await _controller.FilterByPeriod(parkingZoneId, PeriodRange.Last7Days);
 
             //Assert
             Assert.NotNull(result);
@@ -381,7 +381,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
             _parkingZoneServiceMock.Verify(x => x.GetById(It.IsAny<Guid>()), Times.Once);
         }
         [Fact]
-        public void GivenZoneIdAndPeriodRange_WhenFilterByPeriodIsCalled_ThenReturnsTotalCategoryUsage()
+        public async Task GivenZoneIdAndPeriodRange_WhenFilterByPeriodIsCalled_ThenReturnsTotalCategoryUsage()
         {
             //Arrange
             var dic = new Dictionary<SlotCategory, long>
@@ -389,11 +389,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                 { SlotCategory.Business, 1}
             };
             var myObj = new { categoryHours = dic };
-            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).Returns(parkingZone);
+            _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).ReturnsAsync(parkingZone);
             _parkingZoneServiceMock.Setup(x => x.FilterByPeriodOnSlotCategory(parkingZone, PeriodRange.Last7Days)).Returns(dic);
 
             //Act
-            var result = _controller.FilterByPeriod(parkingZoneId, PeriodRange.Last7Days) as JsonResult;
+            var result = await _controller.FilterByPeriod(parkingZoneId, PeriodRange.Last7Days) as JsonResult;
 
             //Assert
             Assert.NotNull(result);
