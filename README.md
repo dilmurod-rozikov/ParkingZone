@@ -1,15 +1,16 @@
 #Parking Zone Management Application 🚗
 
-🚀 Introduction
+🚀 Introduction:
 This web application manages parking slots through two portals: Admin and Client. It supports CRUD operations for parking zones and slots, and allows clients to reserve parking slots.
 
 🌟 Features
-Admin Portal
+Admin Portal:
 Manage parking zones and slots (CRUD)
 View and filter parking zones and slots
 Manage reservation history
 View current cars in parking zones
-Client Portal
+
+Client Portal:
 Manage profile
 List and reserve free slots
 Update parking reservations
