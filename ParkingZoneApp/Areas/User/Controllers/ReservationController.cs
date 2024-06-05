@@ -93,7 +93,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
             if (reservation is null)
                 return NotFound();
 
-            return View("~/Areas/User/Views/Reservation/Delete.cshtml", reservation);
+            return View(reservation);
         }
 
         [HttpPost, ActionName("Delete")]
