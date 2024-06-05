@@ -119,7 +119,7 @@ namespace ParkingZoneApp.Areas.Admin
         {
             var parkingZone = await _parkingZoneService.GetById(id);
 
-            if (parkingZone == null)
+            if (parkingZone is null)
                 return NotFound();
 
             return View(parkingZone);
