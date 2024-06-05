@@ -280,5 +280,69 @@ namespace ParkingZoneApp.Tests.Controllers.User
                 .IsSlotFreeForReservation(It.IsAny<ParkingSlot>(), It.IsAny<DateTime>(), It.IsAny<uint>()), Times.Once);
         }
         #endregion
+
+        #region Delete
+        [Fact]
+        public async Task GivenReservationId_WhenGetDeleteIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id));
+
+            //Act
+            var result = await _controller.Delete(parkingSlot.Id);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+            _reservationServiceMock.Verify(x => x.GetById(parkingSlot.Id), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenReservationId_WhenGetDeleteIsCalled_ThenReturnsViewResult()
+        {
+            //Arrange
+            _reservationServiceMock
+                    .Setup(x => x.GetById(reservation.Id))
+                    .ReturnsAsync(reservation);
+
+            //Act
+            var result = await _controller.Delete(reservation.Id);
+
+            //Assert
+            var model = Assert.IsType<ViewResult>(result).Model;
+            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(reservation));
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenReservationId_WhenPostDeleteIsCalled_ThenReturnsNotFoundResult()
+        {
+            //Arrange
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id));
+
+            //Act
+            var result = await _controller.Delete(reservation.Id);
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenReservationId_WhenPostDeleteIsCalled_ThenReturnsRedirectToActionResult()
+        {
+            //Arrange
+            _reservationServiceMock.Setup(x => x.GetById(reservation.Id)).ReturnsAsync(reservation);
+            _reservationServiceMock.Setup(x => x.Remove(reservation));
+
+            //Act
+            var result = await _controller.DeleteConfirmed(reservation.Id);
+
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", ((RedirectToActionResult)result).ActionName);
+            _reservationServiceMock.Verify(x => x.GetById(reservation.Id), Times.Once);
+            _reservationServiceMock.Verify(x => x.Remove(reservation), Times.Once);
+        }
+        #endregion
     }
 }

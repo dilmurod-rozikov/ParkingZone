@@ -85,5 +85,27 @@ namespace ParkingZoneApp.Areas.User.Controllers
 
             return View(prolongVM);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid reservationId)
+        {
+            var reservation = await _reservationService.GetById(reservationId);
+            if (reservation is null)
+                return NotFound();
+
+            return View("~/Areas/User/Views/Reservation/Delete.cshtml", reservation);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var reservation = await _reservationService.GetById(id);
+            if (reservation is null)
+                return NotFound();
+
+            await _reservationService.Remove(reservation);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
