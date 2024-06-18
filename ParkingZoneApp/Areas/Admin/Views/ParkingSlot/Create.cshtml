@@ -4,7 +4,6 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h1>Create a new Parking Slot</h1>
 <hr/>
 <div class="row">
@@ -23,13 +22,14 @@
                 <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<SlotCategory>()"></select>
             </div>
             <br />
-            <div>
-                <input class="form-check-input" asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="IsAvailable" asp-for="IsAvailable">
+                <label class="form-check-label" for="IsAvailable">@Html.DisplayNameFor(model => model.IsAvailable)</label>
             </div>
             <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-route-zoneId="@Model.ParkingZoneId" asp-action="Index" class="btn btn-danger">
+                <a asp-route-zoneId="@Model.ParkingZoneId" asp-action="Index" class="btn btn-secondary">
                     <i class="bi bi-box-arrow-left"></i>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
