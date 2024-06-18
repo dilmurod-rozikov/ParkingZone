@@ -19,9 +19,13 @@
                     <input asp-for="Duration" class="form-control" min="1"/>
                     <span asp-validation-for="Duration" class="text-danger"></span>
                 </div>
+                @{
+                    DateTime minDateTime = DateTime.Now;
+                    string minDateTimeString = minDateTime.ToString("yyyy-MM-ddTHH:mm");
+                }
                 <div style="display: inline-block; margin-left: 50px;">
                     <label asp-for="StartingTime" class="control-label">Starting time</label>
-                    <input asp-for="StartingTime" class="form-control"/>
+                    <input asp-for="StartingTime" class="form-control" type="datetime-local" min="@minDateTimeString" />
                     <span asp-validation-for="StartingTime" class="text-danger"></span>
                 </div>
                 <div style="display: inline-block; margin-left: 10px;">
