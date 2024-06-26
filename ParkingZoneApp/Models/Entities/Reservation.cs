@@ -17,6 +17,7 @@ namespace ParkingZoneApp.Models.Entities
         public DateTime StartingTime { get; set; }
 
         [Required]
+        [MaxLength(20)]
         public string VehicleNumber { get; set; }
 
         [Required]
@@ -31,6 +32,7 @@ namespace ParkingZoneApp.Models.Entities
         public Guid ParkingSlotId { get; set; }
 
         [Required]
+        [MaxLength(100)]
         public virtual string UserId { get; set; }
 
         [NotMapped]

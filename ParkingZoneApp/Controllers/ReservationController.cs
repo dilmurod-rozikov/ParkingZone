@@ -39,7 +39,6 @@ namespace ParkingZoneApp.Controllers
         public async Task<IActionResult> FreeSlots(FreeSlotsVMs freeSlotsVMs)
         {
             var zones = await _parkingZoneService.GetAll();
-
             if (zones is null)
                 return NotFound();
 
@@ -54,7 +53,6 @@ namespace ParkingZoneApp.Controllers
         public async Task<IActionResult> Reserve(Guid slotId, DateTime startTime, uint duration)
         {
             var slot = await _parkingSlotService.GetById(slotId);
-
             if (slot is null)
                 return NotFound();
 
@@ -68,7 +66,6 @@ namespace ParkingZoneApp.Controllers
         public async Task<IActionResult> Reserve(ReserveVM reserveVM)
         {
             var slot = await _parkingSlotService.GetById(reserveVM.SlotId);
-
             if (slot is null)
                 return NotFound();
 

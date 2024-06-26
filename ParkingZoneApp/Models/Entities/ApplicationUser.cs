@@ -7,6 +7,7 @@ namespace ParkingZoneApp.Models.Entities
     {
         [Required]
         [Display(Name = "Name")]
+        [MaxLength(100)]
         public string Name { get; set; }
     }
 }
