@@ -7,10 +7,9 @@ namespace ParkingZoneApp.Tests.ModelValidation.Reservation
     public class FreeSlotsVMTests
     {
         public static IEnumerable<object[]> Data =>
-            new List<object[]>
-            {
-                new object[] {Guid.NewGuid(), 2u, DateTime.Now, Guid.NewGuid(), new List<ParkingSlot>(), true },
-            };
+            [
+                [Guid.NewGuid(), 2u, DateTime.Now, Guid.NewGuid(), new List<ParkingSlot>(), true],
+            ];
 
         [Theory]
         [MemberData(nameof(Data))]
@@ -18,7 +17,7 @@ namespace ParkingZoneApp.Tests.ModelValidation.Reservation
             (Guid id, uint duration, DateTime startTime, Guid selectedZoneId, IEnumerable<ParkingSlot> slots, bool expectedValidation)
         {
             //Arrange
-            FreeSlotsVMs freeSlotsVMs = new()
+            FreeSlotsVM freeSlotsVMs = new()
             {
                 Id = id,
                 Duration = duration,

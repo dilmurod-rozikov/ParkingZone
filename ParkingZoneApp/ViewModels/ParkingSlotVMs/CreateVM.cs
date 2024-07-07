@@ -7,6 +7,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
     public class CreateVM
     {
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Not a valid range!")]
         public int Number { get; set; }
 
         [Required]

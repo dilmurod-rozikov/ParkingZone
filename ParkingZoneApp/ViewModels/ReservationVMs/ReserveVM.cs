@@ -11,12 +11,15 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         public Guid Id { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Duration must be higher than 0")]
         public uint Duration { get; set; }
 
         [Required]
+        [DataType(DataType.DateTime, ErrorMessage = "Invalid DateTime format")]
         public DateTime StartingTime { get; set; } = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
 
         [Required]
+        [StringLength(10, MinimumLength = 6, ErrorMessage = "Invalid vehicle number!")]
         public string VehicleNumber { get; set; }
 
         [Required]
@@ -25,7 +28,6 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         [Required]
         public Guid SlotId { get; set; }
 
-        [Required]
         public virtual ParkingSlot ParkingSlot { get; set; }
 
         public string ZoneName { get; set; }

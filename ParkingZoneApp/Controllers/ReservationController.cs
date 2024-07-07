@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.ViewModels.ReservationVMs;
 using System.Security.Claims;
@@ -14,6 +13,7 @@ namespace ParkingZoneApp.Controllers
         private readonly IReservationService _reservationService;
         private readonly IParkingZoneService _parkingZoneService;
         private readonly IParkingSlotService _parkingSlotService;
+
         public ReservationController(
             IReservationService reservationService,
             IParkingZoneService parkingZoneService,
@@ -31,12 +31,12 @@ namespace ParkingZoneApp.Controllers
             if (zones is null)
                 return NotFound();
 
-            FreeSlotsVMs freeSlotsVMs = new(zones);
+            FreeSlotsVM freeSlotsVMs = new(zones);
             return View(freeSlotsVMs);
         }
 
         [HttpPost]
-        public async Task<IActionResult> FreeSlots(FreeSlotsVMs freeSlotsVMs)
+        public async Task<IActionResult> FreeSlots(FreeSlotsVM freeSlotsVMs)
         {
             var zones = await _parkingZoneService.GetAll();
             if (zones is null)
@@ -70,27 +70,20 @@ namespace ParkingZoneApp.Controllers
                 return NotFound();
 
             var zone = await _parkingZoneService.GetById(reserveVM.ZoneId);
-
             if (zone is null)
                 return NotFound();
 
             bool isSlotFree = _parkingSlotService
                 .IsSlotFreeForReservation(slot, reserveVM.StartingTime, reserveVM.Duration);
-
             if (!isSlotFree)
-            {
                 ModelState.AddModelError("StartingTime", "Slot is not free for selected period");
-            }
-            else if (reserveVM.VehicleNumber.IsNullOrEmpty())
-            {
-                ModelState.AddModelError("VehicleNumber", "Vehicle number is required");
-            }
-            else
+
+            if (ModelState.IsValid)
             {
                 var reservation = reserveVM.MapToModel();
                 reservation.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (reservation.UserId is null)
+                if (reservation.UserId == null)
                     return NotFound();
 
                 await _reservationService.Insert(reservation);

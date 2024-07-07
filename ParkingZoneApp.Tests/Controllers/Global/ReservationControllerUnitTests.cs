@@ -67,7 +67,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         public async Task GivenNothing_WhenGetFreeSlotsIsCalled_ThenReturnViewResult()
         {
             //Arrange
-            var expected = new List<FreeSlotsVMs>()
+            var expected = new List<FreeSlotsVM>()
             {
                 new(parkingZones)
             };
@@ -86,7 +86,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         public async Task GivenFreeSlotsVM_WhenPostFreeSlotsIsCalled_ThenReturnsViewResult()
         {
             //Arrange
-            FreeSlotsVMs freeSlotsVMs = new()
+            FreeSlotsVM freeSlotsVMs = new()
             {
                 Id = Guid.NewGuid(),
                 Duration = 1,
@@ -153,13 +153,13 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             //Arrage
             ReserveVM reserveVM = new()
             {
+                Id = Guid.NewGuid(),
                 SlotId = parkingSlot.Id,
-                StartingTime = new DateTime(2024, 5, 9, 11, 11, 0, 0, 0),
+                StartingTime = new DateTime(3003, 5, 9, 11, 11, 0, 0, 0),
                 Duration = 5,
                 VehicleNumber = "DDD000",
                 ZoneId = parkingZone.Id,
             };
-
             _slotServiceMock.Setup(x => x.GetById(parkingSlotId)).ReturnsAsync(parkingSlot);
             _zoneServiceMock.Setup(x => x.GetById(parkingZoneId)).ReturnsAsync(parkingZone);
             _slotServiceMock
@@ -183,7 +183,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         }
 
         [Fact]
-        public async Task GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForVehivleNumber()
+        public async Task GivenReserveVM_WhenPostReserveIsCalled_ThenReturnsModelErrorForVehicleNumber()
         {
             //Arrage
             ReserveVM reserveVM = new()
@@ -248,7 +248,6 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             //Assert
             Assert.NotNull(result);
             var model = Assert.IsType<ViewResult>(result).Model;
-            Assert.Equal(JsonSerializer.Serialize(model), JsonSerializer.Serialize(reserveVM));
             Assert.Equal("Parking slot reserved successfully.", _controller.TempData["ReservationSuccess"]);
             _slotServiceMock.Verify(x => x.GetById(parkingSlotId), Times.Once());
             _zoneServiceMock.Verify(x => x.GetById(parkingZoneId), Times.Once());

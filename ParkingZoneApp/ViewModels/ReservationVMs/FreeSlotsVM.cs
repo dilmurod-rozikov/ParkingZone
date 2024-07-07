@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneApp.ViewModels.ReservationVMs
 {
-    public class FreeSlotsVMs
+    public class FreeSlotsVM
     {
-        private static DateTime now = DateTime.Now;
+        private static readonly DateTime now = DateTime.Now;
 
         [Required]
         public Guid Id { get; set; }
@@ -17,22 +17,22 @@ namespace ParkingZoneApp.ViewModels.ReservationVMs
         public uint Duration { get; set; }
 
         [Required]
+        [DataType(DataType.DateTime, ErrorMessage = "Invalid DateTime format")]
         public DateTime StartingTime { get; set; } = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
 
         [Required]
         public Guid SelectedZoneId { get; set; }
 
+        [Required]
         public IEnumerable<ParkingSlot> ParkingSlots { get; set; }
 
         public SelectList ListOfZones { get; set; }
 
-        public FreeSlotsVMs()
-        {
-        }
+        public FreeSlotsVM() { }
 
-        public FreeSlotsVMs(IEnumerable<ParkingZone> zones)
+        public FreeSlotsVM(IEnumerable<ParkingZone> parkingZones)
         {
-            ListOfZones = new SelectList(zones, "Id", "Name");
+            ListOfZones = new SelectList(parkingZones, "Id", "Name");
         }
     }
 }
