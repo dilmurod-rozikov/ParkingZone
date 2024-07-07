@@ -10,6 +10,7 @@ namespace ParkingZoneApp.ViewModels.ParkingSlotVMs
         public Guid Id { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Not a valid range!")]
         public int Number { get; set; }
 
         [Required]

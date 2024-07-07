@@ -16,9 +16,13 @@
             <input type="hidden" value="@Model.ZoneAddress" asp-for="ZoneAddress" />
             <input type="hidden" value="@Model.SlotNumber" asp-for="SlotNumber" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @{
+                DateTime minDateTime = DateTime.Now;
+                string minDateTimeString = minDateTime.ToString("yyyy-MM-ddTHH:mm");
+            }
             <div>
                 <label asp-for="StartingTime" class="control-label">Start time: </label>
-                <input asp-for="StartingTime" class="form-control"/>
+                <input asp-for="StartingTime" class="form-control" type="datetime-local" min="@minDateTimeString" />
                 <span asp-validation-for="StartingTime" class="text-danger"></span>
                 <br />
                 <label asp-for="Duration" class="control-label">Duration:</label>
@@ -26,7 +30,7 @@
                 <span asp-validation-for="Duration" class="text-danger"></span>
                 <br />
                 <label asp-for="VehicleNumber" class="control-label">Vehicle Number</label>
-                <input asp-for="VehicleNumber" class="form-control" />
+                <input asp-for="VehicleNumber" class="form-control" maxlength="10"/>
                 <span asp-validation-for="VehicleNumber" class="text-danger"></span>
             </div>
             <br />

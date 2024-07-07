@@ -6,11 +6,11 @@ namespace ParkingZoneApp.Tests.ModelValidation.Reservation
 {
     public class ReserveVMTests
     {
+        private static readonly ParkingSlot parkingSlot = new() { Reservations = [new() { Duration = 5 }] };
         public static IEnumerable<object[]> Data =>
             [
-                [Guid.NewGuid(), 1, DateTime.Now, "ZZ777Z", Guid.NewGuid(), Guid.NewGuid(), new ParkingSlot(), true],
-                [Guid.NewGuid(), 1, DateTime.Now, null, Guid.NewGuid(), Guid.NewGuid(), new ParkingSlot(), false],
-                [Guid.NewGuid(), 1, DateTime.Now, "null", Guid.NewGuid(), Guid.NewGuid(), null, false],
+                [Guid.NewGuid(), 2, DateTime.Now.AddHours(10), "ZZ777Z", Guid.NewGuid(), Guid.NewGuid(), parkingSlot, true],
+                [Guid.NewGuid(), 2, DateTime.Now.AddHours(10), null, Guid.NewGuid(), Guid.NewGuid(), parkingSlot, false],
             ];
 
         [Theory]
