@@ -9,7 +9,7 @@ using ParkingZoneApp.Services.Interfaces;
 
 namespace ParkingZoneApp
 {
-    public static class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -40,6 +40,7 @@ namespace ParkingZoneApp
 
             if (app.Environment.IsDevelopment())
             {
+                builder.Configuration.AddUserSecrets<Program>();
                 app.UseMigrationsEndPoint();
                 app.UseDeveloperExceptionPage();
             }
