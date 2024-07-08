@@ -18,7 +18,6 @@ namespace ParkingZoneApp.Tests.Controllers.User
     {
         private readonly Mock<IReservationService> _reservationServiceMock;
         private readonly Mock<IParkingSlotService> _slotServiceMock;
-        private readonly Mock<IParkingZoneService> _zoneServiceMock;
         private readonly ReservationController _controller;
         private static readonly Guid parkingSlotId = Guid.NewGuid();
         private static readonly Guid parkingZoneId = Guid.NewGuid();
@@ -65,8 +64,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         {
             _reservationServiceMock = new Mock<IReservationService>();
             _slotServiceMock = new Mock<IParkingSlotService>();
-            _zoneServiceMock = new Mock<IParkingZoneService>();
-            _controller = new ReservationController(_reservationServiceMock.Object, _zoneServiceMock.Object, _slotServiceMock.Object);
+            _controller = new ReservationController(_reservationServiceMock.Object, _slotServiceMock.Object);
         }
 
         #region Index
@@ -74,6 +72,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         public async Task GivenNothing_WhenGetIndexIsCalled_ThenReturnsViewResult()
         {
             //Arrange
+            Mock<IParkingZoneService> _zoneServiceMock = new();
             _slotServiceMock.Setup(x => x.GetAll()).ReturnsAsync([parkingSlot]);
             _zoneServiceMock.Setup(x => x.GetAll()).ReturnsAsync([parkingZone]);
             var mockClaimsPrincipal = CreateMockClaimsPrincipal();
@@ -85,7 +84,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
 
             _reservationServiceMock.Setup(x => x.GetReservationsByUserId(It.IsAny<string>())).ReturnsAsync(reservations);
             //Act
-            var result = await _controller.Index();
+            var result = await _controller.Index(_zoneServiceMock.Object);
 
             //Assert
             Assert.NotNull(result);
@@ -99,6 +98,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
         public async Task GivenNothing_WhenGetIndexIsCalled_ThenNotFoundResult()
         {
             //Arrange
+            Mock<IParkingZoneService> _zoneServiceMock = new();
             reservation.UserId = null;
             _controller.ControllerContext = new();
             _controller.ControllerContext.HttpContext = new DefaultHttpContext
@@ -107,7 +107,7 @@ namespace ParkingZoneApp.Tests.Controllers.User
             };
 
             //Act
-            var result = await _controller.Index();
+            var result = await _controller.Index(_zoneServiceMock.Object);
 
             //Assert
             Assert.NotNull(result);

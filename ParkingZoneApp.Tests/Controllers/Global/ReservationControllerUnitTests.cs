@@ -15,7 +15,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
 {
     public class ReservationControllerUnitTests
     {
-        private readonly Mock<IReservationService> _reservationServiceMock;
+        private readonly Mock<IReservationService> _reservationServiceMock = new();
         private readonly Mock<IParkingSlotService> _slotServiceMock;
         private readonly Mock<IParkingZoneService> _zoneServiceMock;
         private readonly ReservationController _controller;
@@ -56,10 +56,9 @@ namespace ParkingZoneApp.Tests.Controllers.Global
         public static readonly IEnumerable<ParkingZone> parkingZones = [parkingZone];
         public ReservationControllerUnitTests()
         {
-            _reservationServiceMock = new Mock<IReservationService>();
             _slotServiceMock = new Mock<IParkingSlotService>();
             _zoneServiceMock = new Mock<IParkingZoneService>();
-            _controller = new ReservationController(_reservationServiceMock.Object, _zoneServiceMock.Object, _slotServiceMock.Object);
+            _controller = new ReservationController(_zoneServiceMock.Object, _slotServiceMock.Object);
         }
 
         #region FreeSlots
@@ -169,7 +168,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             _controller.ModelState.AddModelError("StartingTime", "Slot is not free for selected period");
 
             //Act
-            var result = await _controller.Reserve(reserveVM);
+            var result = await _controller.Reserve(reserveVM, _reservationServiceMock.Object);
 
             //Assert
             Assert.NotNull(result);
@@ -202,7 +201,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
             _controller.ModelState.AddModelError("VehicleNumber", "Vehicle Number is required.");
 
             //Act
-            var result = await _controller.Reserve(reserveVM);
+            var result = await _controller.Reserve(reserveVM, _reservationServiceMock.Object);
 
             //Assert
             Assert.NotNull(result);
@@ -243,7 +242,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                 .Returns(true);
 
             //Act
-            var result = await _controller.Reserve(reserveVM);
+            var result = await _controller.Reserve(reserveVM, _reservationServiceMock.Object);
 
             //Assert
             Assert.NotNull(result);
@@ -256,7 +255,7 @@ namespace ParkingZoneApp.Tests.Controllers.Global
                         (parkingSlot, reserveVM.StartingTime, reserveVM.Duration), Times.Once);
         }
 
-        private ClaimsPrincipal CreateMockClaimsPrincipal()
+        private static ClaimsPrincipal CreateMockClaimsPrincipal()
         {
             var claims = new List<Claim>()
             {

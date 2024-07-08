@@ -11,11 +11,9 @@ namespace ParkingZoneApp.Areas.Admin
     public class ParkingZoneController : Controller
     {
         private readonly IParkingZoneService _parkingZoneService;
-        private readonly IReservationService _reservationService;
-        public ParkingZoneController(IParkingZoneService parkingZoneService,IReservationService reservationService)
+        public ParkingZoneController(IParkingZoneService parkingZoneService)
         {
             _parkingZoneService = parkingZoneService;
-            _reservationService = reservationService;
         }
 
         public async Task<IActionResult> Index()
@@ -25,7 +23,7 @@ namespace ParkingZoneApp.Areas.Admin
             return View(listItemVMs);
         }
 
-        public async Task<IActionResult> GetCurrentCars(Guid zoneId)
+        public async Task<IActionResult> GetCurrentCars(Guid zoneId, [FromServices] IReservationService _reservationService)
         {
             var zone = await _parkingZoneService.GetById(zoneId);
             if (zone is null)

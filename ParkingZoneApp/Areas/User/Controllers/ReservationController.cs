@@ -12,19 +12,16 @@ namespace ParkingZoneApp.Areas.User.Controllers
     public class ReservationController : Controller
     {
         private readonly IReservationService _reservationService;
-        private readonly IParkingZoneService _parkingZoneService;
         private readonly IParkingSlotService _parkingSlotService;
         public ReservationController(
             IReservationService reservationService,
-            IParkingZoneService parkingZoneService,
             IParkingSlotService parkingSlotService)
         {
             _reservationService = reservationService;
-            _parkingZoneService = parkingZoneService;
             _parkingSlotService = parkingSlotService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromServices] IParkingZoneService _parkingZoneService)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

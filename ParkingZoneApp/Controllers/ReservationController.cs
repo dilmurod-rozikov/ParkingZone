@@ -10,16 +10,13 @@ namespace ParkingZoneApp.Controllers
     [Authorize]
     public class ReservationController : Controller
     {
-        private readonly IReservationService _reservationService;
         private readonly IParkingZoneService _parkingZoneService;
         private readonly IParkingSlotService _parkingSlotService;
 
         public ReservationController(
-            IReservationService reservationService,
             IParkingZoneService parkingZoneService,
             IParkingSlotService parkingSlotService)
         {
-            _reservationService = reservationService;
             _parkingZoneService = parkingZoneService;
             _parkingSlotService = parkingSlotService;
         }
@@ -63,7 +60,7 @@ namespace ParkingZoneApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reserve(ReserveVM reserveVM)
+        public async Task<IActionResult> Reserve(ReserveVM reserveVM, [FromServices] IReservationService _reservationService)
         {
             var slot = await _parkingSlotService.GetById(reserveVM.SlotId);
             if (slot is null)

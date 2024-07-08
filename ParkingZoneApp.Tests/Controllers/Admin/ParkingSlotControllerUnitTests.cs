@@ -14,7 +14,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     public class ParkingSlotControllerUnitTests
     {
         private readonly Mock<IParkingSlotService> _parkingSlotServiceMock;
-        private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
         private readonly ParkingSlotController _controller;
         private static readonly ParkingZone parkingZone = new()
         {
@@ -47,8 +46,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public ParkingSlotControllerUnitTests()
         {
             _parkingSlotServiceMock = new Mock<IParkingSlotService>();
-            _parkingZoneServiceMock = new Mock<IParkingZoneService>();
-            _controller = new ParkingSlotController(_parkingSlotServiceMock.Object, _parkingZoneServiceMock.Object);
+            _controller = new ParkingSlotController(_parkingSlotServiceMock.Object);
         }
 
         #region Index
@@ -56,6 +54,8 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public async Task GivenParkingZoneId_WhenGetIndexIsCalled_ThenReturnViewResult()
         {
             //Arrange
+            Mock<IParkingZoneService> _parkingZoneServiceMock = new();
+
             var testSlots = new List<ParkingSlot>()
             {
                 parkingSlot,
@@ -70,7 +70,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                     .Setup(x => x.GetSlotsByZoneIdAsync(parkingZone.Id))
                     .ReturnsAsync(testSlots);
             //Act
-            var result = await _controller.Index(parkingZone.Id);
+            var result = await _controller.Index(parkingZone.Id, _parkingZoneServiceMock.Object);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;

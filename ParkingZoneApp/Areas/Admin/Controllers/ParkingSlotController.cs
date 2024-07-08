@@ -11,14 +11,12 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
     public class ParkingSlotController : Controller
     {
         private readonly IParkingSlotService _parkingSlotService;
-        private readonly IParkingZoneService _parkingZoneService;
-        public ParkingSlotController(IParkingSlotService parkingSlotService, IParkingZoneService parkingZoneService)
+        public ParkingSlotController(IParkingSlotService parkingSlotService)
         {
             _parkingSlotService = parkingSlotService;
-            _parkingZoneService = parkingZoneService;
         }
 
-        public async Task<IActionResult> Index(Guid zoneId)
+        public async Task<IActionResult> Index(Guid zoneId, [FromServices] IParkingZoneService _parkingZoneService)
         {
             var parkingSlots = await _parkingSlotService.GetSlotsByZoneIdAsync(zoneId);
             var listItemVMs = ListItemVM.MapToVM(parkingSlots).ToList();
@@ -82,20 +80,19 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         {
             if (id != slotEditVM.Id)
                 return NotFound();
-            var slot = await _parkingSlotService.GetById(id);
 
+            var slot = await _parkingSlotService.GetById(id);
             if (slot is null)
                 return NotFound();
 
-            if (await _parkingSlotService.IsUniqueNumberAsync(slotEditVM.ParkingZoneId, slotEditVM.Number) & slot.Number != slotEditVM.Number)
+            if (await _parkingSlotService.IsUniqueNumberAsync(slotEditVM.ParkingZoneId, slotEditVM.Number) &
+                slot.Number != slotEditVM.Number)
             {
                 ModelState.AddModelError("Number", "The parking slot number is not unique!");
             }
 
             if (slotEditVM.IsSlotInUse & slotEditVM.Category != slot.Category)
-            {
                 ModelState.AddModelError("Category", "This slot is in use, category cannot be modified!");
-            }
 
             if (ModelState.IsValid)
             {

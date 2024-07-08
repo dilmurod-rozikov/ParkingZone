@@ -15,7 +15,6 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
     public class ParkingZoneControllerUnitTests
     {
         private readonly Mock<IParkingZoneService> _parkingZoneServiceMock;
-        private readonly Mock<IReservationService> _reservationServiceMock;
         private readonly ParkingZoneController _controller;
         private static readonly Guid parkingZoneId = Guid.NewGuid();
         private static readonly Guid parkingSlotId = Guid.NewGuid();
@@ -53,8 +52,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public ParkingZoneControllerUnitTests()
         {
             _parkingZoneServiceMock = new Mock<IParkingZoneService>();
-            _reservationServiceMock = new Mock<IReservationService>();
-            _controller = new ParkingZoneController(_parkingZoneServiceMock.Object, _reservationServiceMock.Object);
+            _controller = new ParkingZoneController(_parkingZoneServiceMock.Object);
         }
 
         #region Index
@@ -92,10 +90,11 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public async Task GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsNotFoundResult()
         {
             //Arrange
+            Mock<IReservationService> _reservationServiceMock = new();
             _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>()));
 
             //Act
-            var result = await _controller.GetCurrentCars(parkingZone.Id);
+            var result = await _controller.GetCurrentCars(parkingZone.Id, _reservationServiceMock.Object);
 
             //Assert
             Assert.NotNull(result);
@@ -107,6 +106,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
         public async Task GivenZoneId_WhenGetCurrentCarsIsCalled_ThenReturnsListOfCurrentCars()
         {
             //Arrange
+            Mock<IReservationService> _reservationServiceMock = new();
             _parkingZoneServiceMock.Setup(x => x.GetById(It.IsAny<Guid>())).ReturnsAsync(parkingZone);
             _reservationServiceMock.Setup(x => x.GetReservationsByZoneId(It.IsAny<Guid>())).ReturnsAsync(reservations);
             GetCurrentCarsVM vm =
@@ -116,7 +116,7 @@ namespace ParkingZoneApp.Tests.Controllers.Admin
                     Number = reservation.ParkingSlot.Number,
                 };
             //Act
-            var result = await _controller.GetCurrentCars(parkingZone.Id);
+            var result = await _controller.GetCurrentCars(parkingZone.Id, _reservationServiceMock.Object);
 
             //Assert
             var model = Assert.IsType<ViewResult>(result).Model;
