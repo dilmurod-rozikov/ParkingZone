@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace ParkingZoneApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class ReservationController : Controller
     {
         private readonly IParkingZoneService _parkingZoneService;
