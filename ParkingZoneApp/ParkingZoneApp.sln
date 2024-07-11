@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParkingZoneApp", "ParkingZo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParkingZoneApp.Tests", "..\ParkingZoneApp.Tests\ParkingZoneApp.Tests.csproj", "{78E0301C-3F91-44E6-8B6A-C087BC28B10B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{04E667EB-881E-4F0A-81E1-30C1E0D239AD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F4C66CED-8CD3-438B-9C95-7EC1D28253C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9A479C5B-826E-412B-8CD2-B190C9D3D1B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +30,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2CA2179D-247D-4EAF-AE1D-DF43881A2F9A} = {04E667EB-881E-4F0A-81E1-30C1E0D239AD}
+		{78E0301C-3F91-44E6-8B6A-C087BC28B10B} = {F4C66CED-8CD3-438B-9C95-7EC1D28253C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0123E9A4-6F5E-4D7F-BD86-D0DF6D7730BC}

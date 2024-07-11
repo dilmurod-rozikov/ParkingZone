@@ -27,6 +27,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(FilterSlotVM vm)
         {
             var slotsQuery = await _parkingSlotService.FilterAsync(vm);

@@ -38,6 +38,8 @@ namespace ParkingZoneApp
 
             var app = builder.Build();
 
+            //app.UseForwardedHeaders();
+            app.UseHttpsRedirection();
             if (app.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
@@ -50,7 +52,6 @@ namespace ParkingZoneApp
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();

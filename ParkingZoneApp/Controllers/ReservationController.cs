@@ -33,6 +33,7 @@ namespace ParkingZoneApp.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> FreeSlots(FreeSlotsVM freeSlotsVMs)
         {
             var zones = await _parkingZoneService.GetAll();
