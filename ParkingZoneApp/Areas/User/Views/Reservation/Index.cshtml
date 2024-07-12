@@ -72,9 +72,17 @@
                 <td>
                     @if(item.StartDate.AddHours(item.Duration) > DateTime.Now)
                     {
-                        <a class="btn btn-success" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Prolong">Prolong</a>
-                        <p></p>
-                        <a class="btn btn-danger" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Delete">Delete </a>
+                        <ul>
+                            <li>
+                                <a class="btn btn-success" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Prolong">Prolong</a>
+                            </li>
+                            <li s>
+                                <a class="btn btn-dark" asp-route-reservationId="@item.Id" asp-controller="Payment" area="User" asp-action="MakePayment">Pay </a>
+                            </li>
+                            <li>
+                                <a class="btn btn-danger" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Delete">Delete </a>
+                            </li>
+                        </ul>
                     }
 
                 </td>

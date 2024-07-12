@@ -12,8 +12,8 @@ using ParkingZoneApp.Data;
 namespace ParkingZoneApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240626144220_OptimizeDatabaseSchema")]
-    partial class OptimizeDatabaseSchema
+    [Migration("20240712112115_NewInitialMigration")]
+    partial class NewInitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

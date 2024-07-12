@@ -10,6 +10,6 @@
 
         Task<IEnumerable<T>> GetAll();
 
-        Task<T?> GetById(Guid value);
+        Task<T> GetById(Guid value);
     }
 }
