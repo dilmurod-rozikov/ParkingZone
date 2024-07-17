@@ -12,7 +12,7 @@ namespace ParkingZoneApp.ViewModels.PaymentVMs
         public string CardNumber { get; set; }
 
         [Required]
-        public DateOnly ExpirationDate { get; set; } = new(DateTime.Now.Year - 5, 1, 1);
+        public DateOnly ExpirationDate { get; set; } = new(DateTime.Now.Year, DateTime.Now.Month, 1);
 
         [Required]
         [MaxLength(4)]

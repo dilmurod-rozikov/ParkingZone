@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ParkingZoneApp.ViewModels.PaymentVMs;
 using ParkingZoneApp.Services.Interfaces;
+using ParkingZoneApp.Models.Entities;
 
 namespace ParkingZoneApp.Areas.User.Controllers
 {
@@ -17,27 +18,28 @@ namespace ParkingZoneApp.Areas.User.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> MakePayment(Guid reservationId, [FromServices] IReservationService reservationService)
+        public async Task<IActionResult> MakePayment(Guid reservationId, [FromServices] IReservationService reservationService)
         {
             var reservation =  await reservationService.GetById(reservationId);
             if (reservation is null)
                 return NotFound();
 
-            PaymentVM PaymentVM = new()
+            PaymentVM paymentVM = new()
             {
                 ParkingSlot = reservation.ParkingSlot,
             };
 
-            return View(PaymentVM);
+            return View(paymentVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> MakePayment(PaymentVM paymentVM)
+        public async Task<IActionResult> MakePayment(PaymentVM paymentVM)
         {
             if (paymentVM is null)
                 return NotFound();
 
+            paymentVM.ParkingSlot = new();
             if (ModelState.IsValid)
             {
                 var payment = paymentVM.MapToModel();

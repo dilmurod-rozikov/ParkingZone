@@ -20,7 +20,7 @@ namespace ParkingZoneApp.Areas.Admin
         {
             var parkingZones = await _parkingZoneService.GetAll();
             var listItemVMs = ListItemVM.MapToVM(parkingZones);
-            return View(listItemVMs);
+            return View(listItemVMs.OrderBy(x => x.Name));
         }
 
         public async Task<IActionResult> GetCurrentCars(Guid zoneId, [FromServices] IReservationService _reservationService)
@@ -87,7 +87,7 @@ namespace ParkingZoneApp.Areas.Admin
             return View(parkingZoneEditVM);
         }
 
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, EditVM parkingZoneEditVM)
         {
