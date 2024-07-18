@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneApp.Data;
+using ParkingZoneApp.DependencyInjection;
 using ParkingZoneApp.Models.Entities;
 using ParkingZoneApp.Repository;
 using ParkingZoneApp.Repository.Interfaces;
+using ParkingZoneApp.RequestPipeline;
 using ParkingZoneApp.Services;
 using ParkingZoneApp.Services.Interfaces;
 
@@ -15,72 +17,15 @@ namespace ParkingZoneApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+            builder.RegisterServices();
 
-            builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
-            builder.Services.AddScoped<IParkingZoneService, ParkingZoneService>();
-
-            builder.Services.AddScoped<IParkingSlotRepository, ParkingSlotRepository>();
-            builder.Services.AddScoped<IParkingSlotService, ParkingSlotService>();
-
-            builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
-            builder.Services.AddScoped<IReservationService, ReservationService>();
-
-            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-            builder.Services.AddScoped<IPaymentService, PaymentService>();
-
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-            builder.Services.AddDefaultIdentity<ApplicationUser>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            builder.Services.AddControllersWithViews();
-
-            var app = builder.Build();
-
-            //app.UseForwardedHeaders();
-            app.UseHttpsRedirection();
-            if (app.Environment.IsDevelopment())
+            if (builder.Environment.IsDevelopment())
             {
                 builder.Configuration.AddUserSecrets<Program>();
-                app.UseMigrationsEndPoint();
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
             }
 
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseAuthorization();
-
-            app.MapControllerRoute(
-                name: "Admin",
-                pattern: "{area:exists}/{controller=ParkingZone}/{action=Index}/{id?}");
-
-            app.MapControllerRoute(
-                name: "Admin",
-                pattern: "{area:exists}/{controller=ParkingSlot}/{action=Index}/{id?}");
-
-            app.MapControllerRoute(
-                name: "User",
-                pattern: "{area:exists}/{controller=Reservation}/{action=Index}/{id?}");
-
-            app.MapControllerRoute(
-                name: "User",
-                pattern: "{area:exists}/{controller=Payment}/{action=MakePayment}");
-
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.MapRazorPages();
-            app.Run();
+            var app = builder.Build();
+            app.AddPipeline();
         }
     }
 }
