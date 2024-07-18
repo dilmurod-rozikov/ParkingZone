@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ParkingZoneApp.Models.Entities
 {
     [Table("Reservation")]
+    [ComplexType]
     public class Reservation
     {
         [Key]
@@ -22,6 +23,9 @@ namespace ParkingZoneApp.Models.Entities
 
         [Required]
         public virtual ParkingSlot ParkingSlot { get; set; }
+
+        [Required]
+        public bool IsPaid { get; set; }
 
         [Required]
         [ForeignKey(nameof(ParkingZone))]

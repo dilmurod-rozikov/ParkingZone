@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ParkingZoneApp.Models.Entities
 {
     [Table("ParkingSlot")]
+    [ComplexType]
     public class ParkingSlot
     {
         [Key]

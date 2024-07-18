@@ -32,7 +32,7 @@ namespace ParkingZoneApp.Services
             return await _repository.GetAll();
         }
 
-        public async Task<T?> GetById(Guid value)
+        public async Task<T> GetById(Guid value)
         {
             return await _repository.GetByID(value);
         }

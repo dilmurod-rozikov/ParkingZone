@@ -29,6 +29,9 @@ namespace ParkingZoneApp
             builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
             builder.Services.AddScoped<IReservationService, ReservationService>();
 
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
@@ -67,6 +70,10 @@ namespace ParkingZoneApp
             app.MapControllerRoute(
                 name: "User",
                 pattern: "{area:exists}/{controller=Reservation}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "User",
+                pattern: "{area:exists}/{controller=Payment}/{action=MakePayment}");
 
             app.MapControllerRoute(
                 name: "default",

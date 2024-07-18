@@ -1,0 +1,73 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model ParkingZoneApp.ViewModels.PaymentVMs.PaymentVM
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>Make Payment</h4>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Action("Index", "Home", new { area = "" })';
+        }, 3000);
+    </script>
+}
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="MakePayment">
+            <input type="hidden" value="@Model.ParkingSlot" asp-for="ParkingSlot" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div>
+                    <label asp-for="CardName" class="control-label">Card Name</label>
+                    <input asp-for="CardName" class="form-control" min="1" />
+                    <span asp-validation-for="CardName" class="text-danger"></span>
+                </div>
+                <br />
+                <div>
+                    <label asp-for="CardNumber" class="control-label">CardNumber</label>
+                    <input asp-for="CardNumber" class="form-control" />
+                    <span asp-validation-for="CardNumber" class="text-danger"></span>
+                </div>
+                <br />
+                <div>
+                    <label asp-for="ExpirationDate" class="control-label">ExpirationDate</label>
+                    <input asp-for="ExpirationDate" class="form-control" type="month" />
+                    <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CVV" class="control-label">CVV</label>
+                            <input asp-for="CVV" class="form-control" />
+                            <span asp-validation-for="CVV" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="ParkingSlot.Category" class="control-label"> Category</label>
+                            <input asp-for="ParkingSlot.Category" class="form-control" disabled />
+                            <span asp-validation-for="ParkingSlot.Category" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div>
+                <input type="submit" value="Pay" class="btn btn-primary" />
+                <a asp-action="Index" asp-controller="Reservation" class="btn btn-secondary">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z" />
+                        <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z" />
+                    </svg>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

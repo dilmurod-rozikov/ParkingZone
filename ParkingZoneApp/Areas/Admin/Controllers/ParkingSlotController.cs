@@ -42,6 +42,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             {
                 ParkingZoneId = parkingZoneId,
             };
+
             return View(createVM);
         }
 
@@ -75,7 +76,7 @@ namespace ParkingZoneApp.Areas.Admin.Controllers
             return View(editVM);
         }
 
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditVM slotEditVM, Guid id)
         {

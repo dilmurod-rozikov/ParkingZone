@@ -33,7 +33,7 @@ namespace ParkingZoneApp.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T?> GetByID(Guid id)
+        public async Task<T> GetByID(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }

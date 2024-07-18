@@ -70,7 +70,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
 
             if (!isProlongable)
             {
-                ModelState.AddModelError("ProlongDuration", "This slot is already reserved for chosen prolong time!");
+                ModelState.AddModelError("ProlongDuration", "This slot has already been reserved!");
             }
 
             if (ModelState.IsValid)

@@ -8,7 +8,7 @@ using ParkingZoneApp.Data;
 
 #nullable disable
 
-namespace ParkingZoneApp.Migrations
+namespace ParkingZoneApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

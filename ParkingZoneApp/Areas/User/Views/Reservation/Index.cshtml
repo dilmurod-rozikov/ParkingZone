@@ -34,7 +34,7 @@
                 @Html.DisplayName("Zone address")
             </th>
             <th>
-                @Html.DisplayName("")
+                @Html.DisplayName("Actions")
             </th>
         </tr>
     </thead>
@@ -72,9 +72,11 @@
                 <td>
                     @if(item.StartDate.AddHours(item.Duration) > DateTime.Now)
                     {
-                        <a class="btn btn-success" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Prolong">Prolong</a>
-                        <p></p>
-                        <a class="btn btn-danger" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Delete">Delete </a>
+                        <div style="display:flex;">
+                            <a class="btn btn-success" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Prolong">Prolong</a>
+                            <a class="btn btn-dark" style="margin-inline: 10px" asp-route-reservationId="@item.Id" asp-controller="Payment" area="User" asp-action="MakePayment">Pay </a>
+                            <a class="btn btn-danger" asp-route-reservationId="@item.Id" asp-controller="Reservation" area="User" asp-action="Delete">Delete </a>
+                        </div>
                     }
 
                 </td>
