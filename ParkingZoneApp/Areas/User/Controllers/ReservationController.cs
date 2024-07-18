@@ -21,6 +21,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
             _parkingSlotService = parkingSlotService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index([FromServices] IParkingZoneService _parkingZoneService)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
