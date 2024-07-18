@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ParkingZoneApp.ViewModels.PaymentVMs;
 using ParkingZoneApp.Services.Interfaces;
-using ParkingZoneApp.Models.Entities;
 
 namespace ParkingZoneApp.Areas.User.Controllers
 {
