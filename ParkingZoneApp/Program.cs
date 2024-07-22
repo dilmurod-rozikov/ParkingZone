@@ -1,13 +1,5 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using ParkingZoneApp.Data;
 using ParkingZoneApp.DependencyInjection;
-using ParkingZoneApp.Models.Entities;
-using ParkingZoneApp.Repository;
-using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.RequestPipeline;
-using ParkingZoneApp.Services;
-using ParkingZoneApp.Services.Interfaces;
 
 namespace ParkingZoneApp
 {
