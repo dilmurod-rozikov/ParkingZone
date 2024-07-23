@@ -18,7 +18,7 @@ namespace ParkingZoneApp.Repository
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public async Task Add(T value)
