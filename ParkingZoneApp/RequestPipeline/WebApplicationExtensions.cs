@@ -19,6 +19,7 @@
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseRateLimiter();
             app.UseAuthorization();
 
             app.MapControllerRoute(

@@ -6,6 +6,7 @@ using ParkingZoneApp.Repository.Interfaces;
 using ParkingZoneApp.Repository;
 using ParkingZoneApp.Services.Interfaces;
 using ParkingZoneApp.Services;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ParkingZoneApp.DependencyInjection
 {
@@ -34,6 +35,15 @@ namespace ParkingZoneApp.DependencyInjection
             builder.Services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddRateLimiter(options =>
+                options.AddFixedWindowLimiter("fixed", limiterOptions =>
+                {
+                    limiterOptions.PermitLimit = 100;
+                    limiterOptions.Window = TimeSpan.FromMinutes(1);
+                    limiterOptions.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+                    limiterOptions.QueueLimit = 2;
+                }));
 
             builder.Services.AddControllersWithViews();
 
