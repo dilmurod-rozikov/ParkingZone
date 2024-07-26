@@ -16,6 +16,7 @@ namespace ParkingZoneApp.Models.Entities
         public int Number { get; set; }
 
         [Required]
+        [EnumDataType(typeof(SlotCategory))]
         public SlotCategory Category { get; set; }
 
         [Required]
