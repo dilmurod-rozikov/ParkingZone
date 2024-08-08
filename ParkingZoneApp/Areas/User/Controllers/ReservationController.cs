@@ -32,7 +32,7 @@ namespace ParkingZoneApp.Areas.User.Controllers
             var reservations = await _reservationService.GetReservationsByUserId(userId);
             var parkingZones = await _parkingZoneService.GetAll();
             var parkingSlots = await _parkingSlotService.GetAll();
-            var indexVM = await ListItemVM.MapToVMAsync(reservations, parkingZones, parkingSlots);
+            var indexVM = ListItemVM.MapToVM(reservations, parkingZones, parkingSlots);
             return View(indexVM);
         }
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
-using Nest;
 using ParkingZoneApp.Areas.User.Controllers;
 using ParkingZoneApp.Enums;
 using ParkingZoneApp.Models;
